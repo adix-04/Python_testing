@@ -1,1 +1,1 @@
-# Python_testing
+# Poc automation for IDC23 MINI
