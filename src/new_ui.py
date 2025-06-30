@@ -13,23 +13,21 @@ import sys
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QPushButton, QLabel,
     QVBoxLayout, QHBoxLayout, QStackedWidget, QLineEdit, QTextEdit,
-    QFrame, QScrollArea,QSizePolicy,QGridLayout,QFileDialog
+    QFrame, QScrollArea,QSizePolicy,QGridLayout,QFileDialog,
 )
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon,QFont,QPixmap
 from PyQt5.QtCore import Qt
 import json
 import os
 DEVICE_FILE = "devices.json"
 class Ui_MainWindow(object):
-    file_name = ''
     def setupUi(self, MainWindow):
-        
         self.my_style = """
     QLineEdit {
         border: 1px solid #ccc;
         border-radius: 6px;
         padding: 6px 10px;
-        background-color: #f5f5f5;
+        background-color:#008a91;
         color: #333;
         font-size: 14px;
     }
@@ -42,6 +40,12 @@ class Ui_MainWindow(object):
     QLineEdit::placeholder {
         color: #999;
     }
+    QPushButton { 
+        padding: 5px 10px; 
+        border-radius: 5px; 
+        background-color: #4CAF50; 
+        color: white; 
+ } 
 """
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 500)
@@ -54,7 +58,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.Top_Bar = QtWidgets.QFrame(self.centralwidget)
-        self.Top_Bar.setMaximumSize(QtCore.QSize(16777215, 40))
+        self.Top_Bar.setMaximumSize(QtCore.QSize(16777215, 30))
         self.Top_Bar.setStyleSheet("background-color: rgb(35, 35, 35);")
         self.Top_Bar.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.Top_Bar.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -64,8 +68,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.frame_toggle = QtWidgets.QFrame(self.Top_Bar)
-        self.frame_toggle.setMaximumSize(QtCore.QSize(70, 40))
-        self.frame_toggle.setStyleSheet("background-color: rgb(85, 170, 255);")
+        self.frame_toggle.setMaximumSize(QtCore.QSize(100, 30))
+       
         self.frame_toggle.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_toggle.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_toggle.setObjectName("frame_toggle")
@@ -73,14 +77,17 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.Btn_Toggle = QtWidgets.QPushButton(self.frame_toggle)
+        self.Btn_Toggle = QtWidgets.QLabel(self.frame_toggle)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.Btn_Toggle.sizePolicy().hasHeightForWidth())
         self.Btn_Toggle.setSizePolicy(sizePolicy)
-        self.Btn_Toggle.setStyleSheet("color: rgb(255, 255, 255);\n"
-"border: 0px solid;")
+
+        self.pixmap1 = QPixmap('/home/adin.n@acsiatech.com/Desktop/c_programs/PyPros/ta/assets/logo.png') 
+        self.Btn_Toggle.setPixmap(self.pixmap1)
+        self.Btn_Toggle.setScaledContents(True)
+       
         self.Btn_Toggle.setObjectName("Btn_Toggle")
         self.verticalLayout_2.addWidget(self.Btn_Toggle)
         self.horizontalLayout.addWidget(self.frame_toggle)
@@ -99,8 +106,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.frame_left_menu = QtWidgets.QFrame(self.Content)
-        self.frame_left_menu.setMinimumSize(QtCore.QSize(70, 0))
-        self.frame_left_menu.setMaximumSize(QtCore.QSize(70, 16777215))
+        self.frame_left_menu.setMinimumSize(QtCore.QSize(100, 0))
+        self.frame_left_menu.setMaximumSize(QtCore.QSize(100, 16777215))
         self.frame_left_menu.setStyleSheet("background-color: rgb(35, 35, 35);")
         self.frame_left_menu.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_left_menu.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -125,8 +132,11 @@ class Ui_MainWindow(object):
 "}\n"
 "QPushButton:hover {\n"
 "    background-color: rgb(85, 170, 255);\n"
+"    font-size:17px;\n" 
+"    text-align:left; \n"    
 "}")
         self.btn_home_page.setObjectName("btn_home_page")
+        self.btn_home_page.setIcon(QIcon('/home/adin.n@acsiatech.com/Desktop/c_programs/PyPros/ta/assets/list.svg'))
         self.verticalLayout_4.addWidget(self.btn_home_page)
         self.btn_new_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_new_page.setMinimumSize(QtCore.QSize(0, 40))
@@ -134,11 +144,14 @@ class Ui_MainWindow(object):
 "    color: rgb(255, 255, 255);\n"
 "    background-color: rgb(35, 35, 35);\n"
 "    border: 0px solid;\n"
+"    font-size:17px;\n" 
+"    text-align:left; \n"   
 "}\n"
 "QPushButton:hover {\n"
 "    background-color: rgb(85, 170, 255);\n"
 "}")
         self.btn_new_page.setObjectName("btn_new_page")
+        self.btn_new_page.setIcon(QIcon('/home/adin.n@acsiatech.com/Desktop/c_programs/PyPros/ta/assets/add.svg'))
         self.verticalLayout_4.addWidget(self.btn_new_page)
         self.btn_sttings_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_sttings_page.setMinimumSize(QtCore.QSize(0, 40))
@@ -146,11 +159,14 @@ class Ui_MainWindow(object):
 "    color: rgb(255, 255, 255);\n"
 "    background-color: rgb(35, 35, 35);\n"
 "    border: 0px solid;\n"
+"    font-size:17px;\n" 
+"    text-align:left; \n"   
 "}\n"
 "QPushButton:hover {\n"
 "    background-color: rgb(85, 170, 255);\n"
 "}")
         self.btn_sttings_page.setObjectName("btn_sttings_page")
+        self.btn_sttings_page.setIcon(QIcon('/home/adin.n@acsiatech.com/Desktop/c_programs/PyPros/ta/assets/settings.svg'))
         self.verticalLayout_4.addWidget(self.btn_sttings_page)
         self.verticalLayout_3.addWidget(self.frame_top_menus, 0, QtCore.Qt.AlignTop)
         self.horizontalLayout_2.addWidget(self.frame_left_menu)
@@ -179,9 +195,67 @@ class Ui_MainWindow(object):
         self.btn_new_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page2))
         self.btn_sttings_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page3))
     def home_page(self):
+        print("home page")
         page = QWidget()
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        container = QWidget()
+        grid_layout = QGridLayout()
+        try:
+         with open (DEVICE_FILE , "r") as file:
+            devices = json.load(file)
+            print("json document parsing")
+        except Exception as e:
+            devices = []
+            print(e)
+        # Assuming devices is a list of dictionaries
+        row = 0
+        col = 0
+        for i, device in enumerate(devices):
+            card = DeviceCard(device)
+            grid_layout.addWidget(card, row, col)
+
+            col += 1
+            if col == 3:  # 3 cards per row, change if you want more or fewer
+                col = 0
+                row += 1
+
+        container.setLayout(grid_layout)
+        scroll.setWidget(container)
+        layout = QVBoxLayout()
+        layout.addWidget(scroll)
+        page.setLayout(layout)
         return page
+    
     def add_page(self):
+        page = QWidget()
+        layout = QVBoxLayout()
+        layout.setSpacing(20) 
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.input_name = QLineEdit()
+        self.input_name.setPlaceholderText("Device Name")
+        self.input_ip = QLineEdit()
+        self.input_ip.setPlaceholderText("IP Address")
+        self.input_port = QLineEdit()
+        self.input_port.setPlaceholderText("Port")
+        self.input_dlt = QLineEdit()
+        self.input_dlt.setPlaceholderText("input DLT  path")
+        self.input_dlt.mousePressEvent =lambda event , input=self.input_dlt:self.file(event,self.input_dlt)
+        self.input_adb = QLineEdit()
+        self.input_adb.setPlaceholderText("input ADB path")
+        self.input_adb.mousePressEvent = lambda event , input=self.input_adb:self.file(event,self.input_adb)
+        self.save_btn = QPushButton("Save Device")
+        self.save_btn.setFixedHeight(36)
+        self.save_btn.setStyleSheet(self.my_style)
+        self.save_btn.clicked.connect(self.save_device)
+        for widget in [self.input_name, self.input_ip, self.input_port, self.input_dlt,self.input_adb, self.save_btn]:
+            widget.setStyleSheet(self.my_style)
+            layout.addWidget(widget)
+        layout.addStretch()
+        page.setLayout(layout)
+        return page
+ ########################################################   
+    def edit_page(self):
         page = QWidget()
         layout = QVBoxLayout()
         layout.setSpacing(20) 
@@ -207,9 +281,21 @@ class Ui_MainWindow(object):
         layout.addStretch()
         page.setLayout(layout)
         return page
+    def edit(self):
+        self.E_page = self.edit_page()
+        self.stackedWidget.setCurrentWidget(self.E_page)
+#############################################################################
+    def clear_form(self):
+        self.input_name.clear()
+        self.input_ip.clear()
+        self.input_port.clear()
+        self.input_adb.clear()
+        self.input_dlt.clear()
+        
     def settings_page(self):
         page = QWidget()
         return page
+    
     def save_device(self):
         dev_name = self.input_name.text().strip()
         dev_ip = self.input_ip.text().strip()
@@ -238,6 +324,11 @@ class Ui_MainWindow(object):
         with open(DEVICE_FILE , "w") as file:
             json.dump(devices,file,indent=4)
             print("saving to json file")
+        
+        self.clear_form()
+        self.new_page = self.home_page()
+        self.stackedWidget.addWidget(self.new_page)
+        self.stackedWidget.setCurrentWidget(self.new_page)
 
     def file(self,event,input):
       file_dialog = QFileDialog()
@@ -248,14 +339,74 @@ class Ui_MainWindow(object):
          selected_files = file_dialog.selectedFiles()
          print("Selected File:", selected_files[0])
          input.setText(selected_files[0])
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.Btn_Toggle.setText(_translate("MainWindow", "MAIN"))
+        #self.Btn_Toggle.setText(_translate("MainWindow", "MAIN"))
         self.btn_home_page.setText(_translate("MainWindow", "List"))
         self.btn_new_page.setText(_translate("MainWindow", "config"))
         self.btn_sttings_page.setText(_translate("MainWindow", "Settings"))
 
+class DeviceCard(QWidget):
+    def __init__(self, device):
+        super().__init__()
+
+        self.setStyleSheet("""
+            QWidget {
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                background-color: #fefefe;
+            }
+            QLabel {
+                color: #333;
+            }
+            QPushButton {
+                padding: 5px 10px;
+                border-radius: 5px;
+            }
+            QPushButton#primary {
+                background-color: #4CAF50;
+                color: white;
+            }
+            QPushButton#secondary {
+                background-color: #e0e0e0;
+                color: black;
+            }
+        """)
+        self.setFixedSize(240, 320)
+
+        # Device Title
+        image = QLabel(self)
+        pixmap = QPixmap('/home/adin.n@acsiatech.com/Desktop/c_programs/PyPros/ta/assets/download.png')
+        image.setPixmap(pixmap)
+        image.setScaledContents(True)
+        title = QLabel(device["name"])
+        title.setFont(QFont("Arial", 12, QFont.Bold))
+        title.setAlignment(Qt.AlignCenter)
+
+        # Device Info
+        info = QLabel(device["ip"])
+        info.setAlignment(Qt.AlignCenter)
+
+
+        # Buttons
+        btn_use = QPushButton("Use")
+        btn_use.setObjectName("primary")
+        btn_config = QPushButton("Configure")
+        btn_config.setObjectName("secondary")
+        btn_config.clicked.connect(ui.edit)
+        btns = QHBoxLayout()
+        btns.addWidget(btn_use)
+        btns.addWidget(btn_config)
+        layout = QVBoxLayout()
+        layout.addStretch()
+        layout.addWidget(image)
+        layout.addWidget(title)
+        layout.addWidget(info)
+        layout.addLayout(btns)
+        layout.addStretch()
+        self.setLayout(layout)
 
 
 if __name__ == "__main__":
