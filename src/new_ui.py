@@ -17,9 +17,13 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
-
+import json
+import os
+DEVICE_FILE = "devices.json"
 class Ui_MainWindow(object):
+    file_name = ''
     def setupUi(self, MainWindow):
+        
         self.my_style = """
     QLineEdit {
         border: 1px solid #ccc;
@@ -39,7 +43,6 @@ class Ui_MainWindow(object):
         color: #999;
     }
 """
-
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 500)
         MainWindow.setMinimumSize(QtCore.QSize(1000, 500))
@@ -172,56 +175,71 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
         self.btn_home_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page1))
         self.btn_new_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page2))
         self.btn_sttings_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page3))
     def home_page(self):
         page = QWidget()
-
         return page
     def add_page(self):
         page = QWidget()
         layout = QVBoxLayout()
         layout.setSpacing(20) 
         layout.setContentsMargins(0, 0, 0, 0)
-
         self.input_name = QLineEdit()
-        self.input_name.setStyleSheet(self.my_style)
-        self.input_ip = QLineEdit()
-        self.input_ip.setStyleSheet(self.my_style)
-        self.input_port = QLineEdit()
-        self.input_port.setStyleSheet(self.my_style)
-        self.input_dlt = QLineEdit()
-        self.input_dlt.mousePressEvent =self.file
-        self.input_adb = QLineEdit()
-        self.input_adb.mousePressEvent = self.file
-
         self.input_name.setPlaceholderText("Device Name")
+        self.input_ip = QLineEdit()
         self.input_ip.setPlaceholderText("IP Address")
+        self.input_port = QLineEdit()
         self.input_port.setPlaceholderText("Port")
-        self.input_dlt.setPlaceholderText("Any extra notes or path")
-        self.input_adb.setPlaceholderText("Any extra notes or path")
-
+        self.input_dlt = QLineEdit()
+        self.input_dlt.setPlaceholderText("input DLT  path")
+        self.input_dlt.mousePressEvent =lambda event , input=self.input_dlt:self.file(event,self.input_dlt)
+        self.input_adb = QLineEdit()
+        self.input_adb.setPlaceholderText("input ADB path")
+        self.input_adb.mousePressEvent = lambda event , input=self.input_adb:self.file(event,self.input_adb)
         self.save_btn = QPushButton("Save Device")
         self.save_btn.setFixedHeight(36)
         self.save_btn.clicked.connect(self.save_device)
-
         for widget in [self.input_name, self.input_ip, self.input_port, self.input_dlt,self.input_adb, self.save_btn]:
+            widget.setStyleSheet(self.my_style)
             layout.addWidget(widget)
         layout.addStretch()
-
         page.setLayout(layout)
-
         return page
     def settings_page(self):
         page = QWidget()
-
         return page
     def save_device(self):
-        print("save")
-    
-    def file(self,event):
+        dev_name = self.input_name.text().strip()
+        dev_ip = self.input_ip.text().strip()
+        dev_port = self.input_port.text().strip()
+        dev_dlt = self.input_dlt.text().strip()
+        dev_adb = self.input_adb.text().strip()
+        print(dev_name,dev_ip,dev_dlt,dev_adb,dev_port)
+        if not os.path.exists(DEVICE_FILE) or os.stat(DEVICE_FILE).st_size == 0:
+         with open(DEVICE_FILE, 'w') as f:
+            f.write('[]')
+        if dev_name and dev_ip :
+            device_data = {
+                "name": dev_name,
+                "ip": dev_ip,
+                "port": dev_port,
+                "dlt_path": dev_dlt,
+                "adb_path" : dev_adb
+            }
+        with open(DEVICE_FILE , "r") as device_file:
+            try:
+                devices = json.load(device_file)
+            except json.JSONDecodeError:
+                devices = []
+                
+            devices.append(device_data)
+        with open(DEVICE_FILE , "w") as file:
+            json.dump(devices,file,indent=4)
+            print("saving to json file")
+
+    def file(self,event,input):
       file_dialog = QFileDialog()
       file_dialog.setWindowTitle("Open File")
       file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
@@ -229,12 +247,7 @@ class Ui_MainWindow(object):
       if file_dialog.exec():
          selected_files = file_dialog.selectedFiles()
          print("Selected File:", selected_files[0])
-         self.filename = selected_files[0]
-         self.label.setText(selected_files[0])
-         print(self.filename)
-
-    
- 
+         input.setText(selected_files[0])
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -242,9 +255,6 @@ class Ui_MainWindow(object):
         self.btn_home_page.setText(_translate("MainWindow", "List"))
         self.btn_new_page.setText(_translate("MainWindow", "config"))
         self.btn_sttings_page.setText(_translate("MainWindow", "Settings"))
-        # self.label_1.setText(_translate("MainWindow", "PAGE 1"))
-        # self.label_2.setText(_translate("MainWindow", "PAGE 2"))
-        # self.label.setText(_translate("MainWindow", "PAGE 3"))
 
 
 
