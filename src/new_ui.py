@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'tt.ui'
 #
@@ -13,16 +12,24 @@ import sys
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QPushButton, QLabel,
     QVBoxLayout, QHBoxLayout, QStackedWidget, QLineEdit, QTextEdit,
-    QFrame, QScrollArea,QSizePolicy,QGridLayout,QFileDialog,
+    QFrame, QScrollArea,QSizePolicy,QGridLayout,QFileDialog,QMessageBox,QComboBox
 )
-from PyQt5.QtGui import QIcon,QFont,QPixmap
+from PyQt5.QtGui import QIcon,QFont,QPixmap,QMovie
 from PyQt5.QtCore import Qt
 import json
 import os
+from PyQt5.QtCore import pyqtSignal
+import time as t
+import utils
+
 DEVICE_FILE = "devices.json"
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        self.tts = utils.tts_main()
+        self.isEditing = False
+        self.isEditingDevName = ''
         self.my_style = """
+        
     QLineEdit {
         border: 1px solid #ccc;
         border-radius: 6px;
@@ -46,20 +53,40 @@ class Ui_MainWindow(object):
         background-color: #4CAF50; 
         color: white; 
  } 
-"""
+ QLabel{
+    color: white;
+ 
+ }
+"""     
+        self.btn_sheet=''' 
+QPushButton {
+    color: rgb(255, 255, 255);
+    background-color:  #5F2ADB ;   
+    border: 0px solid;
+    text-align:center;  
+    border-radius : 10px
+}
+QPushButton:hover {
+    background-color: #9575cd;
+    font-size:17px; 
+    border-radius : 10px;
+    margin : 5px;
+}
+'''     
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 500)
         MainWindow.setMinimumSize(QtCore.QSize(1000, 500))
-        MainWindow.setStyleSheet("background-color: rgb(45, 45, 45);")
+        MainWindow.setStyleSheet("background-color: #241A42;")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        # self.centralwidget.setStyleSheet()
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.Top_Bar = QtWidgets.QFrame(self.centralwidget)
         self.Top_Bar.setMaximumSize(QtCore.QSize(16777215, 30))
-        self.Top_Bar.setStyleSheet("background-color: rgb(35, 35, 35);")
+        self.Top_Bar.setStyleSheet("background-color:#2C224D;")
         self.Top_Bar.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.Top_Bar.setFrameShadow(QtWidgets.QFrame.Raised)
         self.Top_Bar.setObjectName("Top_Bar")
@@ -84,9 +111,10 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.Btn_Toggle.sizePolicy().hasHeightForWidth())
         self.Btn_Toggle.setSizePolicy(sizePolicy)
 
-        self.pixmap1 = QPixmap('/home/adin.n@acsiatech.com/Desktop/c_programs/PyPros/ta/assets/logo.png') 
+        self.pixmap1 = QPixmap('assets/logo.png') 
         self.Btn_Toggle.setPixmap(self.pixmap1)
         self.Btn_Toggle.setScaledContents(True)
+        self.Btn_Toggle.setStyleSheet("background-color:    #5F2ADB;")
        
         self.Btn_Toggle.setObjectName("Btn_Toggle")
         self.verticalLayout_2.addWidget(self.Btn_Toggle)
@@ -108,7 +136,8 @@ class Ui_MainWindow(object):
         self.frame_left_menu = QtWidgets.QFrame(self.Content)
         self.frame_left_menu.setMinimumSize(QtCore.QSize(100, 0))
         self.frame_left_menu.setMaximumSize(QtCore.QSize(100, 16777215))
-        self.frame_left_menu.setStyleSheet("background-color: rgb(35, 35, 35);")
+        # self.frame_left_menu.setStyleSheet("background-color:    rgb(35, 35, 35);")
+        self.frame_left_menu.setStyleSheet("background-color:    #5F2ADB;")
         self.frame_left_menu.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_left_menu.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_left_menu.setObjectName("frame_left_menu")
@@ -125,48 +154,21 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.btn_home_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_home_page.setMinimumSize(QtCore.QSize(0, 40))
-        self.btn_home_page.setStyleSheet("QPushButton {\n"
-"    color: rgb(255, 255, 255);\n"
-"    background-color: rgb(35, 35, 35);\n"
-"    border: 0px solid;\n"
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(85, 170, 255);\n"
-"    font-size:17px;\n" 
-"    text-align:left; \n"    
-"}")
+        self.btn_home_page.setStyleSheet(self.btn_sheet)
         self.btn_home_page.setObjectName("btn_home_page")
-        self.btn_home_page.setIcon(QIcon('/home/adin.n@acsiatech.com/Desktop/c_programs/PyPros/ta/assets/list.svg'))
+        self.btn_home_page.setIcon(QIcon('assets/list.svg'))
         self.verticalLayout_4.addWidget(self.btn_home_page)
         self.btn_new_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_new_page.setMinimumSize(QtCore.QSize(0, 40))
-        self.btn_new_page.setStyleSheet("QPushButton {\n"
-"    color: rgb(255, 255, 255);\n"
-"    background-color: rgb(35, 35, 35);\n"
-"    border: 0px solid;\n"
-"    font-size:17px;\n" 
-"    text-align:left; \n"   
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(85, 170, 255);\n"
-"}")
+        self.btn_new_page.setStyleSheet(self.btn_sheet)
         self.btn_new_page.setObjectName("btn_new_page")
-        self.btn_new_page.setIcon(QIcon('/home/adin.n@acsiatech.com/Desktop/c_programs/PyPros/ta/assets/add.svg'))
+        self.btn_new_page.setIcon(QIcon('assets/add.svg'))
         self.verticalLayout_4.addWidget(self.btn_new_page)
         self.btn_sttings_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_sttings_page.setMinimumSize(QtCore.QSize(0, 40))
-        self.btn_sttings_page.setStyleSheet("QPushButton {\n"
-"    color: rgb(255, 255, 255);\n"
-"    background-color: rgb(35, 35, 35);\n"
-"    border: 0px solid;\n"
-"    font-size:17px;\n" 
-"    text-align:left; \n"   
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(85, 170, 255);\n"
-"}")
+        self.btn_sttings_page.setStyleSheet(self.btn_sheet)
         self.btn_sttings_page.setObjectName("btn_sttings_page")
-        self.btn_sttings_page.setIcon(QIcon('/home/adin.n@acsiatech.com/Desktop/c_programs/PyPros/ta/assets/settings.svg'))
+        self.btn_sttings_page.setIcon(QIcon('assets/settings.svg'))
         self.verticalLayout_4.addWidget(self.btn_sttings_page)
         self.verticalLayout_3.addWidget(self.frame_top_menus, 0, QtCore.Qt.AlignTop)
         self.horizontalLayout_2.addWidget(self.frame_left_menu)
@@ -176,8 +178,10 @@ class Ui_MainWindow(object):
         self.frame_pages.setObjectName("frame_pages")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.frame_pages)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
+        
         self.stackedWidget = QtWidgets.QStackedWidget(self.frame_pages)
         self.stackedWidget.setObjectName("stackedWidget")
+        self.stackedWidget.setStyleSheet('background-color : #120C26 ;')
         self.page1 = self.home_page()
         self.page2 = self.add_page()
         self.page3 = self.settings_page()
@@ -194,6 +198,7 @@ class Ui_MainWindow(object):
         self.btn_home_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page1))
         self.btn_new_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page2))
         self.btn_sttings_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page3))
+# home page        
     def home_page(self):
         print("home page")
         page = QWidget()
@@ -208,11 +213,12 @@ class Ui_MainWindow(object):
         except Exception as e:
             devices = []
             print(e)
-        # Assuming devices is a list of dictionaries
         row = 0
         col = 0
         for i, device in enumerate(devices):
             card = DeviceCard(device)
+            card.config_signal.connect(self.edit_page)
+            card.use_signal.connect(self.use_page)
             grid_layout.addWidget(card, row, col)
 
             col += 1
@@ -226,7 +232,7 @@ class Ui_MainWindow(object):
         layout.addWidget(scroll)
         page.setLayout(layout)
         return page
-    
+#config page
     def add_page(self):
         page = QWidget()
         layout = QVBoxLayout()
@@ -254,48 +260,125 @@ class Ui_MainWindow(object):
         layout.addStretch()
         page.setLayout(layout)
         return page
- ########################################################   
-    def edit_page(self):
-        page = QWidget()
+ #edit page will be loaded after this 
+    def edit_page(self,device):
+        self.isEditing = True
+        self.isEditingDevName = device["name"]
+        print("Editing device:", device)
+        self.E_page = QWidget()
         layout = QVBoxLayout()
-        layout.setSpacing(20) 
+        layout.setSpacing(20)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.input_name = QLineEdit()
-        self.input_name.setPlaceholderText("Device Name")
-        self.input_ip = QLineEdit()
-        self.input_ip.setPlaceholderText("IP Address")
-        self.input_port = QLineEdit()
-        self.input_port.setPlaceholderText("Port")
-        self.input_dlt = QLineEdit()
-        self.input_dlt.setPlaceholderText("input DLT  path")
-        self.input_dlt.mousePressEvent =lambda event , input=self.input_dlt:self.file(event,self.input_dlt)
-        self.input_adb = QLineEdit()
-        self.input_adb.setPlaceholderText("input ADB path")
-        self.input_adb.mousePressEvent = lambda event , input=self.input_adb:self.file(event,self.input_adb)
+
+        self.input_name = QLineEdit(device.get("name", ""))
+        self.input_ip = QLineEdit(device.get("ip", ""))
+        self.input_port = QLineEdit(device.get("port", ""))
+        self.input_dlt = QLineEdit(device.get("dlt_path", ""))
+        self.input_adb = QLineEdit(device.get("adb_path", ""))
+
+        for input_field in [self.input_dlt, self.input_adb]:
+            input_field.mousePressEvent = lambda event, input=input_field: self.file(event, input)
+
+        for field in [self.input_name, self.input_ip, self.input_port, self.input_dlt, self.input_adb]:
+            field.setStyleSheet(self.my_style)
+
         self.save_btn = QPushButton("Save Device")
         self.save_btn.setFixedHeight(36)
+        self.save_btn.setStyleSheet(self.my_style)
         self.save_btn.clicked.connect(self.save_device)
-        for widget in [self.input_name, self.input_ip, self.input_port, self.input_dlt,self.input_adb, self.save_btn]:
-            widget.setStyleSheet(self.my_style)
+
+        for widget in [self.input_name, self.input_ip, self.input_port, self.input_dlt, self.input_adb, self.save_btn]:
             layout.addWidget(widget)
+
         layout.addStretch()
-        page.setLayout(layout)
-        return page
-    def edit(self):
-        self.E_page = self.edit_page()
+        self.E_page.setLayout(layout)
+
+        self.stackedWidget.addWidget(self.E_page)
         self.stackedWidget.setCurrentWidget(self.E_page)
-#############################################################################
+
     def clear_form(self):
         self.input_name.clear()
         self.input_ip.clear()
         self.input_port.clear()
         self.input_adb.clear()
         self.input_dlt.clear()
-        
+#settings page        
     def settings_page(self):
         page = QWidget()
         return page
-    
+    def use_page(self,device):
+        self.E_page = QWidget()
+        main_layout = QVBoxLayout()
+        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        # === TOP HALF ===
+        top_half = QWidget()
+        top_layout = QHBoxLayout()
+        top_layout.setSpacing(20)
+        # --- LEFT
+        left_layout = QVBoxLayout()
+        left_layout.setSpacing(10)
+        self.label = QLabel("Input Custom Words to Speak")
+        self.Input_words = QLineEdit()
+        self.Input_words.setPlaceholderText("Input words to speak")
+        self.btn_speak = QPushButton("Speak")
+        self.btn_speak.setFixedWidth(100)
+        self.btn_speak.clicked.connect(self.start_speak)
+
+        self.label_excel = QLabel("Use Custom Excel File")
+        self.Input_excel = QLineEdit()
+        self.Input_excel.setPlaceholderText("Input Excel file path")
+        self.btn_speak_excel = QPushButton("Start")
+        self.btn_speak_excel.setFixedWidth(100)
+        self.btn_speak_excel.clicked.connect(self.start_file)
+
+        for field in [self.label, self.Input_words, self.btn_speak,
+                      self.label_excel, self.Input_excel, self.btn_speak_excel]:
+            field.setStyleSheet(self.my_style)
+            left_layout.addWidget(field)
+        left_layout.addStretch()
+
+        # --- RIGHT (30%)
+        right_layout = QVBoxLayout()
+        self.movie = QMovie('/home/adin/Desktop/p3V1/Python_testing/src/dj.gif')
+        
+        self.gif_label = QLabel("Music GIF here")
+        self.gif_label.setFixedSize(200, 150)
+        self.gif_label.setStyleSheet("border: 1px solid gray;")
+        self.gif_label.setMovie(self.movie)
+        self.gif_label.setScaledContents(True)
+        
+
+        self.tts_selector = QComboBox()
+        self.tts_selector.addItems(["pyttsx3", "gTTS"])
+        self.tts_selector.setStyleSheet(self.my_style)
+
+        right_layout.addWidget(self.gif_label, alignment=Qt.AlignCenter)
+        right_layout.addWidget(self.tts_selector)
+        right_layout.addStretch()
+
+        top_layout.addLayout(left_layout)
+        top_layout.addLayout(right_layout)
+        top_half.setLayout(top_layout)
+
+        # === BOTTOM HALF ===
+        bottom_half = QWidget()
+        bottom_layout = QVBoxLayout()
+        self.bottom_label = QLabel("Temporary Area")
+        self.bottom_label.setAlignment(Qt.AlignCenter)
+        bottom_layout.addWidget(self.bottom_label)
+        bottom_half.setLayout(bottom_layout)
+
+        # === Final Composition ===
+        main_layout.addWidget(top_half, 1)
+        main_layout.addWidget(bottom_half, 1)
+
+        self.E_page.setLayout(main_layout)
+        self.stackedWidget.addWidget(self.E_page)
+        self.stackedWidget.setCurrentWidget(self.E_page)
+
+
+# #save device function called from config and edit pages
     def save_device(self):
         dev_name = self.input_name.text().strip()
         dev_ip = self.input_ip.text().strip()
@@ -314,12 +397,22 @@ class Ui_MainWindow(object):
                 "dlt_path": dev_dlt,
                 "adb_path" : dev_adb
             }
+        #device data holds each dict
+        #devices hold the whole list
+    
         with open(DEVICE_FILE , "r") as device_file:
             try:
                 devices = json.load(device_file)
             except json.JSONDecodeError:
                 devices = []
                 
+            #devices.append(device_data)    #removing beacuse we dont want duplicates due to editing
+        if self.isEditing :
+            for index,dev in enumerate(devices):
+                if dev["name"] == self.isEditingDevName:
+                    devices[index] = device_data
+                    break
+        else:
             devices.append(device_data)
         with open(DEVICE_FILE , "w") as file:
             json.dump(devices,file,indent=4)
@@ -339,18 +432,53 @@ class Ui_MainWindow(object):
          selected_files = file_dialog.selectedFiles()
          print("Selected File:", selected_files[0])
          input.setText(selected_files[0])
+    
+    def start_speak(self):
+        text = self.Input_words.text()
+        if text == '':
+            self.tts.warn(mesg="സംസാരിക്കാൻ എന്തെങ്കിലും ടെക്സ്റ്റ് നൽകുക")
+            return
+        else :
+            self.movie.start()
+            self.tts.tts_converter(text)
+            t.sleep(3)
+        self.movie.stop()
+    def start_file(self):
+        file_path = self.Input_excel.text()
+        if file_path == '':
+            self.tts.warn(mesg="hdks")
+            return
+        else:
+            if file_path.endswith('xlsx' or 'xls'):
+                print("excel file found")
+                self.tts.file_iter(file_path=file_path)
+            else:
+                self.tts.warn(mesg="ശരിയായ എക്സൽ ഫയൽ നൽകുക")
+                
+        
+    # def warn(self,mesg):
+    #      msg = QMessageBox()
+    #      msg.setIcon(QMessageBox.Warning)
+    #      msg.setText(mesg)
+    #      msg.setWindowTitle('Warning')
+    #      msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+    #      msg.exec_()
+        
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        #self.Btn_Toggle.setText(_translate("MainWindow", "MAIN"))
         self.btn_home_page.setText(_translate("MainWindow", "List"))
         self.btn_new_page.setText(_translate("MainWindow", "config"))
         self.btn_sttings_page.setText(_translate("MainWindow", "Settings"))
 
 class DeviceCard(QWidget):
+    config_signal = pyqtSignal(dict)
+    use_signal = pyqtSignal(dict)
     def __init__(self, device):
         super().__init__()
+        self.device = device
+        self.sig = pyqtSignal()
 
         self.setStyleSheet("""
             QWidget {
@@ -378,7 +506,7 @@ class DeviceCard(QWidget):
 
         # Device Title
         image = QLabel(self)
-        pixmap = QPixmap('/home/adin.n@acsiatech.com/Desktop/c_programs/PyPros/ta/assets/download.png')
+        pixmap = QPixmap('assets/download.png')
         image.setPixmap(pixmap)
         image.setScaledContents(True)
         title = QLabel(device["name"])
@@ -388,14 +516,14 @@ class DeviceCard(QWidget):
         # Device Info
         info = QLabel(device["ip"])
         info.setAlignment(Qt.AlignCenter)
-
-
         # Buttons
         btn_use = QPushButton("Use")
         btn_use.setObjectName("primary")
+        btn_use.clicked.connect(self.emit_use)
         btn_config = QPushButton("Configure")
         btn_config.setObjectName("secondary")
-        btn_config.clicked.connect(ui.edit)
+        btn_config.clicked.connect(self.emit_config)
+    
         btns = QHBoxLayout()
         btns.addWidget(btn_use)
         btns.addWidget(btn_config)
@@ -407,7 +535,12 @@ class DeviceCard(QWidget):
         layout.addLayout(btns)
         layout.addStretch()
         self.setLayout(layout)
-
+    def emit_config(self):
+        print("emitting config signal")
+        self.config_signal.emit(self.device)
+    def emit_use(self):
+        print("emitting use signal")
+        self.use_signal.emit(self.device)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
@@ -416,4 +549,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
