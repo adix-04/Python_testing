@@ -1,0 +1,10 @@
+[
+    {
+        "name": "BMW",
+        "ip": "172.32.12.123",
+        "port": "3",
+        "dlt_path": "/home/adin.n@acsiatech.com/Music/pPython_testing/src/words.xlsx",
+        "adb_path": "/home/adin.n@acsiatech.com/Music/pPython_testing/src/Get_data_from_DLT.py"
+    }
+    
+]
