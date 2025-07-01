@@ -328,6 +328,7 @@ QPushButton:hover {
         self.label_excel = QLabel("Use Custom Excel File")
         self.Input_excel = QLineEdit()
         self.Input_excel.setPlaceholderText("Input Excel file path")
+        self.Input_excel.mousePressEvent= lambda event, input=self.Input_excel: self.file(event, input)
         self.btn_speak_excel = QPushButton("Start")
         self.btn_speak_excel.setFixedWidth(100)
         self.btn_speak_excel.clicked.connect(self.start_file)
@@ -439,10 +440,10 @@ QPushButton:hover {
             self.tts.warn(mesg="സംസാരിക്കാൻ എന്തെങ്കിലും ടെക്സ്റ്റ് നൽകുക")
             return
         else :
-            self.movie.start()
+            # self.movie.start()
             self.tts.tts_converter(text)
             t.sleep(3)
-        self.movie.stop()
+        # self.movie.stop()
     def start_file(self):
         file_path = self.Input_excel.text()
         if file_path == '':
