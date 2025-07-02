@@ -57,6 +57,7 @@ class Ui_MainWindow(object):
     color: white;
  
  }
+
 """     
         self.btn_sheet=''' 
 QPushButton {
@@ -73,22 +74,13 @@ QPushButton:hover {
     margin : 5px;
 }
 '''     
-        self.drop_stylesheet = '''
-QComboBox {
-    color: white;
-    background-color: #9575cd;
-    font-size:17px; 
-    border-radius : 10px;
-    margin : 5px;
-}
-'''
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 500)
         MainWindow.setMinimumSize(QtCore.QSize(1000, 500))
         MainWindow.setStyleSheet("background-color: #241A42;")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        # self.centralwidget.setStyleSheet()
+        #self.centralwidget.setStyleSheet()
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(0)
@@ -120,7 +112,7 @@ QComboBox {
         sizePolicy.setHeightForWidth(self.Btn_Toggle.sizePolicy().hasHeightForWidth())
         self.Btn_Toggle.setSizePolicy(sizePolicy)
 
-        self.pixmap1 = QPixmap('assets/logo.png') 
+        self.pixmap1 = QPixmap('src/assets/logo.png') 
         self.Btn_Toggle.setPixmap(self.pixmap1)
         self.Btn_Toggle.setScaledContents(True)
         self.Btn_Toggle.setStyleSheet("background-color: #272757;")
@@ -143,8 +135,8 @@ QComboBox {
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.frame_left_menu = QtWidgets.QFrame(self.Content)
-        self.frame_left_menu.setMinimumSize(QtCore.QSize(100, 0))
-        self.frame_left_menu.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.frame_left_menu.setMinimumSize(QtCore.QSize(130, 0))
+        self.frame_left_menu.setMaximumSize(QtCore.QSize(130, 16777215))
         # self.frame_left_menu.setStyleSheet("background-color:    rgb(35, 35, 35);")
         self.frame_left_menu.setStyleSheet("background-color: #272757;")
         self.frame_left_menu.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -165,20 +157,29 @@ QComboBox {
         self.btn_home_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_home_page.setStyleSheet(self.btn_sheet)
         self.btn_home_page.setObjectName("btn_home_page")
-        self.btn_home_page.setIcon(QIcon('assets/list.svg'))
+        self.btn_home_page.setIcon(QIcon('src/assets/list.svg'))
         self.verticalLayout_4.addWidget(self.btn_home_page)
         self.btn_new_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_new_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_new_page.setStyleSheet(self.btn_sheet)
         self.btn_new_page.setObjectName("btn_new_page")
-        self.btn_new_page.setIcon(QIcon('assets/add.svg'))
+        self.btn_new_page.setIcon(QIcon('src/assets/add.svg'))
         self.verticalLayout_4.addWidget(self.btn_new_page)
         self.btn_sttings_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_sttings_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_sttings_page.setStyleSheet(self.btn_sheet)
         self.btn_sttings_page.setObjectName("btn_sttings_page")
-        self.btn_sttings_page.setIcon(QIcon('assets/settings.svg'))
+        self.btn_sttings_page.setIcon(QIcon('src/assets/settings.svg'))
+
+        self.btn_general_page = QtWidgets.QPushButton(self.frame_top_menus)
+        self.btn_general_page.setMinimumSize(QtCore.QSize(0, 40))
+        self.btn_general_page.setStyleSheet(self.btn_sheet)
+        self.btn_general_page.setObjectName("btn_general_page")
+        
+        
+
         self.verticalLayout_4.addWidget(self.btn_sttings_page)
+        self.verticalLayout_4.addWidget(self.btn_general_page)
         self.verticalLayout_3.addWidget(self.frame_top_menus, 0, QtCore.Qt.AlignTop)
         self.horizontalLayout_2.addWidget(self.frame_left_menu)
         self.frame_pages = QtWidgets.QFrame(self.Content)
@@ -194,9 +195,11 @@ QComboBox {
         self.page1 = self.home_page()
         self.page2 = self.add_page()
         self.page3 = self.settings_page()
+        self.page4 = self.use_page()
         self.stackedWidget.addWidget(self.page1)
         self.stackedWidget.addWidget(self.page2)
         self.stackedWidget.addWidget(self.page3)
+        self.stackedWidget.addWidget(self.page4)
         self.verticalLayout_5.addWidget(self.stackedWidget)
         self.horizontalLayout_2.addWidget(self.frame_pages)
         self.verticalLayout.addWidget(self.Content)
@@ -207,6 +210,7 @@ QComboBox {
         self.btn_home_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page1))
         self.btn_new_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page2))
         self.btn_sttings_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page3))
+        self.btn_general_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page4))
 # home page        
     def home_page(self):
         print("home page")
@@ -262,6 +266,7 @@ QComboBox {
         self.save_btn = QPushButton("Save Device")
         self.save_btn.setFixedHeight(36)
         self.save_btn.setStyleSheet(self.my_style)
+        self.save_btn.setFixedWidth(150)
         self.save_btn.clicked.connect(self.save_device)
         for widget in [self.input_name, self.input_ip, self.input_port, self.input_dlt,self.input_adb, self.save_btn]:
             widget.setStyleSheet(self.my_style)
@@ -315,7 +320,7 @@ QComboBox {
     def settings_page(self):
         page = QWidget()
         return page
-    def use_page(self,device):
+    def use_page(self):
         self.E_page = QWidget()
         main_layout = QVBoxLayout()
         main_layout.setSpacing(0)
@@ -354,14 +359,14 @@ QComboBox {
         
         self.gif_label = QLabel("Music GIF here")
         self.gif_label.setFixedSize(200, 150)
-        self.gif_label.setStyleSheet("border: 1px solid gray;")
+        #self.gif_label.setStyleSheet("border: 1px solid gray;")
         self.gif_label.setMovie(self.movie)
         self.gif_label.setScaledContents(True)
         
 
         self.tts_selector = QComboBox()
         self.tts_selector.addItems(["pyttsx3", "gTTS"])
-        self.tts_selector.setStyleSheet(self.drop_stylesheet)
+        self.tts_selector.setStyleSheet("background-color: #505061")
 
         right_layout.addWidget(self.gif_label, alignment=Qt.AlignCenter)
         right_layout.addWidget(self.tts_selector)
@@ -384,8 +389,9 @@ QComboBox {
         main_layout.addWidget(bottom_half, 1)
 
         self.E_page.setLayout(main_layout)
-        self.stackedWidget.addWidget(self.E_page)
-        self.stackedWidget.setCurrentWidget(self.E_page)
+        return self.E_page
+        # self.stackedWidget.addWidget(self.E_page)
+        # self.stackedWidget.setCurrentWidget(self.E_page)
 
 
 # #save device function called from config and edit pages
@@ -456,7 +462,7 @@ QComboBox {
     def start_file(self):
         file_path = self.Input_excel.text()
         if file_path == '':
-            self.tts.warn(mesg="hdks")
+            self.tts.warn(mesg="തുടങ്ങാൻ എന്തെങ്കിലും കൊടുക്കൂ. ബാക്കി നമുക്ക് പിന്നീട് ചെയ്യാം")
             return
         else:
             if file_path.endswith('xlsx' or 'xls'):
@@ -464,23 +470,14 @@ QComboBox {
                 self.tts.file_iter(file_path=file_path)
             else:
                 self.tts.warn(mesg="ശരിയായ എക്സൽ ഫയൽ നൽകുക")
-                
-        
-    # def warn(self,mesg):
-    #      msg = QMessageBox()
-    #      msg.setIcon(QMessageBox.Warning)
-    #      msg.setText(mesg)
-    #      msg.setWindowTitle('Warning')
-    #      msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-    #      msg.exec_()
-        
-
+    
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.btn_home_page.setText(_translate("MainWindow", "List"))
         self.btn_new_page.setText(_translate("MainWindow", "config"))
         self.btn_sttings_page.setText(_translate("MainWindow", "Settings"))
+        self.btn_general_page.setText(_translate("MainWindow", " TTS Speech"))
 
 class DeviceCard(QWidget):
     config_signal = pyqtSignal(dict)
@@ -516,7 +513,7 @@ class DeviceCard(QWidget):
 
         # Device Title
         image = QLabel(self)
-        pixmap = QPixmap('assets/download.png')
+        pixmap = QPixmap('src/assets/download.png')
         image.setPixmap(pixmap)
         image.setScaledContents(True)
         title = QLabel(device["name"])
