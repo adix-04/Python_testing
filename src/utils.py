@@ -17,6 +17,7 @@ class tts_main():
        engine.setProperty("rate", 150)
        engine.say(command)
        engine.runAndWait()
+       print("speak :"+command)
         # audio = gTTS(text=command,lang='en',slow=False,tld="com.au")
         # audio.save("output.mp3")
         # os.system("mpg123 output.mp3")
