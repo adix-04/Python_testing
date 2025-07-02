@@ -61,7 +61,7 @@ class Ui_MainWindow(object):
         self.btn_sheet=''' 
 QPushButton {
     color: rgb(255, 255, 255);
-    background-color:  #5F2ADB ;   
+    background-color:  #272757 ;   
     border: 0px solid;
     text-align:center;  
     border-radius : 10px
@@ -73,6 +73,15 @@ QPushButton:hover {
     margin : 5px;
 }
 '''     
+        self.drop_stylesheet = '''
+QComboBox {
+    color: white;
+    background-color: #9575cd;
+    font-size:17px; 
+    border-radius : 10px;
+    margin : 5px;
+}
+'''
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 500)
         MainWindow.setMinimumSize(QtCore.QSize(1000, 500))
@@ -114,7 +123,7 @@ QPushButton:hover {
         self.pixmap1 = QPixmap('assets/logo.png') 
         self.Btn_Toggle.setPixmap(self.pixmap1)
         self.Btn_Toggle.setScaledContents(True)
-        self.Btn_Toggle.setStyleSheet("background-color:    #5F2ADB;")
+        self.Btn_Toggle.setStyleSheet("background-color: #272757;")
        
         self.Btn_Toggle.setObjectName("Btn_Toggle")
         self.verticalLayout_2.addWidget(self.Btn_Toggle)
@@ -137,7 +146,7 @@ QPushButton:hover {
         self.frame_left_menu.setMinimumSize(QtCore.QSize(100, 0))
         self.frame_left_menu.setMaximumSize(QtCore.QSize(100, 16777215))
         # self.frame_left_menu.setStyleSheet("background-color:    rgb(35, 35, 35);")
-        self.frame_left_menu.setStyleSheet("background-color:    #5F2ADB;")
+        self.frame_left_menu.setStyleSheet("background-color: #272757;")
         self.frame_left_menu.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_left_menu.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_left_menu.setObjectName("frame_left_menu")
@@ -283,7 +292,7 @@ QPushButton:hover {
             field.setStyleSheet(self.my_style)
 
         self.save_btn = QPushButton("Save Device")
-        self.save_btn.setFixedHeight(36)
+        self.save_btn.setFixedWidth(100)
         self.save_btn.setStyleSheet(self.my_style)
         self.save_btn.clicked.connect(self.save_device)
 
@@ -352,7 +361,7 @@ QPushButton:hover {
 
         self.tts_selector = QComboBox()
         self.tts_selector.addItems(["pyttsx3", "gTTS"])
-        self.tts_selector.setStyleSheet(self.my_style)
+        self.tts_selector.setStyleSheet(self.drop_stylesheet)
 
         right_layout.addWidget(self.gif_label, alignment=Qt.AlignCenter)
         right_layout.addWidget(self.tts_selector)
