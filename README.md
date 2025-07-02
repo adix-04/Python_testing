@@ -1,3 +1,4 @@
+
 # Poc automation for IDC23 MINI
 Automation speech testing tool using python from excel files. 
 build with purpose
@@ -9,7 +10,7 @@ cd Pytho_testing
 ```
 # Install dependencies
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 # Run the program
 
