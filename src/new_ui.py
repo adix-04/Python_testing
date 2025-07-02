@@ -21,13 +21,12 @@ import os
 from PyQt5.QtCore import pyqtSignal
 import time as t
 import utils
-import new_core
-
+from new_core import Main_utils_page
+from device_card import DeviceCard
 DEVICE_FILE = "devices.json"
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         self.tts = utils.tts_main()
-        self.n_core = new_core.Main_utils_page()
         self.isEditing = False
         self.isEditingDevName = ''
         self.my_style = """
@@ -233,7 +232,7 @@ QPushButton:hover {
         for i, device in enumerate(devices):
             card = DeviceCard(device)
             card.config_signal.connect(self.edit_page)
-            card.use_signal.connect(self.n_core.main_page)
+            card.use_signal.connect(self.settings_page)
             grid_layout.addWidget(card, row, col)
 
             col += 1
@@ -320,7 +319,9 @@ QPushButton:hover {
         self.input_dlt.clear()
 #settings page        
     def settings_page(self):
-        page = QWidget()
+        page = Main_utils_page().page
+        self.stackedWidget.addWidget(page)
+        self.stackedWidget.setCurrentWidget(page)
         return page
     def use_page(self):
         self.E_page = QWidget()
@@ -481,77 +482,6 @@ QPushButton:hover {
         self.btn_new_page.setText(_translate("MainWindow", "config"))
         self.btn_sttings_page.setText(_translate("MainWindow", "Settings"))
         self.btn_general_page.setText(_translate("MainWindow", " TTS Speech"))
-
-class DeviceCard(QWidget):
-    config_signal = pyqtSignal(dict)
-    use_signal = pyqtSignal(dict)
-    def __init__(self, device):
-        super().__init__()
-        self.device = device
-        self.sig = pyqtSignal()
-
-        self.setStyleSheet("""
-            QWidget {
-                border: 1px solid #ccc;
-                border-radius: 10px;
-                background-color: #fefefe;
-            }
-            QLabel {
-                color: #333;
-            }
-            QPushButton {
-                padding: 5px 10px;
-                border-radius: 5px;
-            }
-            QPushButton#primary {
-                background-color: #4CAF50;
-                color: white;
-            }
-            QPushButton#secondary {
-                background-color: #e0e0e0;
-                color: black;
-            }
-        """)
-        self.setFixedSize(240, 320)
-
-        # Device Title
-        image = QLabel(self)
-        pixmap = QPixmap('src/assets/download.png')
-        image.setPixmap(pixmap)
-        image.setScaledContents(True)
-        title = QLabel(device["name"])
-        title.setFont(QFont("Arial", 12, QFont.Bold))
-        title.setAlignment(Qt.AlignCenter)
-
-        # Device Info
-        info = QLabel(device["ip"])
-        info.setAlignment(Qt.AlignCenter)
-        # Buttons
-        btn_use = QPushButton("Use")
-        btn_use.setObjectName("primary")
-        btn_use.clicked.connect(self.emit_use)
-        btn_config = QPushButton("Configure")
-        btn_config.setObjectName("secondary")
-        btn_config.clicked.connect(self.emit_config)
-    
-        btns = QHBoxLayout()
-        btns.addWidget(btn_use)
-        btns.addWidget(btn_config)
-        layout = QVBoxLayout()
-        layout.addStretch()
-        layout.addWidget(image)
-        layout.addWidget(title)
-        layout.addWidget(info)
-        layout.addLayout(btns)
-        layout.addStretch()
-        self.setLayout(layout)
-    def emit_config(self):
-        print("emitting config signal")
-        self.config_signal.emit(self.device)
-    def emit_use(self):
-        print("emitting use signal")
-        self.use_signal.emit(self.device)
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
