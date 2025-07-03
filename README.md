@@ -17,6 +17,9 @@ pip install -r requirements.txt
 ```bash
 python3 code.py
 ```
+# Tools ued 
+Python
+VS Code
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
