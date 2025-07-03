@@ -359,15 +359,12 @@ QPushButton:hover {
         # --- RIGHT (30%)
         right_layout = QVBoxLayout()
         self.movie = QMovie('/home/adin/Desktop/p3V1/Python_testing/src/dj.gif')
-        
         self.gif_label = QLabel("Music GIF here")
         self.gif_label.setFixedSize(200, 150)
         #self.gif_label.setStyleSheet("border: 1px solid gray;")
         self.gif_label.setMovie(self.movie)
         self.gif_label.setScaledContents(True)
         self.movie.start()
-        
-
         self.tts_selector = QComboBox()
         self.tts_selector.addItems(["pyttsx3", "gTTS"])
         self.tts_selector.setStyleSheet("background-color: #48872B")
