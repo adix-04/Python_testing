@@ -16,7 +16,7 @@ QLineEdit:focus {
 }
 
 QLineEdit::placeholder {
-    color: #999;
+    color: #ffffff;
 }
 
 QPushButton { 
