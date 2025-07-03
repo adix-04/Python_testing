@@ -13,24 +13,16 @@ class tts_main():
         self.ui_obj = new_ui.Ui_MainWindow()
         
     def tts_converter(self,command):
-       engine = pyttsx3.init()
-       engine.setProperty("rate", 150)
-       engine.say(command)
-       engine.runAndWait()
-       print("speak :"+command)
-        # audio = gTTS(text=command,lang='en',slow=False,tld="com.au")
-        # audio.save("output.mp3")
-        # os.system("mpg123 output.mp3")
+        audio = gTTS(text=command,lang='en',slow=False,tld="com.au")
+        audio.save("output.mp3")
+        os.system("mpg123 output.mp3")
     def file_iter(self,file_path):
-        try:
-            data = pd.read_excel(file_path,usecols=self.cols)
-            print(data)
-            for index,row in data.iterrows():
-                self.tts_converter("Hey Mini")
-                t.sleep(2)
-                self.tts_converter(row['commands'])
-        except Exception as e:
-            print(e)
+        data = pd.read_excel(file_path,usecols=self.cols)
+        print(data)
+        for index,row in data.iterrows():
+         self.tts_converter("Hey Mini")
+         t.sleep(2)
+         self.tts_converter(row['commands'])
     def warn(self,mesg):
          msg = QMessageBox()
          msg.setIcon(QMessageBox.Warning)

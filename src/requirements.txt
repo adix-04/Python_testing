@@ -1,5 +1,0 @@
-PyQt5==5.15.6
-gTTS==2.5.4
-SpeechRecognition==3.14.3
-pyttsx3==2.98
-pandas==1.5.3
