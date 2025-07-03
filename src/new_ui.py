@@ -159,13 +159,13 @@ QPushButton:hover {
         self.btn_home_page.setStyleSheet(self.btn_sheet)
         self.btn_home_page.setObjectName("btn_home_page")
         self.btn_home_page.setIcon(QIcon('src/assets/list.svg'))
-        self.verticalLayout_4.addWidget(self.btn_home_page)
+        
         self.btn_new_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_new_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_new_page.setStyleSheet(self.btn_sheet)
         self.btn_new_page.setObjectName("btn_new_page")
         self.btn_new_page.setIcon(QIcon('src/assets/add.svg'))
-        self.verticalLayout_4.addWidget(self.btn_new_page)
+       
         self.btn_sttings_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_sttings_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_sttings_page.setStyleSheet(self.btn_sheet)
@@ -176,11 +176,14 @@ QPushButton:hover {
         self.btn_general_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_general_page.setStyleSheet(self.btn_sheet)
         self.btn_general_page.setObjectName("btn_general_page")
-        
-        
+        self.btn_general_page.setIcon(QIcon('src/assets/speak.svg'))
 
-        self.verticalLayout_4.addWidget(self.btn_sttings_page)
-        self.verticalLayout_4.addWidget(self.btn_general_page)
+        self.btn_sched_page = QtWidgets.QPushButton(self.frame_top_menus)
+        self.btn_sched_page.setMinimumSize(QtCore.QSize(0,40))
+        self.btn_sched_page.setStyleSheet(self.btn_sheet)
+        self.btn_sched_page.setIcon(QIcon('src/assets/Timer.svg'))
+        for widget in [self.btn_home_page,self.btn_new_page,self.btn_general_page,self.btn_sched_page,self.btn_sttings_page]:
+            self.verticalLayout_4.addWidget(widget)
         self.verticalLayout_3.addWidget(self.frame_top_menus, 0, QtCore.Qt.AlignTop)
         self.horizontalLayout_2.addWidget(self.frame_left_menu)
         self.frame_pages = QtWidgets.QFrame(self.Content)
@@ -195,7 +198,7 @@ QPushButton:hover {
         self.stackedWidget.setStyleSheet('background-color : #120C26 ;')
         self.page1 = self.home_page()
         self.page2 = self.add_page()
-        self.page3 = self.settings_page()
+        self.page3 = self.sched_page()
         self.page4 = self.use_page()
         self.stackedWidget.addWidget(self.page1)
         self.stackedWidget.addWidget(self.page2)
@@ -210,7 +213,7 @@ QPushButton:hover {
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.btn_home_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page1))
         self.btn_new_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page2))
-        self.btn_sttings_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page3))
+        self.btn_sched_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page3))
         self.btn_general_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page4))
 # home page        
     def home_page(self):
@@ -318,7 +321,7 @@ QPushButton:hover {
         self.input_adb.clear()
         self.input_dlt.clear()
 #settings page        
-    def settings_page(self):
+    def sched_page(self):
         page = Main_utils_page().page
         self.stackedWidget.addWidget(page)
         self.stackedWidget.setCurrentWidget(page)
@@ -368,11 +371,9 @@ QPushButton:hover {
         self.tts_selector = QComboBox()
         self.tts_selector.addItems(["pyttsx3", "gTTS"])
         self.tts_selector.setStyleSheet("background-color: #48872B")
-
         right_layout.addWidget(self.gif_label, alignment=Qt.AlignCenter)
         right_layout.addWidget(self.tts_selector)
         right_layout.addStretch()
-
         top_layout.addLayout(left_layout)
         top_layout.addLayout(right_layout)
         top_half.setLayout(top_layout)
@@ -475,10 +476,11 @@ QPushButton:hover {
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.btn_home_page.setText(_translate("MainWindow", "List"))
-        self.btn_new_page.setText(_translate("MainWindow", "config"))
+        self.btn_home_page.setText(_translate("MainWindow", "Home"))
+        self.btn_new_page.setText(_translate("MainWindow", "Add a Device"))
         self.btn_sttings_page.setText(_translate("MainWindow", "Settings"))
         self.btn_general_page.setText(_translate("MainWindow", " TTS Speech"))
+        self.btn_sched_page.setText(_translate('MainWindow','Scheduler'))
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
