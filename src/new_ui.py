@@ -18,6 +18,11 @@ from PyQt5.QtGui import QIcon,QFont,QPixmap,QMovie
 from PyQt5.QtCore import Qt
 import json
 import os
+from PyQt5.QtCore import pyqtSignal
+import time as t
+import utils
+from new_core import Main_utils_page
+from device_card import DeviceCard
 DEVICE_FILE = "devices.json"
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -153,17 +158,32 @@ QPushButton:hover {
         self.btn_home_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_home_page.setStyleSheet(self.btn_sheet)
         self.btn_home_page.setObjectName("btn_home_page")
-        self.verticalLayout_4.addWidget(self.btn_home_page)
+        self.btn_home_page.setIcon(QIcon('src/assets/list.svg'))
+        
         self.btn_new_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_new_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_new_page.setStyleSheet(self.btn_sheet)
         self.btn_new_page.setObjectName("btn_new_page")
-        self.verticalLayout_4.addWidget(self.btn_new_page)
+        self.btn_new_page.setIcon(QIcon('src/assets/add.svg'))
+       
         self.btn_sttings_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_sttings_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_sttings_page.setStyleSheet(self.btn_sheet)
         self.btn_sttings_page.setObjectName("btn_sttings_page")
-        self.verticalLayout_4.addWidget(self.btn_sttings_page)
+        self.btn_sttings_page.setIcon(QIcon('src/assets/settings.svg'))
+
+        self.btn_general_page = QtWidgets.QPushButton(self.frame_top_menus)
+        self.btn_general_page.setMinimumSize(QtCore.QSize(0, 40))
+        self.btn_general_page.setStyleSheet(self.btn_sheet)
+        self.btn_general_page.setObjectName("btn_general_page")
+        self.btn_general_page.setIcon(QIcon('src/assets/speak.svg'))
+
+        self.btn_sched_page = QtWidgets.QPushButton(self.frame_top_menus)
+        self.btn_sched_page.setMinimumSize(QtCore.QSize(0,40))
+        self.btn_sched_page.setStyleSheet(self.btn_sheet)
+        self.btn_sched_page.setIcon(QIcon('src/assets/Timer.svg'))
+        for widget in [self.btn_home_page,self.btn_new_page,self.btn_general_page,self.btn_sched_page,self.btn_sttings_page]:
+            self.verticalLayout_4.addWidget(widget)
         self.verticalLayout_3.addWidget(self.frame_top_menus, 0, QtCore.Qt.AlignTop)
         self.horizontalLayout_2.addWidget(self.frame_left_menu)
         self.frame_pages = QtWidgets.QFrame(self.Content)
@@ -178,7 +198,8 @@ QPushButton:hover {
         self.stackedWidget.setStyleSheet('background-color : #120C26 ;')
         self.page1 = self.home_page()
         self.page2 = self.add_page()
-        self.page3 = self.settings_page()
+        self.page3 = self.sched_page()
+        self.page4 = self.use_page()
         self.stackedWidget.addWidget(self.page1)
         self.stackedWidget.addWidget(self.page2)
         self.stackedWidget.addWidget(self.page3)
@@ -192,10 +213,41 @@ QPushButton:hover {
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.btn_home_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page1))
         self.btn_new_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page2))
-        self.btn_sttings_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page3))
+        self.btn_sched_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page3))
+        self.btn_general_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page4))
+# home page        
     def home_page(self):
         print("home page")
         page = QWidget()
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        container = QWidget()
+        grid_layout = QGridLayout()
+        try:
+         with open (DEVICE_FILE , "r") as file:
+            devices = json.load(file)
+            print("json document parsing")
+        except Exception as e:
+            devices = []
+            print(e)
+        row = 0
+        col = 0
+        for i, device in enumerate(devices):
+            card = DeviceCard(device)
+            card.config_signal.connect(self.edit_page)
+            card.use_signal.connect(self.sched_page)
+            grid_layout.addWidget(card, row, col)
+
+            col += 1 
+            if col == 3:  # 3 cards per row, change if you want more or fewer
+                col = 0
+                row += 1
+
+        container.setLayout(grid_layout)
+        layout = QVBoxLayout()
+        scroll.setWidget(container )
+        layout.addWidget(scroll)
+        page.setLayout(layout)
         return page
 #config page
     def add_page(self):
@@ -226,9 +278,125 @@ QPushButton:hover {
         layout.addStretch()
         page.setLayout(layout)
         return page
-    def settings_page(self):
-        page = QWidget()
+ #edit page will be loaded after this 
+    def edit_page(self,device):
+        self.isEditing = True
+        self.isEditingDevName = device["name"]
+        print("Editing device:", device)
+        self.E_page = QWidget()
+        layout = QVBoxLayout()
+        layout.setSpacing(20)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        self.input_name = QLineEdit(device.get("name", ""))
+        self.input_ip = QLineEdit(device.get("ip", ""))
+        self.input_port = QLineEdit(device.get("port", ""))
+        self.input_dlt = QLineEdit(device.get("dlt_path", ""))
+        self.input_adb = QLineEdit(device.get("adb_path", ""))
+
+        for input_field in [self.input_dlt, self.input_adb]:
+            input_field.mousePressEvent = lambda event, input=input_field: self.file(event, input)
+
+        for field in [self.input_name, self.input_ip, self.input_port, self.input_dlt, self.input_adb]:
+            field.setStyleSheet(self.my_style)
+
+        self.save_btn = QPushButton("Save Device")
+        self.save_btn.setFixedWidth(100)
+        self.save_btn.setStyleSheet(self.my_style)
+        self.save_btn.clicked.connect(self.save_device)
+
+        for widget in [self.input_name, self.input_ip, self.input_port, self.input_dlt, self.input_adb, self.save_btn]:
+            layout.addWidget(widget)
+
+        layout.addStretch()
+        self.E_page.setLayout(layout)
+
+        self.stackedWidget.addWidget(self.E_page)
+        self.stackedWidget.setCurrentWidget(self.E_page)
+
+    def clear_form(self):
+        self.input_name.clear()
+        self.input_ip.clear()
+        self.input_port.clear()
+        self.input_adb.clear()
+        self.input_dlt.clear()
+#settings page        
+    def sched_page(self):
+        page = Main_utils_page().page
+        self.stackedWidget.addWidget(page)
+        self.stackedWidget.setCurrentWidget(page)
         return page
+    def use_page(self):
+        self.E_page = QWidget()
+        main_layout = QVBoxLayout()
+        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        # === TOP HALF ===
+        top_half = QWidget()
+        top_layout = QHBoxLayout()
+        top_layout.setSpacing(20)
+        # --- LEFT
+        left_layout = QVBoxLayout()
+        left_layout.setSpacing(10)
+        self.label = QLabel("Input Custom Words to Speak")
+        self.Input_words = QLineEdit()
+        self.Input_words.setPlaceholderText("Input words to speak")
+        self.btn_speak = QPushButton("Speak")
+        self.btn_speak.setFixedWidth(100)
+        self.btn_speak.clicked.connect(self.start_speak)
+
+        self.label_excel = QLabel("Use Custom Excel File")
+        self.Input_excel = QLineEdit()
+        self.Input_excel.setPlaceholderText("Input Excel file path")
+        self.Input_excel.mousePressEvent= lambda event, input=self.Input_excel: self.file(event, input)
+        self.btn_speak_excel = QPushButton("Start")
+        self.btn_speak_excel.setFixedWidth(100)
+        self.btn_speak_excel.clicked.connect(self.start_file)
+
+        for field in [self.label, self.Input_words, self.btn_speak,
+                      self.label_excel, self.Input_excel, self.btn_speak_excel]:
+            field.setStyleSheet(self.my_style)
+            left_layout.addWidget(field)
+        left_layout.addStretch()
+
+        # --- RIGHT (30%)
+        right_layout = QVBoxLayout()
+        self.movie = QMovie('/home/adin/Desktop/p3V1/Python_testing/src/dj.gif')
+        self.gif_label = QLabel("Music GIF here")
+        self.gif_label.setFixedSize(200, 150)
+        #self.gif_label.setStyleSheet("border: 1px solid gray;")
+        self.gif_label.setMovie(self.movie)
+        self.gif_label.setScaledContents(True)
+        self.movie.start()
+        self.tts_selector = QComboBox()
+        self.tts_selector.addItems(["pyttsx3", "gTTS"])
+        self.tts_selector.setStyleSheet("background-color: #48872B")
+        right_layout.addWidget(self.gif_label, alignment=Qt.AlignCenter)
+        right_layout.addWidget(self.tts_selector)
+        right_layout.addStretch()
+        top_layout.addLayout(left_layout)
+        top_layout.addLayout(right_layout)
+        top_half.setLayout(top_layout)
+
+        # === BOTTOM HALF ===
+        bottom_half = QWidget()
+        bottom_layout = QVBoxLayout()
+        self.bottom_label = QLabel("Temporary Area")
+        self.bottom_label.setAlignment(Qt.AlignCenter)
+        bottom_layout.addWidget(self.bottom_label)
+        bottom_half.setLayout(bottom_layout)
+
+        # === Final Composition ===
+        main_layout.addWidget(top_half, 1)
+        main_layout.addWidget(bottom_half, 1)
+
+        self.E_page.setLayout(main_layout)
+        return self.E_page
+        #self.stackedWidget.addWidget(self.E_page)
+        #self.stackedWidget.setCurrentWidget(self.E_page)
+
+
+# #save device function called from config and edit pages
     def save_device(self):
         dev_name = self.input_name.text().strip()
         dev_ip = self.input_ip.text().strip()
@@ -307,18 +475,17 @@ QPushButton:hover {
     
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
+        self.btn_new_page.setText(_translate("MainWindow", "Add a Dev€ice"))
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.Btn_Toggle.setText(_translate("MainWindow", "MAIN"))
-        self.btn_home_page.setText(_translate("MainWindow", "List"))
-        self.btn_new_page.setText(_translate("MainWindow", "config"))
+        self.btn_home_page.setText(_translate("MainWindow", "Home"))
         self.btn_sttings_page.setText(_translate("MainWindow", "Settings"))
-
-
-
+        self.btn_general_page.setText(_translate("MainWindow", " TTS Speech"))
+        self.btn_sched_page.setText(_translate('MainWindow','Scheduler'))
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+    
     sys.exit(app.exec_())
