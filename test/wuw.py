@@ -11,15 +11,10 @@ import subprocess
 import sounddevice as sd
 import datetime
 from datetime import datetime
-#import pyroomacoustics as pra
-#import matplotlib.pyplot as plt
 
-#from WUW_rest_time_calculator import extract_remaining_audio_duration
-
-
+#from WUW_rest_time_calculator import extract_remaining_audio_duratio
 
 class WUWTest(object):
-    
     def __init__(self, tech, directory, mcuip, iexcelpath, oexcelname, audiopath, lang, iterations, updatesignal, seatZone, mic, delay):
         # initialize pygame mixer
         pygame.mixer.init()
@@ -113,10 +108,10 @@ class WUWTest(object):
 
         for i, device in enumerate(devices):
             if((device['name'] == self.output_device) and (hostapis[device['hostapi']]['name'] ==self.windows_sound_host) ):
-                #print(f"{i}: {device['name']}")
+                print(f"{i}: {device['name']}")
                 output_device_index = i
             if(device['name'] == self.input_device and (hostapis[device['hostapi']]['name'] ==self.windows_sound_host)):
-                #print(f"{i}: {device['name']}")
+                print(f"{i}: {device['name']}")
                 input_device_index=i
 
         # Set the default devices
