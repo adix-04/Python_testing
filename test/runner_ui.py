@@ -37,16 +37,16 @@ class KPIMeas_GUI(QWidget):
     def initUI(self):  
         self.main_layout = QVBoxLayout()  
 
-        self.cate_label = QLabel("Select Test Category:")  
-        self.main_layout.addWidget(self.cate_label) 
+        # self.cate_label = QLabel("Select Test Category:")  
+        # self.main_layout.addWidget(self.cate_label) 
 
         self.cate_combo = QComboBox()  
         self.cate_combo.addItem("FRR Test")  
         self.cate_combo.addItem("FAR Test (ACA ONLY)")  
         self.main_layout.addWidget(self.cate_combo)  
   
-        self.tech_label = QLabel("Select Tech Stack:")  
-        self.main_layout.addWidget(self.tech_label)  
+        # self.tech_label = QLabel("Select Tech Stack:")  
+        # self.main_layout.addWidget(self.tech_label)  
 
         self.tech_combo = QComboBox()  
         self.tech_combo.addItem("Cerence")  
@@ -54,8 +54,8 @@ class KPIMeas_GUI(QWidget):
         self.tech_combo.addItem("LBCA") 
         self.main_layout.addWidget(self.tech_combo)  
 
-        self.zone_choose = QLabel("Test with SeatZone features?")  
-        self.main_layout.addWidget(self.zone_choose)
+        # self.zone_choose = QLabel("Test with SeatZone features?")  
+        # self.main_layout.addWidget(self.zone_choose)
         self.trueSeatZone = QRadioButton("Yes (ACA ONLY)")
         self.falseSeatZone = QRadioButton("No")
         self.main_layout.addWidget(self.falseSeatZone)  
@@ -63,8 +63,8 @@ class KPIMeas_GUI(QWidget):
         self.main_layout.addWidget(self.trueSeatZone)  
 
 
-        self.zone_mic = QLabel("Select MIC:")  
-        self.main_layout.addWidget(self.zone_mic)
+        # self.zone_mic = QLabel("Select MIC:")  
+        # self.main_layout.addWidget(self.zone_mic)
         self.zone_mic = QComboBox()  
         self.zone_mic.addItem("FRONT_LEFT")  
         self.zone_mic.addItem("FRONT_RIGHT") 
