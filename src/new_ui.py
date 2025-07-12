@@ -76,7 +76,7 @@ QPushButton:hover {
 }
 '''     
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1000, 500)
+        MainWindow.resize(1100, 600)
         MainWindow.setMinimumSize(QtCore.QSize(1000, 500))
         MainWindow.setStyleSheet("background-color: #241A42;")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -136,8 +136,8 @@ QPushButton:hover {
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.frame_left_menu = QtWidgets.QFrame(self.Content)
-        self.frame_left_menu.setMinimumSize(QtCore.QSize(130, 0))
-        self.frame_left_menu.setMaximumSize(QtCore.QSize(130, 16777215))
+        self.frame_left_menu.setMinimumSize(QtCore.QSize(150, 0))
+        self.frame_left_menu.setMaximumSize(QtCore.QSize(150, 16777215))
         # self.frame_left_menu.setStyleSheet("background-color:    rgb(35, 35, 35);")
         self.frame_left_menu.setStyleSheet("background-color: #272757;")
         self.frame_left_menu.setFrameShape(QtWidgets.QFrame.StyledPanel)

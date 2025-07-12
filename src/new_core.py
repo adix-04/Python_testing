@@ -19,61 +19,59 @@ class Main_utils_page(QWidget):
         self.page = self.main_page()
        
     def main_page(self):
-        page = QWidget()
-        main_layout = QVBoxLayout()
-        grid_layout = QGridLayout()
-        grid_layout.setSpacing(20)
-        # List of EXE paths and names
-        for i in range(6):
-            card = self.create_card(i)
-            row = i // 3
-            col = i % 3
-            grid_layout.addWidget(card, row, col)
-        main_layout.addLayout(grid_layout)
+        page = self.create_card()
+        main_layout = QHBoxLayout()
+        main_layout.addWidget(page)
         page.setLayout(main_layout)
         return page 
     
-    def create_card(self, i):
+    def create_card(self):
         card = QFrame()
         card.setFrameShape(QFrame.StyledPanel)
         card.setStyleSheet("background-color: #272757; border-radius: 12px; padding: 2px;")
         vbox = QVBoxLayout()
         vbox.setSpacing(10)
 
-        label = QLabel(f"Task {i+1}")
+        label = QLabel(f" Schdule a Task")
         label.setStyleSheet("color: white; font-weight: bold;")
         label.setAlignment(Qt.AlignCenter)
     
         exe_path_edit = QLineEdit()
-        exe_path_edit.setPlaceholderText("Path to EXE")
+        exe_path_edit.setPlaceholderText("Path to excel file")
         exe_path_edit.setStyleSheet(my_style)
 
         browse_btn = QPushButton("Browse")
         browse_btn.setStyleSheet(my_style)
         browse_btn.setMaximumWidth(80)
-        browse_btn.clicked.connect(lambda: exe_path_edit.setText(QFileDialog.getOpenFileName(None, "Select EXE", "", "Executable Files (*.exe)")[0]))
-        
+        browse_btn.clicked.connect(lambda: exe_path_edit.setText(QFileDialog.getOpenFileName(None, "Select EXE", "", "Executable Files (*.xlsx)")[0]))
+         
+        ip_add_path = QLineEdit()
+        ip_add_path.setPlaceholderText("enter mcu ip address")
+        ip_add_path.setStyleSheet(my_style)
+
+
+
         time_input = QLineEdit()
         time_input.setStyleSheet(my_style)
         time_input.setPlaceholderText("HH:MM (e.g., 14:30)")
         c = QLineEdit()
         c.setStyleSheet(my_style)
         c.setPlaceholderText("HH:MM (e.g., 14:30)")
-    
         schedule_btn = QPushButton("Schedule")
         schedule_btn.setStyleSheet(my_style)
         schedule_btn.setMaximumWidth(80)
         schedule_btn.clicked.connect(lambda: self.create_and_schedule_task(
             exe_path_edit.text(),
-            f"MyApp_Task_{i+1}",
+            f"MyApp_Task_",
             time_input.text()
         ))
+
         vbox.addWidget(label)
         vbox.addWidget(exe_path_edit)
         vbox.addWidget(browse_btn)
+        vbox.addWidget(ip_add_path)
         vbox.addWidget(time_input)
         vbox.addWidget(schedule_btn)
-
         card.setLayout(vbox)
         return card
     

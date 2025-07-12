@@ -98,8 +98,6 @@ class WuWTest(object):
             voice_type = row['Gender']
             lang_from_excel = row['Language']
 
-            if self.Lang != lang_from_excel:
-                continue
             if utterance:
                 try:
                     print(f"Generating TTS for: {utterance}")
@@ -142,16 +140,15 @@ class WuWTest(object):
       except Exception as e:
         print(f"Error during speak_utterance: {e}")
 
-
-
-
     def realtime_far_analyse(self,hitCount,stop_event):
+        print("real time far check")
         log_file=f"{self.outDIr}/Target_log_WUW_FAR_Test.txt"
         columns = ['WUW','Shown on HMI','Selected MIC','Correct MIC?','Highest ranked MIC',  
                     'Ranking','Confidence','Standard Deviation','Conf.+StdDev','Avg(Conf.+StdDev)','GeoAvg(Conf, StdDev)',
                     'Other detected MIC', 'Ranking2', 'Confidence2', 'Standard Deviation2','Conf.+StdDev2','Avg(Conf.+StdDev)2','GeoAvg(Conf, StdDev)2']
         df = pd.DataFrame(columns=columns)
         with open(log_file, "w", encoding='ISO-8859-1') as file:
+          print("opening logcat for device")
         #   process = subprocess.Popen(["adb", "-s", self.mcuIp, "logcat"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, bufsize=1, encoding='ISO-8859-1')
           process = subprocess.Popen(["adb" , "-s" ,"J7S8WCZTROEQ8L9D", "logcat"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, bufsize=1, encoding='ISO-8859-1')
           temp_data = {}
@@ -160,9 +157,7 @@ class WuWTest(object):
             file.writelines(f"{line}\n")
             file.flush()
             # if "SpeechRecognizerEngineImpl" in line and "newState=LISTENING" in line:
-            if "GoogleRecognizer" in line and "listening" in line:
-
-                    print("speech reco is on boi")
+            if "Speech" in line :
                     if temp_data:
                         df.loc[len(df)] = [
                             temp_data.get('WUW', ''),
@@ -224,6 +219,7 @@ class WuWTest(object):
                     hitCount[0] += 1
         process.terminate()
         if temp_data:
+            print("temp data is true")
             df.loc[len(df)] = [
                 temp_data.get('WUW', ''),
                 temp_data.get('Shown on HMI', False),
