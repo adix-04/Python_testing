@@ -23,6 +23,7 @@ import time as t
 import utils
 from new_core import Main_utils_page
 from device_card import DeviceCard
+from rack_control_ui import Main_rack_page
 DEVICE_FILE = "devices.json"
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -169,7 +170,7 @@ QPushButton:hover {
         self.btn_sttings_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_sttings_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_sttings_page.setStyleSheet(self.btn_sheet)
-        self.btn_sttings_page.setObjectName("btn_sttings_page")
+        self.btn_sttings_page.setObjectName("Rack_sttings_page")
         self.btn_sttings_page.setIcon(QIcon('src/assets/settings.svg'))
 
         self.btn_general_page = QtWidgets.QPushButton(self.frame_top_menus)
@@ -200,10 +201,12 @@ QPushButton:hover {
         self.page2 = self.add_page()
         self.page3 = self.sched_page()
         self.page4 = self.use_page()
+        self.page5 = self.rack_page()
         self.stackedWidget.addWidget(self.page1)
         self.stackedWidget.addWidget(self.page2)
         self.stackedWidget.addWidget(self.page3)
         self.stackedWidget.addWidget(self.page4)
+        self.stackedWidget.addWidget(self.page5)
         self.verticalLayout_5.addWidget(self.stackedWidget)
         self.horizontalLayout_2.addWidget(self.frame_pages)
         self.verticalLayout.addWidget(self.Content)
@@ -215,7 +218,16 @@ QPushButton:hover {
         self.btn_new_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page2))
         self.btn_sched_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page3))
         self.btn_general_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page4))
-# home page        
+        self.btn_sttings_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page5))
+# home page 
+    def rack_page(self):
+        page = QWidget()
+        h_box = QHBoxLayout()
+        self.card = Main_rack_page().page
+        h_box.addWidget(self.card)
+        page.setLayout(h_box)
+        return page
+
     def home_page(self):
         print("home page")
         page = QWidget()
