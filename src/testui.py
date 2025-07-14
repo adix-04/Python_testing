@@ -13,7 +13,7 @@ import platform
 import time as t
 import pyttsx3
 import TTS_main
-import new_core
+
 
 cols = [0]
 filename = ''

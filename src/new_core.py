@@ -26,20 +26,19 @@ class Main_utils_page(QWidget):
         main_layout.addWidget(page)
         page.setLayout(main_layout)
         return page 
-        return page 
     
     def create_card(self):
-        card = QFrame()
-        card.setFrameShape(QFrame.StyledPanel)
+        card = QWidget()
+        # card.setFrameShape(QFrame.StyledPanel)
         card.setStyleSheet("background-color: #272757; border-radius: 12px; padding: 2px;")
         vbox = QVBoxLayout()
-        vbox.setAlignment(Qt.AlignCenter)
+        vbox.setAlignment(Qt.AlignRight)
         vbox.setSpacing(10)
 
-        label = QLabel(f"Task")
+        label = QLabel(f"Start A Task or Schdule One ")
         label.setStyleSheet("color: white; font-weight: bold;")
         label.setAlignment(Qt.AlignCenter)
-    
+
         exe_path_edit = QLineEdit()
         exe_path_edit.setPlaceholderText("Path to Excel")
         exe_path_edit.setStyleSheet(my_style)
@@ -47,7 +46,7 @@ class Main_utils_page(QWidget):
         browse_btn = QPushButton("Browse")
         browse_btn.setStyleSheet(my_style)
         browse_btn.setMaximumWidth(80)
-        browse_btn.clicked.connect(lambda: exe_path_edit.setText(QFileDialog.getOpenFileName(None, "Select Excel", "", "Executable Files (*.xlsx)")[0]))
+        browse_btn.clicked.connect(lambda: exe_path_edit.setText(QFileDialog.getOpenFileName(None, "Select Excel", "", "Excel Files (*.xlsx)")[0]))
 
         log_path_edit = QLineEdit()
         log_path_edit.setPlaceholderText("Path to Log folder")
@@ -61,6 +60,15 @@ class Main_utils_page(QWidget):
         ip_path_edit = QLineEdit()
         ip_path_edit.setPlaceholderText("ip address")
         ip_path_edit.setStyleSheet(my_style)
+
+        fp_path_edit = QLineEdit()
+        fp_path_edit.setPlaceholderText("Project file for DLT ECU Conf")
+        fp_path_edit.setStyleSheet(my_style)
+
+        fp_browse_btn = QPushButton("Browse")
+        fp_browse_btn.setStyleSheet(my_style)
+        fp_browse_btn.setMaximumWidth(80)
+        fp_browse_btn.clicked.connect(lambda: fp_path_edit.setText(QFileDialog.getOpenFileName(None, "Select Excel", "", "DLP Files (*.DLP)")[0]))
 
         time_input = QLineEdit()
         time_input.setStyleSheet(my_style)
@@ -76,7 +84,8 @@ class Main_utils_page(QWidget):
         test_btn.clicked.connect(lambda: Test_begin(
             mcu_ip=ip_path_edit.text(),
             input_excel=exe_path_edit.text(),
-            directory=log_path_edit.text()
+            directory=log_path_edit.text(),
+            dlp_file=fp_path_edit.text()
         ))
         schedule_btn = QPushButton("Schedule")
         schedule_btn.setStyleSheet(my_style)
@@ -92,6 +101,8 @@ class Main_utils_page(QWidget):
         vbox.addWidget(browse_btn)
         vbox.addWidget(log_path_edit)
         vbox.addWidget(log_browse_btn)
+        vbox.addWidget(fp_path_edit)
+        vbox.addWidget(fp_browse_btn)
         vbox.addWidget(time_input)
         vbox.addWidget(test_btn)
         vbox.addWidget(schedule_btn)

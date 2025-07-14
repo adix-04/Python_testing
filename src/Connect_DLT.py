@@ -2,6 +2,8 @@ import os
 import glob
 import subprocess
 import time as t
+import getpass
+from datetime import datetime
 
 class Connet_DLT_class():
 
@@ -9,33 +11,32 @@ class Connet_DLT_class():
     val_path=""
     bool_dlt_status=True
 
-    def __init__(self,file_path,val,project_file):
+    def __init__(self,file_path,project_file,output_dir):
+        self.outDIR = output_dir
+        self.dlp = project_file
+        self.file_path = file_path
+        print(self.file_path)
+        self.cleaner()
+       
+
+    def cleaner(self):
         try:
-            if  os.listdir(file_path):
-                self.project_file_in_class=project_file
-                self.val_path=val
-                self.remove_cache_files(file_path)
-                # empty the local dir of DLT
+            if os.listdir(self.file_path):
+                # self.project_file_in_class=self.project_file
+                self.remove_cache_files(self.file_path)
             else:
-                print(val)
-                print(project_file)
+                print(self.project_file)
                 print("no files in cahce")
-                self.start_dlt(project_file,val)
-                #no files in DLT cache 
-                pass
-            
-        except:
-            print("error to del file")
+                pass 
+        except Exception as e:
+            print(e)
     
     
-    def start_dlt(self,project_file,val):
+    def start_dlt(self):
         print("called")
-        # start_dlt_theard.start_DLT_with_prg()
-        process = subprocess.Popen([str(val),"-s","-p",str(project_file)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        #This will be called from TTS main
+        process = subprocess.Popen(["dlt_viewer","-s","-p",str(self.dlp)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         print("DLT is opened")
-        t.sleep(2)
-        subprocess.call(["taskkill", "/F", "/IM", "dlt_viewer.exe"])
-        pass
 
     def remove_cache_files(self,file_path):
         print("remover")
@@ -43,17 +44,35 @@ class Connet_DLT_class():
             files=glob.glob(os.path.join(file_path,"*"))
             for f in files:
                 os.remove(f)
-            self.start_dlt(self.project_file_in_class,self.val_path)
                  
         except Exception as e:
             print(e)
             print("error in clear DLT from cache")
 
+    def convert_dlt_log_text(self):
+        temp_file = os.listdir(self.file_path)
+        print(temp_file[0])
+        try:
+        
+         process = subprocess.run(["dlt_viewer","-c",f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache/{temp_file[0]}',f'{self.outDIR}/traceLog.txt{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+         
+        except Exception as e:
+             print(e)
+       
+
+    def stop_dlt(self):
+        subprocess.call(["taskkill", "/F", "/IM", "dlt_viewer.exe"])
+        pass
+
             
         
-
-# test="val"
-# connect_dlt_test=Connet_DLT("C:/Users/jithin.sreekala/AppData/Local/dlt_viewer/cache","C:/Users/jithin.sreekala/Downloads/release/release/dlt_viewer","C:/Users/jithin.sreekala/Downloads/release/release/file_DLT.dlp")
+if __name__ == "__main__":
+    test="val"
+    connect_dlt_test=Connet_DLT_class("C:/Users/jithin.sreekala/AppData/Local/dlt_viewer/cache","C:/Users/jithin.sreekala/Downloads/release/release/file_DLT.dlp")
+    connect_dlt_test.start_dlt()
+    t.sleep(10)
+    connect_dlt_test.stop_dlt()
+    connect_dlt_test.convert_dlt_log_text("C:/Users/jithin.sreekala/AppData/Local/dlt_viewer/cache")
 
 
 
