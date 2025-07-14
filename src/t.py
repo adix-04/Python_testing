@@ -26,7 +26,7 @@ class Rack_main():
         ser.close() 
         print("serial is up") # Important: Close after testing
         return True
-    except serial.SerialException:
+    except Exception:
         return False
  def func_stop_clamps(self):
     print("start clmaps")
@@ -37,6 +37,7 @@ class Rack_main():
     print("start clmaps")
     for x in clamps[:-2]:
         self.func_clamps_action(self.ser,x, "START")
+ 
 
  def rack_main(self):
     if self.check_serial():
@@ -45,30 +46,35 @@ class Rack_main():
         sleep(0.1)
         if args.check_clamps is True:
             for x in clamps:
-             self.func_clamps_action(ser,x, "STATUS")
+             self.func_clamps_action(self.ser,x, "STATUS")
         if args.check_firmware is True:
-            self.func_clamps_action(ser,args.check_firmware, "FIRMWARE")
+            self.func_clamps_action(self.ser,args.check_firmware, "FIRMWARE")
 
         if args.turn_on in clamps:
-            self.func_clamps_action(ser,args.turn_on, "ON")
+            self.func_clamps_action(self.ser,args.turn_on, "ON")
 
         if args.turn_off in clamps:
-            self.func_clamps_action(ser,args.turn_off, "OFF")
+            self.func_clamps_action(self.ser,args.turn_off, "OFF")
 
         if args.restart in clamps:
-            self.func_clamps_action(ser,args.restart, "RESTART")
+            self.func_clamps_action(self.ser,args.restart, "RESTART")
 
         if args.start_clamps is True:
             self.func_start_clamps()
             
         if args.shutdown_clamps is True:
              self.func_restart_clamps()   
-        ser.close()
-     except serial.SerialException:
+        self.ser.close()
+     except Exception:
         print ("Can't open port: " + args.port)
     else :
         print("no COM PORTS")
         pass
+   def mute(self):
+        print("called from ui")
+        cmd = on.get(clamps[4] , -1)
+        self.ser.write(cmd.encode() + b'\n')
+        print(cmd)
  def func_clamps_action(self,ser,clamp, status_clamp):
     print (clamp)
     print (status)
@@ -113,7 +119,7 @@ class Rack_main():
         else:
             status_clamps_text = "OFF"
         print("Clamp " + clamp + " status: " + status_clamps_text)
-
+'''
 if __name__ == "__main__":
     try:
         serial_port = args.port
@@ -151,3 +157,4 @@ if __name__ == "__main__":
 
     except serial.SerialException:
         print ("Can't open port: " + args.port)
+'''

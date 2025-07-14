@@ -17,6 +17,7 @@ class Main_rack_page(QWidget):
         self.rack = Rack_main()
         self.rack.rack_main()       
         self.page = self.main_page()
+        # self.rack.mute()
     def main_page(self):
         page = self.create_card()
         main_layout = QHBoxLayout()
@@ -25,7 +26,7 @@ class Main_rack_page(QWidget):
         page.setLayout(main_layout)
         return page 
        
-    
+
     def create_card(self):
         card = QFrame()
         card.setFrameShape(QFrame.StyledPanel)
@@ -37,29 +38,30 @@ class Main_rack_page(QWidget):
         vbox.setAlignment(Qt.AlignCenter)
         vbox.setSpacing(10)
 
-        browse_btn = QPushButton("Shut Down Clamps")
-        browse_btn.setStyleSheet(my_style)
-        browse_btn.setMinimumSize(100,100)
-        browse_btn.clicked.connect(self.rack.func_stop_clamps)
+        self.browse_btn = QPushButton("Shut Down Clamps")
+        self.browse_btn.setStyleSheet(my_style)
+        self.browse_btn.setMinimumSize(100,100)
+        self.browse_btn.clicked.connect(self.rack.func_stop_clamps)
 
-        log_browse_btn = QPushButton("Start all Clamps")
-        log_browse_btn.setStyleSheet(my_style)
-        log_browse_btn.setMinimumSize(100,100)
-        log_browse_btn.clicked.connect(self.rack.func_start_clamps)
+        self.log_browse_btn = QPushButton("Start all Clamps")
+        self.log_browse_btn.setStyleSheet(my_style)
+        self.log_browse_btn.setMinimumSize(100,100)
+        self.log_browse_btn.clicked.connect(self.rack.func_start_clamps)
     
-        test_btn = QPushButton("start test")
-        test_btn.setStyleSheet(my_style)
-        test_btn.setMinimumSize(100,100)
+        self.test_btn = QPushButton("start test")
+        self.test_btn.setStyleSheet(my_style)
+        self.test_btn.setMinimumSize(100,100)
+        self.test_btn.clicked.connect(self.rack.mute)
       
         schedule_btn = QPushButton("Schedule")
         schedule_btn.setStyleSheet(my_style)
         schedule_btn.setMinimumSize(100,100)
        
 
-        fHbox.addWidget(browse_btn)
-        fHbox.addWidget(log_browse_btn)
+        fHbox.addWidget(self.browse_btn)
+        fHbox.addWidget(self.log_browse_btn)
 
-        sHbox.addWidget(test_btn)
+        sHbox.addWidget(self.test_btn)
         sHbox.addWidget(schedule_btn)
 
         vbox.addLayout(fHbox)
