@@ -5,28 +5,34 @@ import os
 import pandas as pd
 from gtts import gTTS
 from pydub.playback import play
-import numpy as np
-import io 
+import getpass
+import pyttsx3
 from pydub import AudioSegment
 import threading
 import time as time 
 import re
 from datetime import datetime
+from Connect_DLT import Connet_DLT_class
+
 
 class Test_begin(object):
-    def __init__(self,mcu_ip,input_excel,directory):
+    def __init__(self,mcu_ip,input_excel,directory,dlp_file):
         self.mcuIp = mcu_ip
         self.inputExcel = input_excel
         self.outputExcel = f"Test_run_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
         self.Lang = 'en'
         self.numIters = 5
         self.outDIr = directory
+        # self.outDIr = self.outDIr + f"/Test_run_on_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
         self.command_wait_deviceStart="wait-for-device"
         self.report_excel_file = "output_from_test_run.xlsx"
-
         self.report_excel_file = self.outDIr + self.report_excel_file
-
+        self.dlp = dlp_file
+       
+        self.cache = f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache'
         self.audioDir = 'audio'
+
+        self.dlt = Connet_DLT_class(self.cache,self.dlp,self.outDIr)
 
         logging.basicConfig(
                 filename=f"{self.outDIr}/overall_log.txt",  
@@ -54,21 +60,21 @@ class Test_begin(object):
         logging.info("Starting the WUW test run...")
         logging.info(f"The language now tested is {self.Lang}")
         adb_result=self.run_adb_command(f"connect {self.mcuIp}")
-        adb_result=self.run_adb_command(self.command_wait_deviceStart)
-        print("after adb connect call")
-        logging.info(adb_result)
-        for i in range(3):
-            result=subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            if result.returncode != 0:
-                logging.error(f"adb command for devices failed, please check the error: {result.stderr.decode('utf-8')}")
-                raise Exception(f'adb command failed failed: {result.stderr.decode("utf-8")}')
-            if self.mcuIp in result.stdout.decode("utf-8"):
-                logging.info(" the device is identified and adb can work")
-                device_started=True
-                break
-            else:
-                logging.error(f"The device is not identified , see the error: {result} ")
-                print("device not found")
+        # adb_result=self.run_adb_command(self.command_wait_deviceStart)
+        # print("after adb connect call")
+        # logging.info(adb_result)
+        # for i in range(3):
+        #     result=subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #     if result.returncode != 0:
+        #         logging.error(f"adb command for devices failed, please check the error: {result.stderr.decode('utf-8')}")
+        #         raise Exception(f'adb command failed failed: {result.stderr.decode("utf-8")}')
+        #     if self.mcuIp in result.stdout.decode("utf-8"):
+        #         logging.info(" the device is identified and adb can work")
+        #         device_started=True
+        #         break
+        #     else:
+        #         logging.error(f"The device is not identified , see the error: {result} ")
+        #         print("device not found")
         # logging.info("Now setting the audio outdevices")
         if self.inputExcel != None:
           self.loadutterances(logging)
@@ -102,38 +108,44 @@ class Test_begin(object):
             voice_type = row['Gender']
             lang_from_excel = row['Language']
 
-            if self.Lang != lang_from_excel:
-                continue
             if utterance:
                 try:
                     print(f"Generating TTS for: {utterance}")
+                    self.tts(text='Hey Mini!')
                     self.speak_utterance(text=utterance)
                     print(f"Played utterance {utterance}")
-
                 except Exception as e:
                     print(e)
         print("tada aaaaaaaaaaaaaaaaaaaaa")
+    def tts(self,text):
+        engine = pyttsx3.init()
+        engine.setProperty("rate", 150)
+        voices = engine.getProperty('voices')
+        engine.setProperty('voice', voices[1].id)
+        engine.say(text)
+        engine.runAndWait()
     def speak_utterance(self, text, lang="en"):
         # Start log collection thread
+        self.dlt.cleaner()
         stop_event = threading.Event()
         hitCount = [0]  # Mutable counter to collect hit info
-        log_thread = threading.Thread(target=self.realtime_far_analyse, args=(hitCount, stop_event))
+        log_thread = threading.Thread(target=self.dlt.start_dlt)
         log_thread.start()
-
+        time.sleep(2)
         print(f"🔊 Speaking: {text}")
-        tts = gTTS(text=text, lang=lang, slow=False)
-        mp3_fp = io.BytesIO()
-        tts.write_to_fp(mp3_fp)
-        mp3_fp.seek(0)
-        audio = AudioSegment.from_file(mp3_fp, format="mp3")
-        # Play the audio (this blocks until playback finishes)
-        play(audio)
+        self.tts(text)
         logging.info(f"Played utterance: {text}")
         # Give a buffer after playback ends (to allow logs to come in)
-        time.sleep(2)
-        # Stop log collection
+        time.sleep(10)
+        #Stop log collection
         stop_event.set()
         log_thread.join()
+
+        self.dlt.stop_dlt()
+        self.dlt.convert_dlt_log_text()
+
+        print("Gonna call the main thing here")
+        time.sleep(1)
         logging.info(f"✅ Done with utterance '{text}'. Detected {hitCount[0]} WUWs.")
         print(f"[+] Done with utterance '{text}'. Detected {hitCount[0]} WUWs.")
 

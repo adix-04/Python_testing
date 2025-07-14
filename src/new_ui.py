@@ -487,12 +487,12 @@ QPushButton:hover {
     
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        self.btn_new_page.setText(_translate("MainWindow", "Add a Dev€ice"))
+        self.btn_new_page.setText(_translate("MainWindow", "Add a Device"))
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.btn_home_page.setText(_translate("MainWindow", "Home"))
         self.btn_sttings_page.setText(_translate("MainWindow", "Settings"))
         self.btn_general_page.setText(_translate("MainWindow", " TTS Speech"))
-        self.btn_sched_page.setText(_translate('MainWindow','Scheduler'))
+        self.btn_sched_page.setText(_translate('MainWindow','Test/Schedule'))
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
