@@ -1,4 +1,4 @@
-cd # styles.py
+# styles.py
 
 my_style = """
 QLineEdit {
