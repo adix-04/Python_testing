@@ -38,11 +38,7 @@ class Rack_main():
     for x in clamps[:-2]:
         self.func_clamps_action(self.ser,x, "START")
  
- def mute(self):
-        print("called from ui")
-        cmd = on.get(clamps[4] , -1)
-        self.ser.write(cmd.encode() + b'\n')
-        print(cmd)
+
  def rack_main(self):
     if self.check_serial():
      try:
@@ -74,7 +70,11 @@ class Rack_main():
     else :
         print("no COM PORTS")
         pass
-  
+    def mute(self):
+        print("called from ui")
+        cmd = on.get(clamps[4] , -1)
+        self.ser.write(cmd.encode() + b'\n')
+        print(cmd)
  def func_clamps_action(self,ser,clamp, status_clamp):
     print (clamp)
     print (status)

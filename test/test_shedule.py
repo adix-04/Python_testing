@@ -15,7 +15,12 @@
 #     schedule.run_pending()
 #     time.sleep(1)
 
-import getpass
+import pyttsx3
 
-user = getpass.getuser()
-print(user)
+engine = pyttsx3.init()
+
+for voice in engine.getProperty('voices'):
+    print(voice)
+
+engine.say("regnet es am zielort")
+engine.runAndWait()

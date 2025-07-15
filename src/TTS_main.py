@@ -13,7 +13,7 @@ import time as time
 import re
 from datetime import datetime
 from Connect_DLT import Connet_DLT_class
-
+import utils
 
 class Test_begin(object):
     def __init__(self,mcu_ip,input_excel,directory,dlp_file):
@@ -34,6 +34,7 @@ class Test_begin(object):
 
         self.dlt = Connet_DLT_class(self.cache,self.dlp,self.outDIr)
 
+        self.utils = utils.tts_main()
         logging.basicConfig(
                 filename=f"{self.outDIr}/overall_log.txt",  
                 filemode="w",  # if file exist, clear it then open and write
@@ -61,21 +62,21 @@ class Test_begin(object):
         logging.info(f"The language now tested is {self.Lang}")
         adb_result=self.run_adb_command(f"connect {self.mcuIp}")
         # adb_result=self.run_adb_command(self.command_wait_deviceStart)
-        # print("after adb connect call")
-        # logging.info(adb_result)
-        # for i in range(3):
-        #     result=subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #     if result.returncode != 0:
-        #         logging.error(f"adb command for devices failed, please check the error: {result.stderr.decode('utf-8')}")
-        #         raise Exception(f'adb command failed failed: {result.stderr.decode("utf-8")}')
-        #     if self.mcuIp in result.stdout.decode("utf-8"):
-        #         logging.info(" the device is identified and adb can work")
-        #         device_started=True
-        #         break
-        #     else:
-        #         logging.error(f"The device is not identified , see the error: {result} ")
-        #         print("device not found")
-        # logging.info("Now setting the audio outdevices")
+        print("after adb connect call")
+        logging.info(adb_result)
+        for i in range(3):
+            result=subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if result.returncode != 0:
+                logging.error(f"adb command for devices failed, please check the error: {result.stderr.decode('utf-8')}")
+                raise Exception(f'adb command failed failed: {result.stderr.decode("utf-8")}')
+            if self.mcuIp in result.stdout.decode("utf-8"):
+                logging.info(" the device is identified and adb can work")
+                device_started=True
+                break
+            else:
+                logging.error(f"The device is not identified , see the error: {result} ")
+                print("device not found")
+        logging.info("Now setting the audio outdevices")
         if self.inputExcel != None:
           self.loadutterances(logging)
 
@@ -104,19 +105,20 @@ class Test_begin(object):
         print(df)
     
         for index, row in df.iterrows():
-            utterance = row['Utterance']
-            voice_type = row['Gender']
-            lang_from_excel = row['Language']
+            utterance = row['Utterances']
+            # voice_type = row['Gender']
+            # lang_from_excel = row['Language']
 
             if utterance:
                 try:
                     print(f"Generating TTS for: {utterance}")
-                    self.tts(text='Hey Mini!')
+                    
                     self.speak_utterance(text=utterance)
                     print(f"Played utterance {utterance}")
                 except Exception as e:
                     print(e)
-        print("tada aaaaaaaaaaaaaaaaaaaaa")
+        self.utils.warn(mesg="പരിശോധന പൂർത്തിയായി🤖 ")
+    
     def tts(self,text):
         engine = pyttsx3.init()
         engine.setProperty("rate", 150)
@@ -124,14 +126,18 @@ class Test_begin(object):
         engine.setProperty('voice', voices[1].id)
         engine.say(text)
         engine.runAndWait()
+
     def speak_utterance(self, text, lang="en"):
-        # Start log collection thread
+        self.run_adb_command('shell input keyevent KEYCODE_HOME')
+        # Start log collection thread and also do a clean up
         self.dlt.cleaner()
         stop_event = threading.Event()
         hitCount = [0]  # Mutable counter to collect hit info
         log_thread = threading.Thread(target=self.dlt.start_dlt)
         log_thread.start()
-        time.sleep(2)
+        time.sleep(1)
+        # self.tts(text='Hey Mini!')
+        self.run_adb_command('shell cmd car_service inject-custom-input 1012;sleep 0.2; cmd car_service inject-custom-input 1013')
         print(f"🔊 Speaking: {text}")
         self.tts(text)
         logging.info(f"Played utterance: {text}")
@@ -142,12 +148,16 @@ class Test_begin(object):
         log_thread.join()
 
         self.dlt.stop_dlt()
+
         self.dlt.convert_dlt_log_text()
 
-        print("Gonna call the main thing here")
+        self.dlt.check(uttearnce=text)
+
+
+        # print("Gonna call the main thing here")
         time.sleep(1)
-        logging.info(f"✅ Done with utterance '{text}'. Detected {hitCount[0]} WUWs.")
-        print(f"[+] Done with utterance '{text}'. Detected {hitCount[0]} WUWs.")
+        logging.info(f"✅ Done with utterance '{text}'")
+        print(f"[+] Done with utterance '{text}'")
 
 
     def realtime_far_analyse(self,hitCount,stop_event):

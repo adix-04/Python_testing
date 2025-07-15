@@ -4,6 +4,7 @@ import subprocess
 import time as t
 import getpass
 from datetime import datetime
+import Get_data_from_DLT
 
 class Connet_DLT_class():
 
@@ -15,6 +16,7 @@ class Connet_DLT_class():
         self.outDIR = output_dir
         self.dlp = project_file
         self.file_path = file_path
+        self.file_name =''
         print(self.file_path)
         self.cleaner()
        
@@ -53,14 +55,20 @@ class Connet_DLT_class():
         temp_file = os.listdir(self.file_path)
         print(temp_file[0])
         try:
+
+         self.file_name=f'{self.outDIR}/traceLog.txt{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}'
+         process = subprocess.run(["dlt_viewer","-c",f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache/{temp_file[0]}',self.file_name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         
-         process = subprocess.run(["dlt_viewer","-c",f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache/{temp_file[0]}',f'{self.outDIR}/traceLog.txt{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
          
         except Exception as e:
              print(e)
        
 
+    def check(self,uttearnce):
+         Get_data_from_DLT.Get_data(self.file_name,utterance=uttearnce)
+
     def stop_dlt(self):
+
         subprocess.call(["taskkill", "/F", "/IM", "dlt_viewer.exe"])
         pass
 
