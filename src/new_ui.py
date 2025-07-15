@@ -23,6 +23,7 @@ import time as t
 import utils
 from new_core import Main_utils_page
 from device_card import DeviceCard
+from rack_control_ui import Main_rack_page
 DEVICE_FILE = "devices.json"
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -76,7 +77,7 @@ QPushButton:hover {
 }
 '''     
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1000, 500)
+        MainWindow.resize(1100, 600)
         MainWindow.setMinimumSize(QtCore.QSize(1000, 500))
         MainWindow.setStyleSheet("background-color: #241A42;")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -136,8 +137,8 @@ QPushButton:hover {
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.frame_left_menu = QtWidgets.QFrame(self.Content)
-        self.frame_left_menu.setMinimumSize(QtCore.QSize(130, 0))
-        self.frame_left_menu.setMaximumSize(QtCore.QSize(130, 16777215))
+        self.frame_left_menu.setMinimumSize(QtCore.QSize(150, 0))
+        self.frame_left_menu.setMaximumSize(QtCore.QSize(150, 16777215))
         # self.frame_left_menu.setStyleSheet("background-color:    rgb(35, 35, 35);")
         self.frame_left_menu.setStyleSheet("background-color: #272757;")
         self.frame_left_menu.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -169,7 +170,7 @@ QPushButton:hover {
         self.btn_sttings_page = QtWidgets.QPushButton(self.frame_top_menus)
         self.btn_sttings_page.setMinimumSize(QtCore.QSize(0, 40))
         self.btn_sttings_page.setStyleSheet(self.btn_sheet)
-        self.btn_sttings_page.setObjectName("btn_sttings_page")
+        self.btn_sttings_page.setObjectName("Rack_sttings_page")
         self.btn_sttings_page.setIcon(QIcon('src/assets/settings.svg'))
 
         self.btn_general_page = QtWidgets.QPushButton(self.frame_top_menus)
@@ -200,10 +201,12 @@ QPushButton:hover {
         self.page2 = self.add_page()
         self.page3 = self.sched_page()
         self.page4 = self.use_page()
+        self.page5 = self.rack_page()
         self.stackedWidget.addWidget(self.page1)
         self.stackedWidget.addWidget(self.page2)
         self.stackedWidget.addWidget(self.page3)
         self.stackedWidget.addWidget(self.page4)
+        self.stackedWidget.addWidget(self.page5)
         self.verticalLayout_5.addWidget(self.stackedWidget)
         self.horizontalLayout_2.addWidget(self.frame_pages)
         self.verticalLayout.addWidget(self.Content)
@@ -215,7 +218,16 @@ QPushButton:hover {
         self.btn_new_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page2))
         self.btn_sched_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page3))
         self.btn_general_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page4))
-# home page        
+        self.btn_sttings_page.clicked.connect(lambda:self.stackedWidget.setCurrentWidget(self.page5))
+# home page 
+    def rack_page(self):
+        page = QWidget()
+        h_box = QHBoxLayout()
+        self.card = Main_rack_page().page
+        h_box.addWidget(self.card)
+        page.setLayout(h_box)
+        return page
+
     def home_page(self):
         print("home page")
         page = QWidget()
@@ -475,12 +487,12 @@ QPushButton:hover {
     
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        self.btn_new_page.setText(_translate("MainWindow", "Add a Dev€ice"))
+        self.btn_new_page.setText(_translate("MainWindow", "Add a Device"))
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.btn_home_page.setText(_translate("MainWindow", "Home"))
         self.btn_sttings_page.setText(_translate("MainWindow", "Settings"))
         self.btn_general_page.setText(_translate("MainWindow", " TTS Speech"))
-        self.btn_sched_page.setText(_translate('MainWindow','Scheduler'))
+        self.btn_sched_page.setText(_translate('MainWindow','Test/Schedule'))
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()

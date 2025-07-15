@@ -45,7 +45,7 @@ class DeviceCard(QWidget):
 
         # Device Title
         image = QLabel(self)
-        pixmap = QPixmap('src/assets/download.png')
+        pixmap = QPixmap('src/assets/download.jpg')
         image.setPixmap(pixmap)
         image.setScaledContents(True)
         title = QLabel(device["name"])
