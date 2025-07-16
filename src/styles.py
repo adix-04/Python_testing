@@ -26,9 +26,13 @@ QPushButton {
     color: white; 
 } 
 
-QLabel {
-    color: white;
-}
+  QLabel {
+        color: #FFFFFF;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 2px 4px;
+        letter-spacing: 0.5px;
+    }
 """
 
 btn_sheet = """

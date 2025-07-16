@@ -16,7 +16,7 @@ from Connect_DLT import Connet_DLT_class
 import utils
 
 class Test_begin(object):
-    def __init__(self,mcu_ip,input_excel,directory,dlp_file):
+    def __init__(self,mcu_ip,input_excel,directory,dlp_file,load):
         self.mcuIp = mcu_ip
         self.inputExcel = input_excel
         self.outputExcel = f"Test_run_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
@@ -28,6 +28,7 @@ class Test_begin(object):
         self.report_excel_file = "output_from_test_run.xlsx"
         self.report_excel_file = self.outDIr + self.report_excel_file
         self.dlp = dlp_file
+        self.load_yes = load
        
         self.cache = f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache'
         self.audioDir = 'audio'
