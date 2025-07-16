@@ -24,6 +24,8 @@ import utils
 from new_core import Main_utils_page
 from device_card import DeviceCard
 from rack_control_ui import Main_rack_page
+from styles import *
+
 DEVICE_FILE = "devices.json"
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -382,7 +384,7 @@ QPushButton:hover {
         self.movie.start()
         self.tts_selector = QComboBox()
         self.tts_selector.addItems(["pyttsx3", "gTTS"])
-        self.tts_selector.setStyleSheet("background-color: #48872B")
+        self.tts_selector.setStyleSheet(combo_sheet)
         right_layout.addWidget(self.gif_label, alignment=Qt.AlignCenter)
         right_layout.addWidget(self.tts_selector)
         right_layout.addStretch()

@@ -26,9 +26,13 @@ QPushButton {
     color: white; 
 } 
 
-QLabel {
-    color: white;
-}
+  QLabel {
+        color: #FFFFFF;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 2px 4px;
+        letter-spacing: 0.5px;
+    }
 """
 
 btn_sheet = """
@@ -47,3 +51,34 @@ QPushButton:hover {
     margin: 5px;
 }
 """
+
+combo_sheet = '''
+ QComboBox {
+        background-color: #2c2f4c;
+        color: white;
+        border: 1px solid #5a5f7a;
+        padding: 6px 10px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    QComboBox::drop-down {
+        subcontrol-origin: padding;
+        subcontrol-position: top right;
+        width: 20px;
+        border-left: 1px solid #5a5f7a;
+    }
+
+    QComboBox::down-arrow {
+        image: url(:/icons/down_arrow.png); /* Replace with your own icon path */
+        width: 12px;
+        height: 12px;
+    }
+
+    QComboBox QAbstractItemView {
+        background-color: #1e1f3d;
+        color: white;
+        selection-background-color: #3a3d6d;
+        border: 1px solid #5a5f7a;
+        font-size: 14px;
+    }'''
