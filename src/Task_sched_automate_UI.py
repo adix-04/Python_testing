@@ -29,7 +29,7 @@ class Main_utils_page(QWidget):
     
     def create_card(self):
         card = QWidget()
-        card.setStyleSheet("background-color: #272757; border-radius: 12px; padding: 2px;")
+        card.setStyleSheet("background-color: #302D2D; border-radius: 12px; padding: 2px;")
         vbox = QVBoxLayout()
         vbox.setAlignment(Qt.AlignTop)
         vbox.setSpacing(15)

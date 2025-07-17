@@ -1,10 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QPushButton, QLabel,
-    QVBoxLayout, QHBoxLayout, QStackedWidget, QLineEdit, QTextEdit,
-    QFrame, QScrollArea,QSizePolicy,QGridLayout,QFileDialog,QMessageBox,QComboBox
+    QApplication, QWidget, QPushButton, QLabel,
+    QVBoxLayout, QHBoxLayout
 )
-from PyQt5.QtGui import QIcon,QFont,QPixmap,QMovie
+from PyQt5.QtGui import QPainter,QFont,QPixmap,QPainterPath
 from PyQt5.QtCore import Qt
 import json
 from PyQt5.QtCore import pyqtSignal
@@ -27,6 +26,7 @@ class DeviceCard(QWidget):
             }
             QLabel {
                 color: #333;
+                border-radius:100px;
             }
             QPushButton {
                 padding: 5px 10px;
@@ -42,12 +42,35 @@ class DeviceCard(QWidget):
             }
         """)
         self.setFixedSize(240, 320)
+        def make_round_pixmap(pixmap):
+            size = min(pixmap.width(), pixmap.height())
+            cropped = pixmap.scaled(size, size, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        
+            rounded = QPixmap(size, size)
+            rounded.fill(Qt.transparent)
 
-        # Device Title
+            path = QPainterPath()
+            path.addEllipse(0, 0, size, size)
+
+            painter = QPainter(rounded)
+            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setClipPath(path)
+            painter.drawPixmap(0, 0, cropped)
+            painter.end()
+
+            return rounded
+
+# Apply to QLabel
         image = QLabel(self)
-        pixmap = QPixmap('src/assets/download.jpg')
-        image.setPixmap(pixmap)
+        pixmap = QPixmap('src/assets/download.png')
+        round_pixmap = make_round_pixmap(pixmap)
+        image.setPixmap(round_pixmap)
         image.setScaledContents(True)
+        # Device Title
+        # image = QLabel(self)
+        # pixmap = QPixmap('src/assets/download.jpg')
+        # image.setPixmap(pixmap)
+        # image.setScaledContents(True)
         title = QLabel(device["name"])
         title.setFont(QFont("Arial", 12, QFont.Bold))
         title.setAlignment(Qt.AlignCenter)

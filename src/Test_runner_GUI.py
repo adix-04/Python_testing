@@ -23,13 +23,14 @@ import time as t
 import utils
 from Task_sched_automate_UI import Main_utils_page
 from device_card import DeviceCard
-from Rack_control_UI import Main_rack_page
+from rack_control_ui import Main_rack_page
 from styles import *
 
 DEVICE_FILE = "devices.json"
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         self.tts = utils.tts_main()
+       
         self.isEditing = False
         self.isEditingDevName = ''
         self.my_style = """
@@ -38,7 +39,7 @@ class Ui_MainWindow(object):
         border: 1px solid #ccc;
         border-radius: 6px;
         padding: 6px 10px;
-        background-color:#008a91;
+        background-color:#B3B3B3;
         color: #333;
         font-size: 14px;
     }
@@ -66,22 +67,22 @@ class Ui_MainWindow(object):
         self.btn_sheet=''' 
 QPushButton {
     color: rgb(255, 255, 255);
-    background-color:  #272757 ;   
+    background-color:  #2B2B2B ;   
     border: 0px solid;
-    text-align:center;  
+    text-align:left;  
     border-radius : 10px
 }
 QPushButton:hover {
-    background-color: #9575cd;
+    background-color: #B3B3B3;
     font-size:12px; 
-    border-radius : 10px;
-    margin : 5px;
+    border-radius : 0px;
+    margin : 2px;
 }
 '''     
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1100, 600)
         MainWindow.setMinimumSize(QtCore.QSize(1000, 500))
-        MainWindow.setStyleSheet("background-color: #241A42;")
+        MainWindow.setStyleSheet("background-color: #2B2B2B;")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         #self.centralwidget.setStyleSheet()
@@ -91,7 +92,7 @@ QPushButton:hover {
         self.verticalLayout.setObjectName("verticalLayout")
         self.Top_Bar = QtWidgets.QFrame(self.centralwidget)
         self.Top_Bar.setMaximumSize(QtCore.QSize(16777215, 30))
-        self.Top_Bar.setStyleSheet("background-color:#2C224D;")
+        self.Top_Bar.setStyleSheet("background-color:#2B2B2B;")
         self.Top_Bar.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.Top_Bar.setFrameShadow(QtWidgets.QFrame.Raised)
         self.Top_Bar.setObjectName("Top_Bar")
@@ -116,10 +117,10 @@ QPushButton:hover {
         sizePolicy.setHeightForWidth(self.Btn_Toggle.sizePolicy().hasHeightForWidth())
         self.Btn_Toggle.setSizePolicy(sizePolicy)
 
-        self.pixmap1 = QPixmap('src/assets/logo.png') 
-        self.Btn_Toggle.setPixmap(self.pixmap1)
+        # self.pixmap1 = QPixmap('src/assets/logo.png') 
+        # self.Btn_Toggle.setPixmap(self.pixmap1)
         self.Btn_Toggle.setScaledContents(True)
-        self.Btn_Toggle.setStyleSheet("background-color: #272757;")
+        self.Btn_Toggle.setStyleSheet("background-color: #2B2B2B;")
        
         self.Btn_Toggle.setObjectName("Btn_Toggle")
         self.verticalLayout_2.addWidget(self.Btn_Toggle)
@@ -142,7 +143,7 @@ QPushButton:hover {
         self.frame_left_menu.setMinimumSize(QtCore.QSize(150, 0))
         self.frame_left_menu.setMaximumSize(QtCore.QSize(150, 16777215))
         # self.frame_left_menu.setStyleSheet("background-color:    rgb(35, 35, 35);")
-        self.frame_left_menu.setStyleSheet("background-color: #272757;")
+        self.frame_left_menu.setStyleSheet("background-color: #2B2B2B;")
         self.frame_left_menu.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_left_menu.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_left_menu.setObjectName("frame_left_menu")
@@ -198,7 +199,7 @@ QPushButton:hover {
         
         self.stackedWidget = QtWidgets.QStackedWidget(self.frame_pages)
         self.stackedWidget.setObjectName("stackedWidget")
-        self.stackedWidget.setStyleSheet('background-color : #120C26 ;')
+        self.stackedWidget.setStyleSheet('background-color : #302D2D ;')
         self.page1 = self.home_page()
         self.page2 = self.add_page()
         self.page3 = self.sched_page()
@@ -500,6 +501,7 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    MainWindow.setWindowTitle("Test Automation Runner")
+    MainWindow.setWindowIcon(QIcon(r"C:\Users\Adin N S\Documents\Python_testing\src\assets\button.png"))
     MainWindow.show()
-    
     sys.exit(app.exec_())
