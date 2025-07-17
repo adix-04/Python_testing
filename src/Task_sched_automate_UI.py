@@ -13,6 +13,7 @@ from styles import *
 import subprocess
 import os
 from TTS_main import Test_begin
+
 class Main_utils_page(QWidget):
     def __init__(self):
         super().__init__()
@@ -37,6 +38,7 @@ class Main_utils_page(QWidget):
         label = QLabel("Start A Task or Schedule One")
         label.setStyleSheet(my_style)
         label.setAlignment(Qt.AlignCenter)
+        label.setObjectName("headers")
         vbox.addWidget(label)
         # ---------- IP Address Input ----------
         ip_path_edit = QLineEdit()
@@ -128,13 +130,24 @@ class Main_utils_page(QWidget):
         test_btn = QPushButton("Start Test")
         test_btn.setStyleSheet(my_style)
         test_btn.setFixedSize(100,60)
-        test_btn.clicked.connect(lambda: Test_begin(
+        if all([ip_path_edit.text(), exe_path_edit.text(), log_path_edit.text(), fp_path_edit.text()]):
+            test_btn.clicked.connect(lambda: Test_begin(
             mcu_ip=ip_path_edit.text(),
             input_excel=exe_path_edit.text(),
             directory=log_path_edit.text(),
             dlp_file=fp_path_edit.text(),
             load=Give_load.isChecked()
         ))
+        else:
+            print("hello")
+
+        # test_btn.clicked.connect(lambda: Test_begin(
+        #     mcu_ip=ip_path_edit.text(),
+        #     input_excel=exe_path_edit.text(),
+        #     directory=log_path_edit.text(),
+        #     dlp_file=fp_path_edit.text(),
+        #     load=Give_load.isChecked()
+        # ))
         tech_stack.setStyleSheet(combo_sheet)
         checkbox_layout.addWidget(tech_stack)
         vbox.addLayout(checkbox_layout)

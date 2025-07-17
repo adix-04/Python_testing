@@ -28,6 +28,12 @@ QPushButton {
 
 QLabel {
     color: white;
+    font-family: 'Source Code Pro' ;
+}
+QLabel#headers {
+    color: white;
+    font-family: 'Fira Code' ;
+    font-size: 17px;
 }
 """
 

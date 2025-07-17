@@ -25,10 +25,10 @@ class tts_main():
          self.tts_converter(row['commands'])
     def warn(self,mesg):
          msg = QMessageBox()
-         msg.setIcon(QMessageBox.Warning)
+         msg.setIcon(QMessageBox.warning)
          msg.setText(mesg)
-         msg.setWindowTitle('മുന്നറിയിപ്പ്')
-         msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+         msg.setWindowTitle('Warning🔴⚠️🚧')
+         msg.setStandardButtons(QMessageBox.Ok )
          msg.exec_()
      
  

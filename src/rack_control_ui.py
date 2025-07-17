@@ -32,6 +32,11 @@ class Main_rack_page(QWidget):
         card.setFrameShape(QFrame.StyledPanel)
         card.setStyleSheet("background-color: #302D2D; border-radius: 12px; padding: 2px;")
         vbox = QVBoxLayout()
+        label = QLabel("Clamp Settings in devlopment🏗️🛠️🔩")
+        label.setStyleSheet(my_style)
+        label.setAlignment(Qt.AlignCenter)
+        label.setObjectName("headers")
+        vbox.addWidget(label)
         fHbox = QHBoxLayout()
         sHbox = QHBoxLayout()
 

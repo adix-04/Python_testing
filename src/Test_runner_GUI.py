@@ -70,6 +70,7 @@ QPushButton {
     background-color:  #2B2B2B ;   
     border: 0px solid;
     text-align:left;  
+    font-family: 'Source Code Pro' ;
     border-radius : 10px
 }
 QPushButton:hover {
@@ -232,11 +233,12 @@ QPushButton:hover {
         return page
 
     def home_page(self):
-        print("home page")
         page = QWidget()
+
         scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
         container = QWidget()
+        scroll.setWidgetResizable(True)
+       
         grid_layout = QGridLayout()
         try:
          with open (DEVICE_FILE , "r") as file:
@@ -268,8 +270,13 @@ QPushButton:hover {
     def add_page(self):
         page = QWidget()
         layout = QVBoxLayout()
+        label = QLabel("Add or create a device configuration🌍💻📊")
+        label.setStyleSheet(my_style)
+        label.setAlignment(Qt.AlignCenter)
+        label.setObjectName("headers")
         layout.setSpacing(20) 
         layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(label)
         self.input_name = QLineEdit()
         self.input_name.setPlaceholderText("Device Name")
         self.input_ip = QLineEdit()
@@ -300,8 +307,13 @@ QPushButton:hover {
         print("Editing device:", device)
         self.E_page = QWidget()
         layout = QVBoxLayout()
+        label = QLabel("Edit a device configuration🌍💻📊")
+        label.setStyleSheet(my_style)
+        label.setAlignment(Qt.AlignCenter)
+        label.setObjectName("headers")
         layout.setSpacing(20)
         layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(label)
 
         self.input_name = QLineEdit(device.get("name", ""))
         self.input_ip = QLineEdit(device.get("ip", ""))
@@ -344,8 +356,13 @@ QPushButton:hover {
     def use_page(self):
         self.E_page = QWidget()
         main_layout = QVBoxLayout()
+        label = QLabel("Test to Speech📝📢🔊")
+        label.setStyleSheet(my_style)
+        label.setAlignment(Qt.AlignCenter)
+        label.setObjectName("headers")
         main_layout.setSpacing(0)
         main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.addWidget(label)
         # === TOP HALF ===
         top_half = QWidget()
         top_layout = QHBoxLayout()
@@ -407,8 +424,6 @@ QPushButton:hover {
 
         self.E_page.setLayout(main_layout)
         return self.E_page
-        #self.stackedWidget.addWidget(self.E_page)
-        #self.stackedWidget.setCurrentWidget(self.E_page)
 
 
 # #save device function called from config and edit pages
@@ -449,7 +464,7 @@ QPushButton:hover {
             devices.append(device_data)
         with open(DEVICE_FILE , "w") as file:
             json.dump(devices,file,indent=4)
-            print("saving to json file")
+            # print("saving to json file")
         
         self.clear_form()
         self.new_page = self.home_page()
@@ -463,13 +478,13 @@ QPushButton:hover {
       file_dialog.setViewMode(QFileDialog.ViewMode.Detail)
       if file_dialog.exec():
          selected_files = file_dialog.selectedFiles()
-         print("Selected File:", selected_files[0])
+        #  print("Selected File:", selected_files[0])
          input.setText(selected_files[0])
     
     def start_speak(self):
         text = self.Input_words.text()
         if text == '':
-            self.tts.warn(mesg="സംസാരിക്കാൻ എന്തെങ്കിലും ടെക്സ്റ്റ് നൽകുക")
+            self.tts.warn(mesg="Nothing to speak")
             return
         else :
             # self.movie.start()
@@ -479,14 +494,14 @@ QPushButton:hover {
     def start_file(self):
         file_path = self.Input_excel.text()
         if file_path == '':
-            self.tts.warn(mesg="തുടങ്ങാൻ എന്തെങ്കിലും കൊടുക്കൂ. ബാക്കി നമുക്ക് പിന്നീട് ചെയ്യാം")
+            self.tts.warn(mesg="Give something to begin with")
             return
         else:
             if file_path.endswith('xlsx' or 'xls'):
                 print("excel file found")
                 self.tts.file_iter(file_path=file_path)
             else:
-                self.tts.warn(mesg="ശരിയായ എക്സൽ ഫയൽ നൽകുക")
+                self.tts.warn(mesg="Give Correct *excel file")
     
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
