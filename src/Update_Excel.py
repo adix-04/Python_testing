@@ -4,9 +4,9 @@ from datetime import datetime
 
 FIELDS = [
     "timestamp", "wake_word", "utterance", "recognized_text", "intent",
-    "is_final_asr","cpu_usage" ,"seat_position",
-    "asr_text", "response_text", "confidence", "language",
-    "audio_path", "retry_count", "error_code"
+    "is_final_asr","cpu_usage" ,"prompt_text",
+    "asr_text", "response_text", "confidence",
+     "retry_count", "error_code"
 ]
 
 EXCEL_FILE = "session_log.xlsx"
