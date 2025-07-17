@@ -26,13 +26,9 @@ QPushButton {
     color: white; 
 } 
 
-  QLabel {
-        color: #FFFFFF;
-        font-size: 14px;
-        font-weight: 600;
-        padding: 2px 4px;
-        letter-spacing: 0.5px;
-    }
+QLabel {
+    color: white;
+}
 """
 
 btn_sheet = """
@@ -51,7 +47,6 @@ QPushButton:hover {
     margin: 5px;
 }
 """
-
 combo_sheet = '''
  QComboBox {
         background-color: #2c2f4c;

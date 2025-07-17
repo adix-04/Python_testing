@@ -8,7 +8,7 @@ from PyQt5.QtGui import QIcon,QFont,QPixmap,QMovie
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import pyqtSignal
 from styles import *
-from rack import Rack_main
+from rack_commands import Rack_main
 
 class Main_rack_page(QWidget):
     def __init__(self):

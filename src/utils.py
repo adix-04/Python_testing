@@ -1,6 +1,6 @@
 import pyttsx3
 from gtts import gTTS
-import new_ui
+import Test_runner_GUI
 import os
 from PyQt5.QtWidgets import *
 import pandas as pd
@@ -10,7 +10,7 @@ import time as t
 class tts_main():
     cols =[0]
     def __init__(self):
-        self.ui_obj = new_ui.Ui_MainWindow()
+        self.ui_obj = Test_runner_GUI.Ui_MainWindow()
         
     def tts_converter(self,command):
         audio = gTTS(text=command,lang='en',slow=False,tld="com.au")

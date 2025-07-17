@@ -7,16 +7,17 @@ from gtts import gTTS
 from pydub.playback import play
 import getpass
 import pyttsx3
-from pydub import AudioSegment
+from Update_Excel import Update_Excel
 import threading
 import time as time 
 import re
 from datetime import datetime
 from Connect_DLT import Connet_DLT_class
 import utils
+from Get_cpu_usage import monitor_cpu_mem
 
 class Test_begin(object):
-    def __init__(self,mcu_ip,input_excel,directory,dlp_file,load):
+    def __init__(self,mcu_ip,input_excel,directory,dlp_file,load,stack):
         self.mcuIp = mcu_ip
         self.inputExcel = input_excel
         self.outputExcel = f"Test_run_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
@@ -28,8 +29,7 @@ class Test_begin(object):
         self.report_excel_file = "output_from_test_run.xlsx"
         self.report_excel_file = self.outDIr + self.report_excel_file
         self.dlp = dlp_file
-        self.load_yes = load
-       
+        self.excel = Update_Excel()
         self.cache = f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache'
         self.audioDir = 'audio'
 
@@ -137,10 +137,13 @@ class Test_begin(object):
         log_thread = threading.Thread(target=self.dlt.start_dlt)
         log_thread.start()
         time.sleep(1)
+        cpu_thread = threading.Thread(target=self.excel.update(cpu_usage = monitor_cpu_mem()))
         # self.tts(text='Hey Mini!')
         self.run_adb_command('shell cmd car_service inject-custom-input 1012;sleep 0.2; cmd car_service inject-custom-input 1013')
         print(f"🔊 Speaking: {text}")
         self.tts(text)
+        cpu_thread.start()
+        # cpu_thread.join()
         logging.info(f"Played utterance: {text}")
         # Give a buffer after playback ends (to allow logs to come in)
         time.sleep(10)

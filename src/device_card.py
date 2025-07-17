@@ -8,7 +8,7 @@ from PyQt5.QtGui import QIcon,QFont,QPixmap,QMovie
 from PyQt5.QtCore import Qt
 import json
 from PyQt5.QtCore import pyqtSignal
-import new_ui
+import Test_runner_GUI
 
 
 class DeviceCard(QWidget):
