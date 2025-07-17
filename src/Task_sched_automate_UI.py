@@ -98,13 +98,11 @@ class Main_utils_page(QWidget):
         # ---------- Time Input ----------
         time_input = QLineEdit()
         time_input.setStyleSheet(my_style)
-        time_input.setPlaceholderText("Schedule Time (HH:MM, e.g., 14:30) optional IN DEVLOPMENT")
+        time_input.setPlaceholderText("Schedule Time (HH:MM, e.g., 14:30) optional IN DEVLOPMENT🏗️🔨")
         vbox.addWidget(time_input)
 
         # ---------- Buttons ----------
         btn_hbox = QHBoxLayout()
-
-    
 
         schedule_btn = QPushButton("Schedule")
         schedule_btn.setStyleSheet(my_style)
@@ -130,24 +128,16 @@ class Main_utils_page(QWidget):
         test_btn = QPushButton("Start Test")
         test_btn.setStyleSheet(my_style)
         test_btn.setFixedSize(100,60)
-        if all([ip_path_edit.text(), exe_path_edit.text(), log_path_edit.text(), fp_path_edit.text()]):
-            test_btn.clicked.connect(lambda: Test_begin(
-            mcu_ip=ip_path_edit.text(),
-            input_excel=exe_path_edit.text(),
-            directory=log_path_edit.text(),
-            dlp_file=fp_path_edit.text(),
-            load=Give_load.isChecked()
-        ))
-        else:
-            print("hello")
 
-        # test_btn.clicked.connect(lambda: Test_begin(
-        #     mcu_ip=ip_path_edit.text(),
-        #     input_excel=exe_path_edit.text(),
-        #     directory=log_path_edit.text(),
-        #     dlp_file=fp_path_edit.text(),
-        #     load=Give_load.isChecked()
-        # ))
+        test_btn.clicked.connect(lambda: Test_begin(
+        mcu_ip=ip_path_edit.text(),
+        input_excel=exe_path_edit.text(),
+        directory=log_path_edit.text(),
+        dlp_file=fp_path_edit.text(),
+        load=Give_load.isChecked(),
+        stack=tech_stack.currentText()
+        ))
+
         tech_stack.setStyleSheet(combo_sheet)
         checkbox_layout.addWidget(tech_stack)
         vbox.addLayout(checkbox_layout)
@@ -163,12 +153,7 @@ class Main_utils_page(QWidget):
         print("god")
         print(self.time_input.text())
         print(self.exe_input.text())
-    # def select_log_folder(self):
-    #     folder_path = QFileDialog.getExistingDirectory(self, 'Select Log Folder')
-    #     if folder_path:
-    #         self.log_folder_edit.setText(folder_path)
-    #     self.rundirectory=os.path.join(self.log_folder_edit.text(),self.rundirectoryname)
-    #     os.mkdir(self.rundirectory)
+
     
     def create_and_schedule_task(self, exe_path, task_name, time_str):
         print(exe_path)

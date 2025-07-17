@@ -12,8 +12,9 @@ FIELDS = [
 EXCEL_FILE = "session_log.xlsx"
 
 class Update_Excel():
+    _instance = None
     def __init__(self):
-        # self.data = {key: "" for key in FIELDS}
+        self.data = {key: "" for key in FIELDS}
         self.data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 #**kwargs = "Keyword Arguments" It allows the function to accept any number of named arguments, even ones that aren’t pre-defined.
     def update(self, **kwargs): 
