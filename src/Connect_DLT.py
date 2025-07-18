@@ -7,11 +7,6 @@ from datetime import datetime
 import Get_data_from_DLT
 
 class Connet_DLT_class():
-
-    project_file_in_class=""
-    val_path=""
-    bool_dlt_status=True
-
     def __init__(self,file_path,project_file,output_dir):
         self.outDIR = output_dir
         self.dlp = project_file
@@ -19,29 +14,28 @@ class Connet_DLT_class():
         self.file_name =''
         print(self.file_path)
         self.cleaner()
-       
-
     def cleaner(self):
         try:
             if os.listdir(self.file_path):
-                # self.project_file_in_class=self.project_file
                 self.remove_cache_files(self.file_path)
             else:
                 print(self.project_file)
-                print("no files in cahce")
+                # print("no files in cahce")
                 pass 
         except Exception as e:
             print(e)
     
     
     def start_dlt(self):
-        print("called")
+        # print("called")
         #This will be called from TTS main
-        process = subprocess.Popen(["dlt_viewer","-s","-p",str(self.dlp)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-        print("DLT is opened")
+        try:
+            process = subprocess.Popen(["dlt_viewer","-s","-p",str(self.dlp)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        except Exception as e:
+            print(e)
+        # print("DLT is opened")
 
     def remove_cache_files(self,file_path):
-        print("remover")
         try:
             files=glob.glob(os.path.join(file_path,"*"))
             for f in files:
@@ -56,7 +50,7 @@ class Connet_DLT_class():
         print(temp_file[0])
         try:
 
-         self.file_name=f'{self.outDIR}/traceLog.txt{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}'
+         self.file_name=f'{self.outDIR}/traceLog{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt'
          process = subprocess.run(["dlt_viewer","-c",f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache/{temp_file[0]}',self.file_name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         
          

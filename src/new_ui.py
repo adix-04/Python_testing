@@ -231,7 +231,6 @@ QPushButton:hover {
         return page
 
     def home_page(self):
-        print("home page")
         page = QWidget()
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
@@ -240,7 +239,7 @@ QPushButton:hover {
         try:
          with open (DEVICE_FILE , "r") as file:
             devices = json.load(file)
-            print("json document parsing")
+            # print("json document parsing")
         except Exception as e:
             devices = []
             print(e)
@@ -296,7 +295,7 @@ QPushButton:hover {
     def edit_page(self,device):
         self.isEditing = True
         self.isEditingDevName = device["name"]
-        print("Editing device:", device)
+        # print("Editing device:", device)
         self.E_page = QWidget()
         layout = QVBoxLayout()
         layout.setSpacing(20)
@@ -406,8 +405,6 @@ QPushButton:hover {
 
         self.E_page.setLayout(main_layout)
         return self.E_page
-        #self.stackedWidget.addWidget(self.E_page)
-        #self.stackedWidget.setCurrentWidget(self.E_page)
 
 
 # #save device function called from config and edit pages
@@ -448,7 +445,7 @@ QPushButton:hover {
             devices.append(device_data)
         with open(DEVICE_FILE , "w") as file:
             json.dump(devices,file,indent=4)
-            print("saving to json file")
+            # print("saving to json file")
         
         self.clear_form()
         self.new_page = self.home_page()

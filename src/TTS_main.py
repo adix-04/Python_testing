@@ -24,6 +24,7 @@ class Test_begin(object):
         self.Lang = 'en'
         self.numIters = 5
         self.outDIr = directory
+        self.load = load
         # self.outDIr = self.outDIr + f"/Test_run_on_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
         self.command_wait_deviceStart="wait-for-device"
         self.report_excel_file = "output_from_test_run.xlsx"
@@ -56,6 +57,7 @@ class Test_begin(object):
         print(self.Lang)
         print(self.outDIr)
         print(self.numIters)
+        print(self.load)
 
     def test_init(self):
         command = 'adb devices'
@@ -112,13 +114,12 @@ class Test_begin(object):
 
             if utterance:
                 try:
-                    print(f"Generating TTS for: {utterance}")
-                    
+                    # print(f"Generating TTS for: {utterance}")
                     self.speak_utterance(text=utterance)
                     print(f"Played utterance {utterance}")
                 except Exception as e:
                     print(e)
-        self.utils.warn(mesg="പരിശോധന പൂർത്തിയായി🤖 ")
+        self.utils.warn(mesg="Test Completed ")
     
     def tts(self,text):
         engine = pyttsx3.init()
@@ -130,34 +131,27 @@ class Test_begin(object):
 
     def speak_utterance(self, text, lang="en"):
         self.run_adb_command('shell input keyevent KEYCODE_HOME')
-        # Start log collection thread and also do a clean up
         self.dlt.cleaner()
+        if self.load:
+            print("give load")
+            self.run_adb_command('shell "/data/local/tmp/stressapptest-aarch64 -s 600 -M 1000 -m 2 -C 1 -W -n 127.0.0.1 --listen -i 1 --findfiles -f /data/local/tmp/file1 -f /data/local/tmp/file2"')
+        # Start log collection thread and also do a clean up
         stop_event = threading.Event()
-        hitCount = [0]  # Mutable counter to collect hit info
         log_thread = threading.Thread(target=self.dlt.start_dlt)
         log_thread.start()
         time.sleep(1)
-        # cpu_thread = threading.Thread(target=self.excel.update(cpu_usage = monitor_cpu_mem()))
-        # self.tts(text='Hey Mini!')
         self.run_adb_command('shell cmd car_service inject-custom-input 1012;sleep 0.2; cmd car_service inject-custom-input 1013')
         print(f"🔊 Speaking: {text}")
         self.tts(text)
-        # cpu_thread.start()
-        # cpu_thread.join()
         logging.info(f"Played utterance: {text}")
-        # Give a buffer after playback ends (to allow logs to come in)
         time.sleep(10)
-        #Stop log collection
+
         stop_event.set()
         log_thread.join()
-
         self.dlt.stop_dlt()
-
         self.dlt.convert_dlt_log_text()
 
         self.dlt.check(uttearnce=text)
-
-
         # print("Gonna call the main thing here")
         time.sleep(1)
         logging.info(f"✅ Done with utterance '{text}'")

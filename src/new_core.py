@@ -110,7 +110,8 @@ class Main_utils_page(QWidget):
             input_excel=exe_path_edit.text(),
             directory=log_path_edit.text(),
             dlp_file=fp_path_edit.text(),
-            load=Give_load.isChecked()
+            load=Give_load.isChecked(),
+            stack=tech_stack.currentText()
         ))
 
         schedule_btn = QPushButton("Schedule")

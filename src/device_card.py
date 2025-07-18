@@ -98,8 +98,8 @@ class DeviceCard(QWidget):
         layout.addStretch()
         self.setLayout(layout)
     def emit_config(self):
-        print("emitting config signal")
+        # print("emitting config signal")
         self.config_signal.emit(self.device)
     def emit_use(self):
-        print("emitting use signal")
+        # print("emitting use signal")
         self.use_signal.emit(self.device)

@@ -1,5 +1,3 @@
-
-
 import subprocess
 import re
 import time as t
