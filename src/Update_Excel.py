@@ -5,7 +5,7 @@ from datetime import datetime
 FIELDS = [
     "timestamp", "wake_word", "utterance", "recognized_text", "intent",
     "is_final_asr","cpu_usage" ,"prompt_text",
-    "asr_text", "response_text", "confidence",
+     "confidence",
      "retry_count", "error_code"
 ]
 

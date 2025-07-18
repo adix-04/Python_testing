@@ -12,31 +12,37 @@ class Get_data():
     def check_line(self,file_name):
         self.excel = Update_Excel()
         print("in checker inside get data")
+        check_cpu = False
         with open (file_name,"r") as file:
             read_line=file.readlines()
             for line in read_line:
                 if 'is_final_asr":true' in line:
+                    check_cpu = True
                     self.Log_analyzer(line)
-                if 'avgcpu:' in line:
-                    self.get_cpu(line)
-                    break
+                    # break
                 if 'INTENT=' in line and 'CONFIDENCE=' and 'CONFIDENCE=' in line:
                     print(line)
                     self.Intent_analyzer(line)
                 if 'PROMPT_TEXT=' in line:
                     self.prompt_text(line)
+                if 'avgcpu:' in line and check_cpu:
+                    self.get_cpu(line)
+                    check_cpu = False
             
             self.excel.write()
             self.excel.reset()
+
     def prompt_text(self,log_line):
-        promp_text = re.search(r'PROMPT_TEXT=([^,]+)', log_line)
+        promp_text = re.search(r'PROMPT_TEXT=([^\n]+)', log_line)
         promp_text = promp_text.group(1).strip() if promp_text else None
         # print(promp_text)
         self.excel.update(prompt_text=promp_text)
     def get_cpu(self,log_line):
-        print(log_line)
+        cpu = re.search(r'cpu:(\d+(\.\d+)?)%', log_line)
+        cpu_usage = cpu.group(1) if cpu else None
+        # print(cpu_usage)
+        self.excel.update(cpu_usage=cpu_usage)
     def Log_analyzer(self,logline):
-        # Extract the value of the "orthography" field
         match = re.search(r'"orthography":"(.*?)"', logline)
         if match:
             extracted_text = match.group(1)
@@ -45,10 +51,7 @@ class Get_data():
             else:
                 bool_asr=False
             print(extracted_text)
-        
             self.excel.update(is_final_asr=bool_asr)
-            # self.excel.write()
-            # self.excel.reset()
         else:
             print("No orthography field found.")
     def Intent_analyzer(self,log_line):
@@ -66,13 +69,7 @@ class Get_data():
         # UTTERANCE
         utt_match = re.search(r'UTTERANCE=([^,]+)', log_line)
         utterance = utt_match.group(1).strip() if utt_match else None
-        # WEATHER STATUS SLOT
-        weather_status_match = re.search(r'RECOG_SLOT_Apps_WeatherStatus\s*=\s*([^,]+)', log_line)
-        weather_status = weather_status_match.group(1).strip() if weather_status_match else None
-        # CITY NAME SLOT
-        city_name_match = re.search(r'RECOG_SLOT_Nav_CityName\s*=\s*([^\s,]+)', log_line)
-        city_name = city_name_match.group(1).strip() if city_name_match else None
-        # 🔍 Print the values
+        # Print the values
         # print("Intent:", intent)
         # print("Domain:", intent_domain)
         # print("Confidence:", confidence)
@@ -85,4 +82,4 @@ class Get_data():
         
 
 if __name__ == "__main__":
-   obj = Get_data(r'C:\Users\Adin N S\Downloads\Logs_trace\Logs_trace\traceLog.txt2025-07-15_18-13-04',"Will it rain in Hamburg")
+   obj = Get_data(r'c:\Users\Adin N S\Downloads\Logs_trace\Logs_trace\traceLog.txt2025-07-15_18-13-04',"Will it rain in Hamburg")
