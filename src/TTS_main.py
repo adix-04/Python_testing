@@ -14,7 +14,7 @@ import re
 from datetime import datetime
 from Connect_DLT import Connet_DLT_class
 import utils
-from Get_cpu_usage import cpu_usage
+
 
 class Test_begin(object):
     def __init__(self,mcu_ip,input_excel,directory,dlp_file,load,stack):

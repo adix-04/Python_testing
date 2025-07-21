@@ -14,10 +14,11 @@ class Main_rack_page(QWidget):
     def __init__(self):
         super().__init__()
         self.sig_use = pyqtSignal()
-        self.rack = Rack_main()
+        self.rack = rack.Rack_main()
         self.rack.rack_main()       
         self.page = self.main_page()
         # self.rack.mute()
+        self.rack.check_serial()
     def main_page(self):
         page = self.create_card()
         main_layout = QHBoxLayout()
@@ -56,7 +57,7 @@ class Main_rack_page(QWidget):
         self.test_btn = QPushButton("start test")
         self.test_btn.setStyleSheet(my_style)
         self.test_btn.setMinimumSize(100,100)
-        # self.test_btn.clicked.connect(self.rack.mute)
+        self.test_btn.clicked.connect(self.rack.check_serial)
       
         schedule_btn = QPushButton("Schedule")
         schedule_btn.setStyleSheet(my_style)

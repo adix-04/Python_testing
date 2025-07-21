@@ -27,8 +27,8 @@ class tts_main():
          msg = QMessageBox()
          msg.setIcon(QMessageBox.warning)
          msg.setText(mesg)
-         msg.setWindowTitle('Warning🔴⚠️🚧')
-         msg.setStandardButtons(QMessageBox.Ok )
+         msg.setWindowTitle('Warning')
+         msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel )
          msg.exec_()
      
  
@@ -51,5 +51,4 @@ class tts_main():
 
 if __name__ == '__main__':
    pass
-
 

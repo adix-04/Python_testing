@@ -1,7 +1,6 @@
 from Update_Excel import Update_Excel
 import re
-
-
+import subprocess
 class Get_data():
     def __init__(self,txt_file,utterance):
         self.txt_file=txt_file
@@ -78,8 +77,7 @@ class Get_data():
         # print("Weather Status:", weather_status)
         # print("City:", city_name)
         self.excel.update(wake_word='Hey Mini', utterance=self.utterance,recognized_text=utterance,intent=intent,confidence=confidence)
-
-        
+            
 
 if __name__ == "__main__":
    obj = Get_data(r'c:\Users\Adin N S\Downloads\Logs_trace\Logs_trace\traceLog.txt2025-07-15_18-13-04',"Will it rain in Hamburg")

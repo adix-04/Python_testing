@@ -57,7 +57,8 @@ class Connet_DLT_class():
         except Exception as e:
              print(e)
        
-
+    def get_cpu(self):
+         Get_data_from_DLT.Get_data.monitor_cpu_mem()
     def check(self,uttearnce):
          Get_data_from_DLT.Get_data(self.file_name,utterance=uttearnce)
 
