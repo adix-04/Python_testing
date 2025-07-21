@@ -13,6 +13,7 @@ class Connet_DLT_class():
         self.file_path = file_path
         self.file_name =''
         print(self.file_path)
+        print("out put dire is==" +self.outDIR)
         self.cleaner()
     def cleaner(self):
         try:

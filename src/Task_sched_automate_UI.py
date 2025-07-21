@@ -13,12 +13,14 @@ from styles import *
 import subprocess
 import os
 from TTS_main import Test_begin
+from datetime import datetime
 
 class Main_utils_page(QWidget):
     def __init__(self):
         super().__init__()
         self.sig_use = pyqtSignal()
         self.page = self.main_page()
+        self.runnerlogDir = "Auto_Testrun_"+ datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
        
     def main_page(self):
         page = self.create_card()
@@ -64,18 +66,20 @@ class Main_utils_page(QWidget):
         vbox.addLayout(exe_hbox)
 
         # ---------- Log Folder Input ----------
-        log_path_edit = QLineEdit()
-        log_path_edit.setPlaceholderText("Path to Log Folder")
-        log_path_edit.setStyleSheet(my_style)
+        self.log_path_edit = QLineEdit()
+        self.log_path_edit.setPlaceholderText("Path to Log Folder")
+        self.log_path_edit.setStyleSheet(my_style)
         log_browse_btn = QPushButton("Browse")
         log_browse_btn.setStyleSheet(my_style)
         log_browse_btn.setFixedSize(100,40)
-        log_browse_btn.clicked.connect(lambda: log_path_edit.setText(
-            QFileDialog.getExistingDirectory(self, 'Select Log Folder')
-        ))
+        # log_browse_btn.clicked.connect(lambda: self.log_path_edit.setText(
+        #     QFileDialog.getExistingDirectory(self, 'Select Log Folder')
+        # ))
+        log_browse_btn.clicked.connect(self.select_log_folder)
+        
 
         log_hbox = QHBoxLayout()
-        log_hbox.addWidget(log_path_edit)
+        log_hbox.addWidget(self.log_path_edit)
         log_hbox.addWidget(log_browse_btn)
         vbox.addLayout(log_hbox)
 
@@ -132,7 +136,7 @@ class Main_utils_page(QWidget):
         test_btn.clicked.connect(lambda: Test_begin(
         mcu_ip=ip_path_edit.text(),
         input_excel=exe_path_edit.text(),
-        directory=log_path_edit.text(),
+        directory=self.log_path_edit.text(),
         dlp_file=fp_path_edit.text(),
         load=Give_load.isChecked(),
         stack=tech_stack.currentText()
@@ -148,7 +152,12 @@ class Main_utils_page(QWidget):
         card.setLayout(vbox)
         return card
 
-    
+    def select_log_folder(self):
+        folder_path = QFileDialog.getExistingDirectory(self, 'Select Log Folder')
+        if folder_path:
+            self.log_path_edit.setText(folder_path)
+            self.runnerlogDir=os.path.join(self.log_path_edit.text(),self.runnerlogDir)
+        os.mkdir(self.runnerlogDir)
     def printer(self):
         print("god")
         print(self.time_input.text())
