@@ -14,7 +14,7 @@ class Main_rack_page(QWidget):
     def __init__(self):
         super().__init__()
         self.sig_use = pyqtSignal()
-        self.rack = rack.Rack_main()
+        self.rack = Rack_main()
         self.rack.rack_main()       
         self.page = self.main_page()
         # self.rack.mute()
