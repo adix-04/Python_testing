@@ -1,28 +1,48 @@
 
-# Poc automation for IDC23 MINI
-Automation speech testing tool using python from excel files. 
-build with purpose
-# How to run
+# IDC EVO and MINI IPA Test Automation
 
-```bash
-git clone  https://github.com/adix-04/Python_testing.git
-cd Pytho_testing
+IPA Test Automation tool to run automated voice and speech test and peform KPI's for IDV evo platforms and MINI platforms
+
+
+## Tech Stack
+- python
+- pandas
+- ffmpg
+- pyttsx3
+- gTTS
+
+## Features
+
+- ✅Text To speech engine
+- 🔊Live TTS conversion
+- 📱 ADB Integration to run adb command to android device 
+- 🧨Custom abb command injection to check maximum throughput
+- 🔧DLT viewer integration to for logging 
+- 💽panda framework for excel read and write functions
+- 💻 PyQt based UI/UX for efficent user interaction
+## Usage/Examples
+
+```shell
+git clone <repo>
 ```
-# Install dependencies
-```bash
+```shell
+cd <repo>
+```
+```shell
 pip install -r requirements.txt
 ```
-# Run the program
+- if it pip fails to install all do it manually one after the other
 
-```bash
-python3 code.py
+- run the code from the ui as entrypoint
+```shell
+ python {runner_UI.py}
 ```
-# Tools ued 
-Python
-VS Code
-## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+## Badges
 
-Please make sure to update tests as appropriate
+Add badges from somewhere like: [shields.io](https://shields.io/)
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
+[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+
