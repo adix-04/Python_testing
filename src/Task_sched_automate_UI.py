@@ -136,7 +136,7 @@ class Main_utils_page(QWidget):
         test_btn.clicked.connect(lambda: Test_begin(
         mcu_ip=ip_path_edit.text(),
         input_excel=exe_path_edit.text(),
-        directory=self.log_path_edit.text(),
+        directory=self.runnerlogDir,
         dlp_file=fp_path_edit.text(),
         load=Give_load.isChecked(),
         stack=tech_stack.currentText()
