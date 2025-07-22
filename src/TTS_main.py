@@ -38,7 +38,7 @@ class Test_begin(object):
 
         self.utils = utils.tts_main()
         logging.basicConfig(
-                filename=f"{self.outDIr}/overall_log.txt",  
+                filename=f"{self.outDIr}/overall_log{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt",  
                 filemode="w",  # if file exist, clear it then open and write
                 level=logging.DEBUG,
                 format="%(asctime)s:%(levelname)s:%(message)s",
