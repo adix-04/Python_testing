@@ -106,7 +106,12 @@ class Test_begin(object):
     def loadutterances(self,logger):
         df = pd.read_excel(self.inputExcel)
         print(df)
-    
+        if self.load:
+            load_time = (df.size) * 15
+            print("give load")
+            logging.info("Going to give some cpu stress")
+            adb_thread = threading.Thread(target= lambda : self.run_load_adb_command(time=load_time))
+            adb_thread.start()
         for index, row in df.iterrows():
             utterance = row['Utterances']
             # voice_type = row['Gender']
@@ -120,6 +125,14 @@ class Test_begin(object):
                 except Exception as e:
                     print(e)
         self.utils.warn(mesg="Test Completed ")
+        if self.load:
+            try:
+                if hasattr(self, 'load_process') and self.load_process and self.load_process.poll() is None:
+                    self.load_process.terminate()
+                print("ADB process terminated early.")
+            except Exception as e:
+                print(f"Error terminating ADB process: {e}")
+            adb_thread.join()
     
     def tts(self,text):
         engine = pyttsx3.init()
@@ -132,10 +145,7 @@ class Test_begin(object):
     def speak_utterance(self, text, lang="en"):
         self.run_adb_command('shell input keyevent KEYCODE_HOME')
         self.dlt.cleaner()
-        if self.load:
-            print("give load")
-            self.run_adb_command('shell "/data/local/tmp/stressapptest-aarch64 -s 600 -M 1000 -m 2 -C 1 -W -n 127.0.0.1 --listen -i 1 --findfiles -f /data/local/tmp/file1 -f /data/local/tmp/file2"')
-        # Start log collection thread and also do a clean up
+          # Start log collection thread and also do a clean up
         stop_event = threading.Event()
         log_thread = threading.Thread(target=self.dlt.start_dlt)
         log_thread.start()
@@ -157,6 +167,12 @@ class Test_begin(object):
         logging.info(f"✅ Done with utterance '{text}'")
         print(f"[+] Done with utterance '{text}'")
 
+    def run_load_adb_command(self,time):
+        self.load_process = subprocess.Popen([
+            "adb", "-s", "169.254.80.235", "shell", "/data/local/tmp/stressapptest-aarch64",
+            "-s", time , "-M", "600", "-m", "2", "-C", "1", "-W", "-n", "127.0.0.1",
+            "--listen", "-i", "1", "--findfiles", "-f", "/data/local/tmp/file1", "-f", "/data/local/tmp/file2"
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     def realtime_far_analyse(self,hitCount,stop_event):
         print("real time far check")
