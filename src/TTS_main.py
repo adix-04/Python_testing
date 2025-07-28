@@ -119,7 +119,7 @@ class Test_begin(object):
                     print(f"Played utterance {utterance}")
                 except Exception as e:
                     print(e)
-        self.utils.warn(mesg="Test Completed ")
+        # self.utils.warn(mesg="Test Completed ")
     
     def tts(self,text):
         engine = pyttsx3.init()
@@ -134,7 +134,7 @@ class Test_begin(object):
         self.dlt.cleaner()
         if self.load:
             print("give load")
-            self.run_adb_command('shell "/data/local/tmp/stressapptest-aarch64 -s 600 -M 1000 -m 2 -C 1 -W -n 127.0.0.1 --listen -i 1 --findfiles -f /data/local/tmp/file1 -f /data/local/tmp/file2"')
+            # self.run_adb_command('shell "/data/local/tmp/stressapptest-aarch64 -s 600 -M 1000 -m 2 -C 1 -W -n 127.0.0.1 --listen -i 1 --findfiles -f /data/local/tmp/file1 -f /data/local/tmp/file2"')
         # Start log collection thread and also do a clean up
         stop_event = threading.Event()
         log_thread = threading.Thread(target=self.dlt.start_dlt)
