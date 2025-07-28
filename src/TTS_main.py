@@ -12,7 +12,8 @@ import argparse
 from datetime import datetime
 from Connect_DLT import Connet_DLT_class
 import utils
-
+from pathlib import Path
+import re
 
 class Test_begin(object):
     def __init__(self,mcu_ip,input_excel,directory,dlp_file,load,stack):
@@ -43,7 +44,8 @@ class Test_begin(object):
             )
         logging.Logger
 
-
+        self.newDlp = self.dlpfile_constructor('artifacts/file_DLT.dlp',self.mcuIp)
+        print(self.newDlp)
         self.main()
         self.test_init()
     
@@ -170,9 +172,58 @@ class Test_begin(object):
             "-s", time , "-M", "600", "-m", "2", "-C", "1", "-W", "-n", "127.0.0.1",
             "--listen", "-i", "1", "--findfiles", "-f", "/data/local/tmp/file1", "-f", "/data/local/tmp/file2"
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    def dlpfile_constructor(self,original_path,new_hostname):
+         """
+        Creates a new DLP file with updated hostname 
+        
+        Args:
+            original_path (str): Path to the original DLP file
+            new_hostname (str): New hostname to set (must be valid IP)
+        """
+         try:
+            if not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', new_hostname):
+                raise ValueError(f"Invalid IP address format: {new_hostname}")
+            
+            # Read the original file content
+            with open(original_path, 'r') as file:
+                content = file.read()
+            
+            updated_content = re.sub(
+                r'<hostname>(.*?)</hostname>|hostname>(.*?)<', 
+                f'<hostname>{new_hostname}</hostname>', 
+                content,
+                flags=re.DOTALL
+            )
+            
+            # Create new filename with sanitized IP
+            original_file = Path(original_path)
+            hostname_with_dash = new_hostname.replace('.', '-')
+            new_filename = f"{original_file.stem}_{hostname_with_dash}{original_file.suffix}"
+            
+            # Check if file already exists
+            if os.path.exists(new_filename):
+                raise FileExistsError(f"Output file{new_filename} already exists")
+            
+            # Write the new file
+            with open(new_filename, 'w') as file:
+                file.write(updated_content)
+                
+            print(f"Successfully created: {new_filename}")
+            
+            
+            return new_filename
+            
+         except FileNotFoundError:
+            print(f"Error: File not found at {original_path}")
+            return None
+         except Exception as e:
+            print(f"Error: {str(e)}")
+            return None
 
+
+        
 if __name__ == '__main__':
-   parser = argparse.ArgumentParser(description="run tts functions from with out UI")
+   parser = argparse.ArgumentParser(description="run tts functions in headless mode")
    parser.add_argument('--ip',type=str,required=True,help="ip address of the ECU")
    parser.add_argument('--excel',type=str,required=True,help="excel containing utterances")
 
