@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dltproject>
+    <settings>
+        <table>
+            <fontSize>8</fontSize>
+            <automaticTimeSettings>1</automaticTimeSettings>
+            <utcOffset>19800</utcOffset>
+            <dst>0</dst>
+            <showIndex>1</showIndex>
+            <showTime>1</showTime>
+            <showTimestamp>1</showTimestamp>
+            <showCount>0</showCount>
+            <showEcuId>1</showEcuId>
+            <showApId>1</showApId>
+            <showApIdDesc>0</showApIdDesc>
+            <showCtId>1</showCtId>
+            <showCtIdDesc>0</showCtIdDesc>
+            <showType>1</showType>
+            <showSubtype>0</showSubtype>
+            <showMode>0</showMode>
+            <showNoar>0</showNoar>
+            <showPayload>1</showPayload>
+        </table>
+        <other>
+            <autoConnect>0</autoConnect>
+            <autoScroll>2</autoScroll>
+            <autoMarkFatalError>0</autoMarkFatalError>
+            <autoMarkWarn>0</autoMarkWarn>
+            <autoMarkMarker>1</autoMarkMarker>
+            <writeControl>1</writeControl>
+            <updateContextLoadingFile>1</updateContextLoadingFile>
+            <loggingOnlyMode>0</loggingOnlyMode>
+        </other>
+    </settings>
+    <ecu>
+        <id>MGUA</id>
+        <description>A new ECU</description>
+        <interface>0</interface>
+        <hostname>169.254.80.235</hostname>
+        <mcinterface></mcinterface>
+        <mcIP>&lt;None&gt;</mcIP>
+        <ipport>3490</ipport>
+        <port></port>
+        <baudrate>115200</baudrate>
+        <sendserialheadertcp>0</sendserialheadertcp>
+        <sendserialheaderserial>1</sendserialheaderserial>
+        <synctoserialheadertcp>0</synctoserialheadertcp>
+        <synctoserialheaderserial>1</synctoserialheaderserial>
+        <loglevel>4</loglevel>
+        <tracestatus>0</tracestatus>
+        <verbosemode>1</verbosemode>
+        <timingpackets>0</timingpackets>
+        <sendgetloginfo>0</sendgetloginfo>
+        <sendDefaultLogLevel>1</sendDefaultLogLevel>
+        <sendGetSoftwareVersion>1</sendGetSoftwareVersion>
+        <updatedata>1</updatedata>
+        <multicast>0</multicast>
+        <autoReconnect>1</autoReconnect>
+        <autoReconnectTimeout>3</autoReconnectTimeout>
+        <application>
+            <id>DHCP</id>
+            <description>stdin adaptor application</description>
+            <context>
+                <id>DHCP</id>
+                <description>stdin adaptor context</description>
+                <loglevel>4</loglevel>
+                <tracestatus>-1</tracestatus>
+            </context>
+        </application>
+        <application>
+            <id>VIDC</id>
+            <description>AVB Video stream configuration|OSIS|Video</description>
+            <context>
+                <id>MVIF</id>
+                <description>Global Context</description>
+                <loglevel>4</loglevel>
+                <tracestatus>-1</tracestatus>
+            </context>
+        </application>
+    </ecu>
+    <plugin>
+        <name>DLT DBus Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+    </plugin>
+    <plugin>
+        <name>DLT Logstorage Config Creator Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+    </plugin>
+    <plugin>
+        <name>DLT System Viewer Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+    </plugin>
+    <plugin>
+        <name>DLT Viewer Plugin</name>
+        <filename></filename>
+        <mode>2</mode>
+        <type>0</type>
+    </plugin>
+    <plugin>
+        <name>Dummy Command Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+    </plugin>
+    <plugin>
+        <name>Dummy Control Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+    </plugin>
+    <plugin>
+        <name>Dummy Decoder Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+    </plugin>
+    <plugin>
+        <name>Dummy Viewer Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+    </plugin>
+    <plugin>
+        <name>Filetransfer Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+    </plugin>
+    <plugin>
+        <name>Non Verbose Mode Plugin</name>
+        <filename></filename>
+        <mode>0</mode>
+        <type>0</type>
+    </plugin>
+</dltproject>

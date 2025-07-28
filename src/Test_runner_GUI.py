@@ -516,6 +516,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.setWindowTitle("Test Automation Runner")
-    MainWindow.setWindowIcon(QIcon(r"C:\Users\Adin N S\Documents\Python_testing\src\assets\button.png"))
+    MainWindow.setWindowIcon(QIcon(r"Python_testing\src\assets\button.png"))
     MainWindow.show()
     sys.exit(app.exec_())
