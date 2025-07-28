@@ -12,6 +12,7 @@ class Get_data():
     def check_line(self,file_name):
         self.excel = Update_Excel()
         print("in checker inside get data")
+        self.excel.update(wake_word='Hey Mini', utterance=self.utterance)
         check_cpu = False
         with open (file_name,"r") as file:
             read_line=file.readlines()
@@ -77,7 +78,7 @@ class Get_data():
         # print("Utterance:", utterance)
         # print("Weather Status:", weather_status)
         # print("City:", city_name)
-        self.excel.update(wake_word='Hey Mini', utterance=self.utterance,recognized_text=utterance,intent=intent,confidence=confidence)
+        self.excel.update(recognized_text=utterance,intent=intent,confidence=confidence)
 
         
 

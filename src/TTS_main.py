@@ -106,6 +106,13 @@ class Test_begin(object):
     def loadutterances(self,logger):
         df = pd.read_excel(self.inputExcel)
         print(df)
+        load_time = (df.size) * 14  
+        
+        if self.load:
+            print("give load")
+            logging.info("Going to give some cpu stress")
+            adb_thread = threading.Thread(target= lambda : self.run_load_adb_command(time=load_time))
+            adb_thread.start()
     
         for index, row in df.iterrows():
             utterance = row['Utterances']
@@ -119,8 +126,22 @@ class Test_begin(object):
                     print(f"Played utterance {utterance}")
                 except Exception as e:
                     print(e)
+        if self.load:
+            try:
+                if hasattr(self, 'load_process') and self.load_process and self.load_process.poll() is None:
+                    self.load_process.terminate()
+                print("ADB process terminated early.")
+            except Exception as e:
+                print(f"Error terminating ADB process: {e}")
+            adb_thread.join()
         # self.utils.warn(mesg="Test Completed ")
-    
+    def run_load_adb_command(self,time):
+        self.load_process = subprocess.Popen([
+            "adb", "-s", "169.254.80.235", "shell", "/data/local/tmp/stressapptest-aarch64",
+            "-s", str(time) , "-M", "600", "-m", "2", "-C", "1", "-W", "-n", "127.0.0.1",
+            "--listen", "-i", "1", "--findfiles", "-f", "/data/local/tmp/file1", "-f", "/data/local/tmp/file2"
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
     def tts(self,text):
         engine = pyttsx3.init()
         engine.setProperty("rate", 150)

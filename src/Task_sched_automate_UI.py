@@ -115,7 +115,7 @@ class Main_utils_page(QWidget):
         checkbox_layout = QVBoxLayout()
         checkbox_label = QLabel("Give load to system?")
         checkbox_label.setStyleSheet(my_style)
-        Give_load = QRadioButton("Yes (ACA ONLY)")
+        Give_load = QRadioButton("Yes ")
         Give_no_load = QRadioButton("No")
         Give_load.setStyleSheet("color: white;")
         Give_no_load.setStyleSheet("color: white;")
