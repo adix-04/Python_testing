@@ -141,6 +141,7 @@ class Test_begin(object):
         log_thread.start()
         time.sleep(1)
         self.run_adb_command('shell cmd car_service inject-custom-input 1012;sleep 0.2; cmd car_service inject-custom-input 1013')
+        time.sleep(1)
         print(f"🔊 Speaking: {text}")
         self.tts(text)
         logging.info(f"Played utterance: {text}")

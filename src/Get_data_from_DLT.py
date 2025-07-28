@@ -16,7 +16,7 @@ class Get_data():
         with open (file_name,"r") as file:
             read_line=file.readlines()
             for line in read_line:
-                if 'is_final_asr":true' in line:
+                if 'is_final_asr":true' in line or  'is_final_asr":false' in line:
                     check_cpu = True
                     self.Log_analyzer(line)
                     # break
