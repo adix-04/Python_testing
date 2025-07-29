@@ -14,8 +14,10 @@ import re
 from datetime import datetime
 from Connect_DLT import Connet_DLT_class
 import utils
+import argparse
 from pathlib import Path
-import re
+
+
 
 class Test_begin(object):
     def __init__(self,mcu_ip,input_excel,directory,dlp_file,load,stack):
@@ -36,7 +38,8 @@ class Test_begin(object):
         self.audioDir = 'audio'
         self.load_process = None
 
-
+        self.newDlp = self.dlpfile_constructor('artifacts/file_DLT.dlp',self.mcuIp)
+        self.dlt = Connet_DLT_class(self.cache,self.newDlp,self.outDIr)
         self.utils = utils.tts_main()
 
         logging.basicConfig(
@@ -48,9 +51,7 @@ class Test_begin(object):
             )
         logging.Logger
 
-        self.newDlp = self.dlpfile_constructor('artifacts/file_DLT.dlp',self.mcuIp)
-        self.dlt = Connet_DLT_class(self.cache,self.newDlp,self.outDIr)
-        print(self.newDlp)
+
         self.main()
         self.test_init()
     
@@ -128,7 +129,6 @@ class Test_begin(object):
                     print(f"Played utterance {utterance}")
                 except Exception as e:
                     print(e)
-        # self.utils.warn(mesg="Test Completed ")
         self.utils.warn(mesg="Test Completed ")
         if self.load:
             try:
@@ -148,12 +148,7 @@ class Test_begin(object):
 
     def speak_utterance(self, text, lang="en"):
         self.run_adb_command('shell input keyevent KEYCODE_HOME')
-        self.dlt.cleaner()
-        if self.load:
-            print("give load")
-            # self.run_adb_command('shell "/data/local/tmp/stressapptest-aarch64 -s 600 -M 1000 -m 2 -C 1 -W -n 127.0.0.1 --listen -i 1 --findfiles -f /data/local/tmp/file1 -f /data/local/tmp/file2"')
-        # Start log collection thread and also do a clean up
-          # Start log collection thread and also do a clean up
+        self.dlt.cleaner()   
         stop_event = threading.Event()
         log_thread = threading.Thread(target=self.dlt.start_dlt)
         log_thread.start()
@@ -231,14 +226,12 @@ class Test_begin(object):
             print(f"Error: {str(e)}")
             return None
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="A simple script with command line arguments.")
+    parser.add_argument("name", type=str, help="Your name")
+    parser.add_argument("--age", type=int, default=30, help="Your age (optional)")
 
-        
-if __name__ == '__main__':
-   parser = argparse.ArgumentParser(description="run tts functions in headless mode")
-   parser.add_argument('--ip',type=str,required=True,help="ip address of the ECU")
-   parser.add_argument('--excel',type=str,required=True,help="excel containing utterances")
-
-   args = parser.parse_args()
+    args = parser.parse_args()
 
     print(f"Hello, {args.name}!")
     print(f"You are {args.age} years old.")
