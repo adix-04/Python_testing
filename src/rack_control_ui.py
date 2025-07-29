@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 import serial
 
+
 class ButtonControl(QWidget):
     
     def __init__(self):
@@ -30,14 +31,15 @@ class ButtonControl(QWidget):
         self.init_ui()
     def connect(self):
         try:
-          self.ser = serial.Serial(port='COM3', baudrate=115200, bytesize=8, parity='N', stopbits=1, timeout=1) 
-          self.st_msg = "Rack Connected" 
-          
+            self.ser = serial.Serial(port='COM7', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=1) 
+            self.st_msg = "Rack Connected" 
+            print('connected')
+            self.init_ui()
         except serial.SerialException:
+            print('disconnected')
             self.st_msg = "Rack disconnected"
+            self.init_ui()
             
-            
-
     def init_ui(self):
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignCenter)
@@ -48,7 +50,7 @@ class ButtonControl(QWidget):
         self.rack_status = QLabel(self.st_msg)
         self.rack_status.setStyleSheet("font-size: 24px; font-weight: bold;color:red;")
         self.rack_status.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet("font-size: 24px; font-weight: bold;")
+        title.setStyleSheet("font-size: 24px; font-weight: bold;color:white;")
         layout.addWidget(title)
         layout.addWidget(self.rack_status)
         
@@ -77,8 +79,9 @@ class ButtonControl(QWidget):
             btn.clicked.connect(lambda _, idx=i: self.toggle_button(idx))
             layout.addWidget(btn, alignment=Qt.AlignCenter)
             self.buttons.append(btn)
-        ref_bun = QPushButton('Refresh')
-        ref_bun.setStyleSheet(
+        ref_btn = QPushButton('Refresh')
+        ref_btn.setFixedSize(250, 30)
+        ref_btn.setStyleSheet(
             """
                 QPushButton {
                     background-color: #f0f0f0;
@@ -91,8 +94,8 @@ class ButtonControl(QWidget):
                     color: white;
                 } """
                 )
-        ref_bun.clicked.connect(self.connect)
-        layout.addWidget(ref_bun)
+        ref_btn.clicked.connect(self.connect)
+        layout.addWidget(ref_btn)
         self.setLayout(layout)
 
     def toggle_button(self, button_idx):
