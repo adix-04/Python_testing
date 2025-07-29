@@ -54,7 +54,7 @@ class Main_utils_page(QWidget):
         exe_path_edit.setStyleSheet(my_style)
         browse_btn = QPushButton("Browse")
         browse_btn.setStyleSheet(my_style)
-        browse_btn.setFixedSize(100,40)
+        browse_btn.setFixedSize(100,30)
         browse_btn.clicked.connect(lambda: exe_path_edit.setText(
             QFileDialog.getOpenFileName(None, "Select Excel", "", "Excel Files (*.xlsx)")[0]
         ))
@@ -70,7 +70,7 @@ class Main_utils_page(QWidget):
         self.log_path_edit.setStyleSheet(my_style)
         log_browse_btn = QPushButton("Browse")
         log_browse_btn.setStyleSheet(my_style)
-        log_browse_btn.setFixedSize(100,40)
+        log_browse_btn.setFixedSize(100,30)
         # log_browse_btn.clicked.connect(lambda: log_path_edit.setText(
         #     QFileDialog.getExistingDirectory(self, 'Select Log Folder')
         # ))
@@ -87,7 +87,7 @@ class Main_utils_page(QWidget):
         fp_path_edit.setStyleSheet(my_style)
         fp_browse_btn = QPushButton("Browse")
         fp_browse_btn.setStyleSheet(my_style)
-        fp_browse_btn.setFixedSize(100,40)
+        fp_browse_btn.setFixedSize(100,30)
         fp_browse_btn.clicked.connect(lambda: fp_path_edit.setText(
             QFileDialog.getOpenFileName(None, "Select DLP File", "", "DLP Files (*.DLP)")[0]
         ))
@@ -95,7 +95,7 @@ class Main_utils_page(QWidget):
         fp_hbox = QHBoxLayout()
         fp_hbox.addWidget(fp_path_edit)
         fp_hbox.addWidget(fp_browse_btn)
-        msg_label  = QLabel("*DLP File will created on runtime with the given ip so this is optional part")
+        msg_label  = QLabel("🔁*DLP File will created on runtime with the given ip so this is optional part🔁")
         msg_label.setStyleSheet("color:white;")
         
         vbox.addLayout(fp_hbox)
@@ -105,7 +105,7 @@ class Main_utils_page(QWidget):
         time_input.setStyleSheet(my_style)
         time_input.setPlaceholderText("Schedule Time (HH:MM, e.g., 14:30) optional IN DEVLOPMENT🏗️🔨")
         vbox.addWidget(time_input)
-        msg_label1  = QLabel("*Windows feature to schdule this as a task using task schduler. Run in headless mode")
+        msg_label1  = QLabel("*🔜Windows feature to schdule this as a task using task schduler. Run in headless mode")
         msg_label1.setStyleSheet("color:white;")
         vbox.addWidget(msg_label1)
 
@@ -114,7 +114,7 @@ class Main_utils_page(QWidget):
 
         schedule_btn = QPushButton("Schedule")
         schedule_btn.setStyleSheet(my_style)
-        schedule_btn.setFixedSize(100,60)
+        schedule_btn.setFixedSize(100,50)
         schedule_btn.clicked.connect(lambda: self.create_and_schedule_task(
             exe_path_edit.text(),
             "MyApp_Task",
@@ -123,7 +123,7 @@ class Main_utils_page(QWidget):
         checkbox_layout = QVBoxLayout()
         checkbox_label = QLabel("Give load to system?")
         checkbox_label.setStyleSheet(my_style)
-        Give_load = QRadioButton("Yes (System may break)")
+        Give_load = QRadioButton("Yes (System may break🚨)")
         Give_no_load = QRadioButton("No (Much safer)")
         Give_load.setStyleSheet("color: white;")
         Give_no_load.setStyleSheet("color: white;")
@@ -135,7 +135,7 @@ class Main_utils_page(QWidget):
         tech_stack.addItem("Cerance")
         test_btn = QPushButton("Start Test")
         test_btn.setStyleSheet(my_style)
-        test_btn.setFixedSize(100,60)
+        test_btn.setFixedSize(100,50)
 
         test_btn.clicked.connect(lambda: Test_begin(
         mcu_ip=ip_path_edit.text(),
