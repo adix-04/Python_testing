@@ -34,11 +34,11 @@ class ButtonControl(QWidget):
             self.ser = serial.Serial(port='COM7', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=1) 
             self.st_msg = "Rack Connected" 
             print('connected')
-            self.init_ui()
+            # self.init_ui()
         except serial.SerialException:
             print('disconnected')
             self.st_msg = "Rack disconnected"
-            self.init_ui()
+            # self.init_ui()
             
     def init_ui(self):
         layout = QVBoxLayout()
@@ -50,8 +50,12 @@ class ButtonControl(QWidget):
         self.rack_status = QLabel(self.st_msg)
         self.rack_status.setStyleSheet("font-size: 24px; font-weight: bold;color:red;")
         self.rack_status.setAlignment(Qt.AlignCenter)
+        self.warning = QLabel("*🚨🚨🚨dont use or press the buttons unless you have a HOST PC connnection through serial otherwise it'll crash🚨🚨🚨")
+        self.warning.setStyleSheet("font-weight: bold;color:white;")
+        self.warning.setAlignment(Qt.AlignCenter)
         title.setStyleSheet("font-size: 24px; font-weight: bold;color:white;")
         layout.addWidget(title)
+        layout.addWidget(self.warning)
         layout.addWidget(self.rack_status)
         
         # Button names
@@ -60,7 +64,7 @@ class ButtonControl(QWidget):
         self.buttons = []
         for i, name in enumerate(button_names):
             btn = QPushButton(f"{name} ")
-            btn.setFixedSize(200, 60)
+            btn.setFixedSize(200, 50)
             btn.setCheckable(True)
             btn.setStyleSheet(
                 """
@@ -95,7 +99,7 @@ class ButtonControl(QWidget):
                 } """
                 )
         ref_btn.clicked.connect(self.connect)
-        layout.addWidget(ref_btn)
+        layout.addWidget(ref_btn,alignment=Qt.AlignCenter)
         self.setLayout(layout)
 
     def toggle_button(self, button_idx):
