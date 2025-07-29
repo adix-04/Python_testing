@@ -23,7 +23,7 @@ import time as t
 import utils
 from Task_sched_automate_UI import Main_utils_page
 from device_card import DeviceCard
-from rack_control_ui import Main_rack_page
+from rack_control_ui import ButtonControl
 from styles import *
 
 DEVICE_FILE = "devices.json"
@@ -226,18 +226,16 @@ QPushButton:hover {
     def rack_page(self):
         page = QWidget()
         h_box = QHBoxLayout()
-        self.card = Main_rack_page().page
+        self.card = ButtonControl()
         h_box.addWidget(self.card)
         page.setLayout(h_box)
         return page
 
     def home_page(self):
         page = QWidget()
-
         scroll = QScrollArea()
         container = QWidget()
         scroll.setWidgetResizable(True)
-       
         grid_layout = QGridLayout()
         try:
          with open (DEVICE_FILE , "r") as file:
@@ -516,6 +514,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.setWindowTitle("Test Automation Runner")
-    MainWindow.setWindowIcon(QIcon(r"Python_testing\src\assets\button.png"))
+    MainWindow.setWindowIcon(QIcon(r"C:\Users\Adin N S\Documents\Python_testing\src\assets\button.png"))
     MainWindow.show()
     sys.exit(app.exec_())

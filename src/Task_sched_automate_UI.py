@@ -6,14 +6,13 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QIcon,QFont,QPixmap,QMovie
 from PyQt5.QtCore import Qt
-import json
+from datetime import datetime
 from PyQt5.QtCore import pyqtSignal
 import Test_runner_GUI
 from styles import *
 import subprocess
 import os
 from TTS_main import Test_begin
-from datetime import datetime
 
 class Main_utils_page(QWidget):
     def __init__(self):
@@ -72,12 +71,11 @@ class Main_utils_page(QWidget):
         log_browse_btn = QPushButton("Browse")
         log_browse_btn.setStyleSheet(my_style)
         log_browse_btn.setFixedSize(100,40)
-        # log_browse_btn.clicked.connect(lambda: self.log_path_edit.setText(
+        # log_browse_btn.clicked.connect(lambda: log_path_edit.setText(
         #     QFileDialog.getExistingDirectory(self, 'Select Log Folder')
         # ))
         log_browse_btn.clicked.connect(self.select_log_folder)
         
-
         log_hbox = QHBoxLayout()
         log_hbox.addWidget(self.log_path_edit)
         log_hbox.addWidget(log_browse_btn)
@@ -85,7 +83,7 @@ class Main_utils_page(QWidget):
 
         # ---------- DLP Project File ----------
         fp_path_edit = QLineEdit()
-        fp_path_edit.setPlaceholderText("Project file for DLT ECU Conf")
+        fp_path_edit.setPlaceholderText("Project file for DLT / ECU Configuration file to start dlt (*Rack wise)")
         fp_path_edit.setStyleSheet(my_style)
         fp_browse_btn = QPushButton("Browse")
         fp_browse_btn.setStyleSheet(my_style)
@@ -97,13 +95,19 @@ class Main_utils_page(QWidget):
         fp_hbox = QHBoxLayout()
         fp_hbox.addWidget(fp_path_edit)
         fp_hbox.addWidget(fp_browse_btn)
+        msg_label  = QLabel("*DLP File will created on runtime with the given ip so this is optional part")
+        msg_label.setStyleSheet("color:white;")
+        
         vbox.addLayout(fp_hbox)
-
+        vbox.addWidget(msg_label)
         # ---------- Time Input ----------
         time_input = QLineEdit()
         time_input.setStyleSheet(my_style)
         time_input.setPlaceholderText("Schedule Time (HH:MM, e.g., 14:30) optional IN DEVLOPMENT🏗️🔨")
         vbox.addWidget(time_input)
+        msg_label1  = QLabel("*Windows feature to schdule this as a task using task schduler. Run in headless mode")
+        msg_label1.setStyleSheet("color:white;")
+        vbox.addWidget(msg_label1)
 
         # ---------- Buttons ----------
         btn_hbox = QHBoxLayout()
@@ -119,8 +123,8 @@ class Main_utils_page(QWidget):
         checkbox_layout = QVBoxLayout()
         checkbox_label = QLabel("Give load to system?")
         checkbox_label.setStyleSheet(my_style)
-        Give_load = QRadioButton("Yes (ACA ONLY)")
-        Give_no_load = QRadioButton("No")
+        Give_load = QRadioButton("Yes (System may break)")
+        Give_no_load = QRadioButton("No (Much safer)")
         Give_load.setStyleSheet("color: white;")
         Give_no_load.setStyleSheet("color: white;")
         checkbox_layout.addWidget(checkbox_label)
@@ -158,6 +162,7 @@ class Main_utils_page(QWidget):
             self.log_path_edit.setText(folder_path)
             self.runnerlogDir=os.path.join(self.log_path_edit.text(),self.runnerlogDir)
         os.mkdir(self.runnerlogDir)
+
     def printer(self):
         print("god")
         print(self.time_input.text())
