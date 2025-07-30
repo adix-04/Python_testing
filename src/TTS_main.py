@@ -129,7 +129,7 @@ class Test_begin(object):
                     print(f"Played utterance {utterance}")
                 except Exception as e:
                     print(e)
-        self.utils.warn(mesg="Test Completed ")
+        # self.utils.warn(mesg="Test Completed ")
         if self.load:
             try:
                 if hasattr(self, 'load_process') and self.load_process and self.load_process.poll() is None:
@@ -147,7 +147,7 @@ class Test_begin(object):
         engine.runAndWait()
 
     def speak_utterance(self, text, lang="en"):
-        self.run_adb_command('shell input keyevent KEYCODE_HOME')
+        self.run_adb_command('shell input tap 500 600')
         self.dlt.cleaner()   
         stop_event = threading.Event()
         log_thread = threading.Thread(target=self.dlt.start_dlt)
@@ -207,8 +207,8 @@ class Test_begin(object):
             new_filename = f"{original_file.stem}_{hostname_with_dash}{original_file.suffix}"
             
             # Check if file already exists
-            if os.path.exists(new_filename):
-                raise FileExistsError(f"Output file{new_filename} already exists")
+            # if os.path.exists(new_filename):
+            #     raise FileExistsError(f"Output file{new_filename} already exists")
             
             # Write the new file
             with open(new_filename, 'w') as file:

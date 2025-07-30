@@ -31,7 +31,7 @@ class ButtonControl(QWidget):
         self.init_ui()
     def connect(self):
         try:
-            self.ser = serial.Serial(port='COM7', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=1) 
+            self.ser = serial.Serial(port='COM3', baudrate=115200, bytesize=8, parity='N', stopbits=1, timeout=1) 
             self.st_msg = "Rack Connected" 
             print('connected')
             # self.init_ui()
@@ -50,7 +50,7 @@ class ButtonControl(QWidget):
         self.rack_status = QLabel(self.st_msg)
         self.rack_status.setStyleSheet("font-size: 24px; font-weight: bold;color:red;")
         self.rack_status.setAlignment(Qt.AlignCenter)
-        self.warning = QLabel("*🚨🚨🚨dont use or press the buttons unless you have a HOST PC connnection through serial otherwise it'll crash🚨🚨🚨")
+        self.warning = QLabel("*dont use or press the buttons unless you have a HOST PC connnection through serial otherwise it'll crash")
         self.warning.setStyleSheet("font-weight: bold;color:white;")
         self.warning.setAlignment(Qt.AlignCenter)
         title.setStyleSheet("font-size: 24px; font-weight: bold;color:white;")
