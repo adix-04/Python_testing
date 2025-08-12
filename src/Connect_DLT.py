@@ -49,8 +49,8 @@ class Connet_DLT_class():
         temp_file = os.listdir(self.file_path)
         print(temp_file[0])
         try:
-
-         self.file_name=f'{self.outDIR}/traceLog{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt'
+# {datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}
+         self.file_name=f'{self.outDIR}/traceLog.txt'
          process = subprocess.run(["dlt_viewer","-c",f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache/{temp_file[0]}',self.file_name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         
          
