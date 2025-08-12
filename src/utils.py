@@ -13,9 +13,10 @@ class tts_main():
         self.ui_obj = Test_runner_GUI.Ui_MainWindow()
         
     def tts_converter(self,command):
-        audio = gTTS(text=command,lang='en',slow=False,tld="com.au")
-        audio.save("output.mp3")
-        os.system("mpg123 output.mp3")
+        engine = pyttsx3.init()
+        engine.setProperty("rate", 150)
+        engine.say(command)
+        engine.runAndWait()
     def file_iter(self,file_path):
         data = pd.read_excel(file_path,usecols=self.cols)
         print(data)

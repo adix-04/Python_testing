@@ -20,7 +20,6 @@ class Connet_DLT_class():
             if os.listdir(self.file_path):
                 self.remove_cache_files(self.file_path)
             else:
-                print(self.project_file)
                 # print("no files in cahce")
                 pass 
         except Exception as e:
@@ -64,7 +63,6 @@ class Connet_DLT_class():
          Get_data_from_DLT.Get_data(self.file_name,utterance=uttearnce)
 
     def stop_dlt(self):
-
         subprocess.call(["taskkill", "/F", "/IM", "dlt_viewer.exe"])
         pass
 

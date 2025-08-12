@@ -1,80 +1,126 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QPushButton, QLabel,
-    QVBoxLayout, QHBoxLayout, QStackedWidget, QLineEdit, QTextEdit,
-    QFrame, QScrollArea,QSizePolicy,QGridLayout,QFileDialog,QMessageBox,QComboBox
+    QApplication,
+    QMainWindow,
+    QWidget,
+    QVBoxLayout,
+    QPushButton,
+    QLabel  
 )
-from PyQt5.QtGui import QIcon,QFont,QPixmap,QMovie
 from PyQt5.QtCore import Qt
-from PyQt5.QtCore import pyqtSignal
-from styles import *
-from rack_commands import Rack_main
+import serial
 
-class Main_rack_page(QWidget):
+
+class ButtonControl(QWidget):
+    
     def __init__(self):
+        self.st_msg = ''
         super().__init__()
-        self.sig_use = pyqtSignal()
-        self.rack = Rack_main()
-        self.rack.rack_main()       
-        self.page = self.main_page()
-        # self.rack.mute()
-        self.rack.check_serial()
-    def main_page(self):
-        page = self.create_card()
-        main_layout = QHBoxLayout()
-        main_layout.setAlignment(Qt.AlignCenter)
-        main_layout.addWidget(page)
-        page.setLayout(main_layout)
-        return page 
-       
+            # self.rack_status.setText("RACK NOT CONNECTED") 
+        # Button commands: [ON, OFF] for each button
+        self.button_commands = [
+            ["HFBSM", "HFBCM"],  # Mute
+            ["HFBSO", "HFBCO"],  # OBD
+            ["HFBS0", "HFBC0"],  # CL30
+            ["HFBSf", "HFBCf"],  # CL30F
+            ["HFBSb", "HFBCb"]   # CL30B
+        ]
+        
+        self.button_states = [False] * 5  #Track ON/OFF states
+        self.connect()
+        self.init_ui()
+    def connect(self):
+        try:
+            self.ser = serial.Serial(port='COM3', baudrate=115200, bytesize=8, parity='N', stopbits=1, timeout=1) 
+            self.st_msg = "Rack Connected" 
+            print('connected')
+            # self.init_ui()
+        except serial.SerialException:
+            print('disconnected')
+            self.st_msg = "Rack disconnected"
+            # self.init_ui()
+            
+    def init_ui(self):
+        layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignCenter)
+        layout.setSpacing(10)
+        # Title
+        title = QLabel("Device Control Panel")
+        title.setAlignment(Qt.AlignCenter)
+        self.rack_status = QLabel(self.st_msg)
+        self.rack_status.setStyleSheet("font-size: 24px; font-weight: bold;color:red;")
+        self.rack_status.setAlignment(Qt.AlignCenter)
+        self.warning = QLabel("*dont use or press the buttons unless you have a HOST PC connnection through serial otherwise it'll crash")
+        self.warning.setStyleSheet("font-weight: bold;color:white;")
+        self.warning.setAlignment(Qt.AlignCenter)
+        title.setStyleSheet("font-size: 24px; font-weight: bold;color:white;")
+        layout.addWidget(title)
+        layout.addWidget(self.warning)
+        layout.addWidget(self.rack_status)
+        
+        # Button names
+        button_names = ['Mute', 'OBD', 'CL30', 'CL30F', 'CL30B']
+        # Create buttons
+        self.buttons = []
+        for i, name in enumerate(button_names):
+            btn = QPushButton(f"{name} ")
+            btn.setFixedSize(200, 50)
+            btn.setCheckable(True)
+            btn.setStyleSheet(
+                """
+                QPushButton {
+                    background-color: #f0f0f0;
+                    border: 2px solid #333;
+                    border-radius: 10px;
+                    font-size: 16px;
+                }
+                QPushButton:checked {
+                    background-color: #66bb6a;
+                    color: white;
+                }
+                """
+            )
+            btn.clicked.connect(lambda _, idx=i: self.toggle_button(idx))
+            layout.addWidget(btn, alignment=Qt.AlignCenter)
+            self.buttons.append(btn)
+        ref_btn = QPushButton('Refresh')
+        ref_btn.setFixedSize(250, 30)
+        ref_btn.setStyleSheet(
+            """
+                QPushButton {
+                    background-color: #f0f0f0;
+                    border: 2px solid #333;
+                    border-radius: 10px;
+                    font-size: 10px;
+                }
+                 QPushButton:pressed {
+                    background-color: #66bb6a;
+                    color: white;
+                } """
+                )
+        ref_btn.clicked.connect(self.connect)
+        layout.addWidget(ref_btn,alignment=Qt.AlignCenter)
+        self.setLayout(layout)
 
-    def create_card(self):
-        card = QFrame()
-        card.setFrameShape(QFrame.StyledPanel)
-        card.setStyleSheet("background-color: #302D2D; border-radius: 12px; padding: 2px;")
-        vbox = QVBoxLayout()
-        label = QLabel("Clamp Settings in devlopment🏗️🛠️")
-        label.setStyleSheet(my_style)
-        label.setAlignment(Qt.AlignCenter)
-        label.setObjectName("headers")
-        vbox.addWidget(label)
-        fHbox = QHBoxLayout()
-        sHbox = QHBoxLayout()
+    def toggle_button(self, button_idx):
+        is_on = self.button_states[button_idx]
+        
+        if is_on:
+            cmd = self.button_commands[button_idx][1]  # OFF command
+            self.buttons[button_idx].setText(f"{self.buttons[button_idx].text().split(' (')[0]} ")
+        else:
+            cmd = self.button_commands[button_idx][0]  # ON command
+            self.buttons[button_idx].setText(f"{self.buttons[button_idx].text().split(' (')[0]} ")
+        
+        self.button_states[button_idx] = not is_on
+        self.ser.write(cmd.encode() + b'\n')
 
-        vbox.setAlignment(Qt.AlignCenter)
-        vbox.setSpacing(10)
+    def closeEvent(self, event):
+        self.ser.close()
+        event.accept()
 
-        self.browse_btn = QPushButton("Shut Down Clamps")
-        self.browse_btn.setStyleSheet(my_style)
-        self.browse_btn.setMinimumSize(100,100)
-        self.browse_btn.clicked.connect(self.rack.func_stop_clamps)
-
-        self.log_browse_btn = QPushButton("Start all Clamps")
-        self.log_browse_btn.setStyleSheet(my_style)
-        self.log_browse_btn.setMinimumSize(100,100)
-        self.log_browse_btn.clicked.connect(self.rack.func_start_clamps)
-    
-        self.test_btn = QPushButton("start test")
-        self.test_btn.setStyleSheet(my_style)
-        self.test_btn.setMinimumSize(100,100)
-        self.test_btn.clicked.connect(self.rack.check_serial)
-      
-        schedule_btn = QPushButton("Schedule")
-        schedule_btn.setStyleSheet(my_style)
-        schedule_btn.setMinimumSize(100,100)
-       
-
-        fHbox.addWidget(self.browse_btn)
-        fHbox.addWidget(self.log_browse_btn)
-
-        sHbox.addWidget(self.test_btn)
-        sHbox.addWidget(schedule_btn)
-
-        vbox.addLayout(fHbox)
-        vbox.addLayout(sHbox)
-
-        card.setLayout(vbox)
-        return card
-  
-    
-   
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = ButtonControl()
+    window.show()
+    sys.exit(app.exec_())

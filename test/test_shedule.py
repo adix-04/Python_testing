@@ -1,5 +1,6 @@
 import subprocess
 import re
+import argparse
 
 def get_total_cpu_usage():
     print('run')
@@ -41,4 +42,10 @@ def get_total_cpu_usage():
     
 get_total_cpu_usage()   
 if __name__ == "__main__":
-    get_total_cpu_usage()
+   parser = argparse.ArgumentParser(description="run tts functions from with out UI")
+   parser.add_argument('--ip',type=str,required=True,help="ip address of the ECU")
+
+   args = parser.parse_args()
+
+
+   print(args.ip)

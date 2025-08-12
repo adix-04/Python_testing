@@ -8,7 +8,7 @@ FIELDS = [
      "confidence","retry_count", "error_code"
 ]
 
-EXCEL_FILE = "session_log.xlsx"
+EXCEL_FILE = f"session_log_{datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.xlsx"
 
 class Update_Excel():
     _instance = None

@@ -1,3 +1,1 @@
-
-
-"C:/Users/Adin N S/AppData/Local/Programs/Python/Python313/python.exe" "c:/Users/Adin N S/Documents/Python_testing/test/rack.py" -p COM3 --shutdown_clamps
+C:/Users/jithin.sreekala/AppData/Local/Programs/Python/Python313/python.exe "c:/Users/jithin.sreekala/OneDrive - Acsia Technologies Private Limited/Desktop/POC/python_testing/test/rack.py" -p COM3 --shutdown_clamps

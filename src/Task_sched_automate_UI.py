@@ -83,7 +83,15 @@ class Main_utils_page(QWidget):
         log_browse_btn = QPushButton("Browse")
         log_browse_btn.setStyleSheet(my_style)
         log_browse_btn.setFixedSize(100,30)
+
         log_browse_btn.clicked.connect(self.select_log_folder)
+
+        # log_browse_btn.clicked.connect(lambda: log_path_edit.setText(
+        #     QFileDialog.getExistingDirectory(self, 'Select Log Folder')
+        # ))
+        log_browse_btn.clicked.connect(self.select_log_folder)
+        
+
         log_hbox = QHBoxLayout()
         log_hbox.addWidget(self.log_path_edit)
         log_hbox.addWidget(log_browse_btn)
@@ -102,6 +110,7 @@ class Main_utils_page(QWidget):
         fp_hbox = QHBoxLayout()
         fp_hbox.addWidget(fp_path_edit)
         fp_hbox.addWidget(fp_browse_btn)
+
         msg_label  = QLabel("*DLP File will be created at runtime with the given IP, optional")
         msg_label.setStyleSheet("color:white;background: transparent;")
         vbox.addLayout(fp_hbox)
@@ -114,6 +123,7 @@ class Main_utils_page(QWidget):
         vbox.addWidget(time_input)
         msg_label1  = QLabel("*Windows feature to schedule this as a task")
         msg_label1.setStyleSheet("color:white; background: transparent;")
+
         vbox.addWidget(msg_label1)
 
         # Buttons + Options
@@ -130,10 +140,12 @@ class Main_utils_page(QWidget):
         checkbox_layout = QVBoxLayout()
         checkbox_label = QLabel("Give load to system?")
         checkbox_label.setStyleSheet(my_style)
+
         Give_load = QRadioButton("Yes ")
         Give_no_load = QRadioButton("No")
         Give_load.setStyleSheet("color: white;background: transparent;")
         Give_no_load.setStyleSheet("color: white;background: transparent;")
+
         checkbox_layout.addWidget(checkbox_label)
         checkbox_layout.addWidget(Give_load)
         checkbox_layout.addWidget(Give_no_load)

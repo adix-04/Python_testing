@@ -44,8 +44,13 @@ class DeviceCard(QWidget):
         self.setFixedSize(240, 320)
         def make_round_pixmap(pixmap):
             size = min(pixmap.width(), pixmap.height())
-            cropped = pixmap.scaled(size, size, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
-        
+
+            # Center crop manually
+            x = (pixmap.width() - size) // 2
+            y = (pixmap.height() - size) // 2
+            cropped = pixmap.copy(x, y, size, size)
+            cropped = cropped.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+
             rounded = QPixmap(size, size)
             rounded.fill(Qt.transparent)
 
@@ -63,6 +68,7 @@ class DeviceCard(QWidget):
 # Apply to QLabel
         image = QLabel(self)
         pixmap = QPixmap('src/assets/download.png')
+        pixmap1 = QPixmap(r'c:\Users\Adin N S\Downloads\256px-MINI_logo.svg.png')
         round_pixmap = make_round_pixmap(pixmap)
         image.setPixmap(round_pixmap)
         image.setScaledContents(True)
