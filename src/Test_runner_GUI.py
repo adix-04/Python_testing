@@ -267,7 +267,7 @@ QPushButton:hover {
     def add_page(self):
         page = QWidget()
         layout = QVBoxLayout()
-        label = QLabel("Add or create a device configuration🌍💻📊")
+        label = QLabel("Add or create a device configuration")
         label.setStyleSheet(my_style)
         label.setAlignment(Qt.AlignCenter)
         label.setObjectName("headers")
@@ -304,7 +304,7 @@ QPushButton:hover {
         print("Editing device:", device)
         self.E_page = QWidget()
         layout = QVBoxLayout()
-        label = QLabel("Edit a device configuration🌍💻📊")
+        label = QLabel("Edit a device configuration")
         label.setStyleSheet(my_style)
         label.setAlignment(Qt.AlignCenter)
         label.setObjectName("headers")
@@ -353,7 +353,7 @@ QPushButton:hover {
     def use_page(self):
         self.E_page = QWidget()
         main_layout = QVBoxLayout()
-        label = QLabel("Test to Speech📝📢🔊")
+        label = QLabel("Test to Speech")
         label.setStyleSheet(my_style)
         label.setAlignment(Qt.AlignCenter)
         label.setObjectName("headers")

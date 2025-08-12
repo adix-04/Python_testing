@@ -35,8 +35,8 @@ The Android device must have debugging mode enabled.
 
 There should be a connection between device and host through a USB cable for USB debugging or Ethernet cable for TCP based debugging
 
-- adb exe path should be added in windows path variable , we have to execute adb commands from everywhere
-- dlt exe path should be like the same as adb  because our current terminal should be able to call these from anywhere 
+- **adb exe path should be added in windows path variable , we have to execute adb commands from everywhere**
+- **dlt exe path should be like the same as adb  because our current terminal should be able to call these from anywhere** 
 - Linux dont have these problems beacaue we can call adb and dlt from anywhere, if it is not working do add it in path variables
 
 In some cases do restart abd server and manually check if the connection can be made using adb in TCP/IP mode:

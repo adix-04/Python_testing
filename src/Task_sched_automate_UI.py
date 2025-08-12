@@ -95,7 +95,7 @@ class Main_utils_page(QWidget):
         fp_hbox = QHBoxLayout()
         fp_hbox.addWidget(fp_path_edit)
         fp_hbox.addWidget(fp_browse_btn)
-        msg_label  = QLabel("🔁*DLP File will created on runtime with the given ip so this is optional part🔁")
+        msg_label  = QLabel("*DLP File will created on runtime with the given ip so this is optional part")
         msg_label.setStyleSheet("color:white;")
         
         vbox.addLayout(fp_hbox)
@@ -103,9 +103,9 @@ class Main_utils_page(QWidget):
         # ---------- Time Input ----------
         time_input = QLineEdit()
         time_input.setStyleSheet(my_style)
-        time_input.setPlaceholderText("Schedule Time (HH:MM, e.g., 14:30) optional IN DEVLOPMENT🏗️🔨")
+        time_input.setPlaceholderText("Schedule Time (HH:MM, e.g., 14:30) optional IN DEVLOPMENT")
         vbox.addWidget(time_input)
-        msg_label1  = QLabel("*🔜Windows feature to schdule this as a task using task schduler. Run in headless mode")
+        msg_label1  = QLabel("*Windows feature to schdule this as a task using task schduler. Run in headless mode")
         msg_label1.setStyleSheet("color:white;")
         vbox.addWidget(msg_label1)
 
