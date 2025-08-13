@@ -31,7 +31,7 @@ class Test_begin(object):
         #self.outDIr = self.outDIr + f"/Test_run_on_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
         self.command_wait_deviceStart="wait-for-device"
         self.report_excel_file = "output_from_test_run.xlsx"
-        self.report_excel_file = self.outDIr + self.report_excel_file
+        self.report_excel_file =  self.report_excel_file
         self.dlp = dlp_file
         self.excel = Update_Excel()
         self.cache = f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache'
@@ -228,10 +228,17 @@ class Test_begin(object):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A simple script with command line arguments.")
-    parser.add_argument("name", type=str, help="Your name")
-    parser.add_argument("--age", type=int, default=30, help="Your age (optional)")
-
+    parser.add_argument("--ip", required=True, type=str, help="Target device IP (ADB).")
+    parser.add_argument("--excel", type=str, help="Path to input Excel (optional).")
+    parser.add_argument("--dir", required=True, type=Path, help="Output/log folder.")
+    parser.add_argument("--dlp", type=str, help="DLT project file.")
+    parser.add_argument("--load", type=lambda x: str(x).lower() in ("yes", "1", "true", "y"), help="Give system load via ADB.")
+    parser.add_argument("--tech", type=str, default="BCA", help="Tech stack (e.g. BCA).")
     args = parser.parse_args()
 
-    print(f"Hello, {args.name}!")
-    print(f"You are {args.age} years old.")
+    
+    
+    TTSObj = Test_begin(args.ip,args.excel,args.dir,args.dlp,args.load,args.tech)
+    
+
+    
