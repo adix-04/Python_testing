@@ -31,22 +31,33 @@ class ButtonControl(QWidget):
         self.connect()
         self.init_ui()
     def connect(self):
+        # Close existing connection if open
+        if hasattr(self, "ser") and self.ser.is_open:
+            self.ser.close()
+
         try:
             self.ser = serial.Serial(
                 port='COM3',
-                baudrate=115200,
+                baudrate=9600,
                 bytesize=8,
                 parity='N',
                 stopbits=1,
                 timeout=1
             )
             self.st_msg = "Rack Connected"
-            print('connected')
-            # Update label immediately
+            print("connected")
             if hasattr(self, "rack_status"):
                 self.rack_status.setText(self.st_msg)
                 self.rack_status.setStyleSheet("font-size: 22px; font-weight: bold; color: lime;")
+
         except serial.SerialException:
+            self.st_msg = "Rack disconnected"
+            print("disconnected")
+            if hasattr(self, "rack_status"):
+                self.rack_status.setText(self.st_msg)
+                self.rack_status.setStyleSheet("font-size: 22px; font-weight: bold; color: red;")
+
+        except Exception:
             print('disconnected')
             self.st_msg = "Rack Disconnected"
             if hasattr(self, "rack_status"):
@@ -64,12 +75,6 @@ class ButtonControl(QWidget):
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet("font-size: 26px; font-weight: bold; color: white;")
         layout.addWidget(title)
-
-        # === Warning ===
-        self.warning = QLabel("* Do not use unless connected to HOST PC via serial — otherwise it may crash")
-        self.warning.setStyleSheet("font-size: 12px; font-weight: bold; color: #FF6666;")
-        self.warning.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.warning)
 
         # === Rack Status ===
         self.rack_status = QLabel(self.st_msg)
@@ -115,12 +120,13 @@ class ButtonControl(QWidget):
         for row, name in enumerate(button_names):
             label = QLabel(name)
             label.setStyleSheet("color: white; font-size: 14px; font-weight: bold;")
-            grid.addWidget(label, row, 0, alignment=Qt.AlignRight)
 
             btn_on = QPushButton("ON")
             btn_on.setStyleSheet(btn_style_on)
             btn_on.clicked.connect(lambda _, idx=row: self.send_command(idx, True))
-            grid.addWidget(btn_on, row, 1)
+            grid.addWidget(label, row, 1, alignment=Qt.AlignRight)
+
+            grid.addWidget(btn_on, row, 0)
 
             btn_off = QPushButton("OFF")
             btn_off.setStyleSheet(btn_style_off)
@@ -147,7 +153,7 @@ class ButtonControl(QWidget):
                 font-size: 14px;
                 font-weight: bold;
                 padding: 6px 12px;
-                min-width: 200px;
+                min-width: 50px;
             }
             QPushButton:hover { background-color: #005A99; }
             QPushButton:pressed { background-color: #004C80; }
@@ -159,7 +165,7 @@ class ButtonControl(QWidget):
 
 
     def send_command(self, button_idx, turn_on):
-        """Send ON or OFF command directly without toggle state confusion."""
+        """Send ON or OFF command directly ."""
         cmd = self.button_commands[button_idx][0] if turn_on else self.button_commands[button_idx][1]
         self.ser.write(cmd.encode() + b'\n')
 

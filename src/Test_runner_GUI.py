@@ -466,45 +466,93 @@ QPushButton:hover {
 
 
  #edit page will be loaded after this 
-    def edit_page(self,device):
+    def edit_page(self, device):
         self.isEditing = True
         self.isEditingDevName = device["name"]
         print("Editing device:", device)
+
         self.E_page = QWidget()
         layout = QVBoxLayout()
-        label = QLabel("Edit a device configuration")
-        label.setStyleSheet(my_style)
+        layout.setSpacing(16)
+        layout.setContentsMargins(40, 20, 40, 20)
+
+        # === Header ===
+        label = QLabel("Edit Device Configuration")
+        label.setStyleSheet("""
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+        """)
         label.setAlignment(Qt.AlignCenter)
-        label.setObjectName("headers")
-        layout.setSpacing(20)
-        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(label)
 
+        # === Input Fields ===
+        input_style = """
+            QLineEdit {
+                background-color: #1e1e1e;
+                color: white;
+                border: 1px solid #555;
+                border-radius: 6px;
+                padding: 6px 10px;
+                font-size: 14px;
+            }
+            QLineEdit:focus {
+                border: 1px solid #007ACC;
+            }
+        """
+
         self.input_name = QLineEdit(device.get("name", ""))
+        self.input_name.setPlaceholderText("Device Name")
+        self.input_name.setStyleSheet(input_style)
+
         self.input_ip = QLineEdit(device.get("ip", ""))
+        self.input_ip.setPlaceholderText("IP Address")
+        self.input_ip.setStyleSheet(input_style)
+
         self.input_port = QLineEdit(device.get("port", ""))
+        self.input_port.setPlaceholderText("Port")
+        self.input_port.setStyleSheet(input_style)
+
         self.input_dlt = QLineEdit(device.get("dlt_path", ""))
+        self.input_dlt.setPlaceholderText("DLT Path")
+        self.input_dlt.setStyleSheet(input_style)
+        self.input_dlt.mousePressEvent = lambda event, input=self.input_dlt: self.file(event, self.input_dlt)
+
         self.input_adb = QLineEdit(device.get("adb_path", ""))
+        self.input_adb.setPlaceholderText("ADB Path")
+        self.input_adb.setStyleSheet(input_style)
+        self.input_adb.mousePressEvent = lambda event, input=self.input_adb: self.file(event, self.input_adb)
 
-        for input_field in [self.input_dlt, self.input_adb]:
-            input_field.mousePressEvent = lambda event, input=input_field: self.file(event, input)
-
-        for field in [self.input_name, self.input_ip, self.input_port, self.input_dlt, self.input_adb]:
-            field.setStyleSheet(self.my_style)
-
-        self.save_btn = QPushButton("Save Device")
-        self.save_btn.setFixedWidth(100)
-        self.save_btn.setStyleSheet(self.my_style)
+        # === Save Button ===
+        self.save_btn = QPushButton("💾 Save Changes")
+        self.save_btn.setFixedHeight(40)
+        self.save_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #4CAF50;
+                color: white;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 6px;
+                padding: 6px 12px;
+            }
+            QPushButton:hover { background-color: #45A049; }
+            QPushButton:pressed { background-color: #2E7D32; }
+        """)
         self.save_btn.clicked.connect(self.save_device)
 
-        for widget in [self.input_name, self.input_ip, self.input_port, self.input_dlt, self.input_adb, self.save_btn]:
+        # === Add all widgets ===
+        for widget in [self.input_name, self.input_ip, self.input_port, self.input_dlt, self.input_adb]:
             layout.addWidget(widget)
 
+        layout.addSpacing(10)
+        layout.addWidget(self.save_btn, alignment=Qt.AlignCenter)
         layout.addStretch()
+
         self.E_page.setLayout(layout)
 
         self.stackedWidget.addWidget(self.E_page)
         self.stackedWidget.setCurrentWidget(self.E_page)
+
 
     def clear_form(self):
         self.input_name.clear()
