@@ -28,6 +28,7 @@ class Test_begin(object):
         self.numIters = 5
         self.outDIr = directory
         self.load = load
+        self.load_time = 0
         #self.outDIr = self.outDIr + f"/Test_run_on_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
         self.command_wait_deviceStart="wait-for-device"
         self.report_excel_file = "output_from_test_run.xlsx"
@@ -51,9 +52,11 @@ class Test_begin(object):
             )
         logging.Logger
 
-
+        df = pd.read_excel(self.inputExcel)
+        '''doing some maths here to calculate how much time of load we need to give based on how much of utterance we have'''
+        self.load_time = (df.size) * 15  
         self.main()
-        self.test_init()
+       
     
     def main(self):
         print(self.inputExcel)
@@ -111,12 +114,13 @@ class Test_begin(object):
     def loadutterances(self,logger):
         df = pd.read_excel(self.inputExcel)
         '''doing some maths here to calculate how much time of load we need to give based on how much of utterance we have'''
-        load_time = (df.size) * 14  
+        # self.load_time = (df.size) * 15  
+        print(f"this is the load time from my opt{self.load_time}")
         
         if self.load:
             print("give load")
             logging.info("Going to give some cpu stress")
-            adb_thread = threading.Thread(target= lambda : self.run_load_adb_command(time=load_time))
+            adb_thread = threading.Thread(target= lambda : self.run_load_adb_command(time=self.load_time))
             adb_thread.start()
         
         # print(df)

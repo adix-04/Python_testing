@@ -5,9 +5,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QPainter,QFont,QPixmap,QPainterPath
 from PyQt5.QtCore import Qt
-import json
 from PyQt5.QtCore import pyqtSignal
-import Test_runner_GUI
+
 
 
 class DeviceCard(QWidget):
