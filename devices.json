@@ -5,5 +5,12 @@
         "port": "test",
         "dlt_path": "/home/adin/Desktop/p3V1/Python_testing/requirements.txt",
         "adb_path": ""
+    },
+    {
+        "name": "weredwddddd",
+        "ip": "qs",
+        "port": "",
+        "dlt_path": "",
+        "adb_path": ""
     }
 ]
