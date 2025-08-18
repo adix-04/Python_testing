@@ -40,7 +40,7 @@ class Update_Excel():
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.data = {key: "" for key in FIELDS}
         self.data["timestamp"] = timestamp
-    def send_mail():
+    def send_mail(self):
         print("sending mail through win32 client after tts")
         send_with_outlook(EXCEL_FILE)
 if __name__ == "__main__":

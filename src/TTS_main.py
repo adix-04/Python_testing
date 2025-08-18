@@ -244,6 +244,7 @@ if __name__ == "__main__":
 
     
     TTSObj = Test_begin(args.ip,args.excel,args.dir,args.dlp,args.load,args.tech)
+    TTSObj.test_init()
     
 
     
