@@ -14,7 +14,10 @@ import re
 from datetime import datetime
 from Connect_DLT import Connet_DLT_class
 import utils
-from Get_cpu_usage import cpu_usage
+import argparse
+from pathlib import Path
+
+
 
 class Test_begin(object):
     def __init__(self,mcu_ip,input_excel,directory,dlp_file,load,stack):
@@ -25,20 +28,23 @@ class Test_begin(object):
         self.numIters = 5
         self.outDIr = directory
         self.load = load
-        # self.outDIr = self.outDIr + f"/Test_run_on_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+        self.load_time = 0
+        #self.outDIr = self.outDIr + f"/Test_run_on_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
         self.command_wait_deviceStart="wait-for-device"
         self.report_excel_file = "output_from_test_run.xlsx"
-        self.report_excel_file = self.outDIr + self.report_excel_file
+        self.report_excel_file =  self.report_excel_file
         self.dlp = dlp_file
         self.excel = Update_Excel()
         self.cache = f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache'
         self.audioDir = 'audio'
+        self.load_process = None
 
-        self.dlt = Connet_DLT_class(self.cache,self.dlp,self.outDIr)
-
+        self.newDlp = self.dlpfile_constructor('artifacts/file_DLT.dlp',self.mcuIp)
+        self.dlt = Connet_DLT_class(self.cache,self.newDlp,self.outDIr)
         self.utils = utils.tts_main()
+
         logging.basicConfig(
-                filename=f"{self.outDIr}/overall_log.txt",  
+                filename=f"{self.outDIr}/overall_log{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt",  
                 filemode="w",  # if file exist, clear it then open and write
                 level=logging.DEBUG,
                 format="%(asctime)s:%(levelname)s:%(message)s",
@@ -46,9 +52,11 @@ class Test_begin(object):
             )
         logging.Logger
 
-
+        df = pd.read_excel(self.inputExcel)
+        '''doing some maths here to calculate how much time of load we need to give based on how much of utterance we have'''
+        self.load_time = (df.size) * 15  
         self.main()
-        self.test_init()
+       
     
     def main(self):
         print(self.inputExcel)
@@ -64,21 +72,21 @@ class Test_begin(object):
         logging.info("Starting the WUW test run...")
         logging.info(f"The language now tested is {self.Lang}")
         adb_result=self.run_adb_command(f"connect {self.mcuIp}")
-        # adb_result=self.run_adb_command(self.command_wait_deviceStart)
+        adb_result=self.run_adb_command(self.command_wait_deviceStart)
         print("after adb connect call")
         logging.info(adb_result)
-        for i in range(3):
-            result=subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            if result.returncode != 0:
-                logging.error(f"adb command for devices failed, please check the error: {result.stderr.decode('utf-8')}")
-                raise Exception(f'adb command failed failed: {result.stderr.decode("utf-8")}')
-            if self.mcuIp in result.stdout.decode("utf-8"):
-                logging.info(" the device is identified and adb can work")
-                device_started=True
-                break
-            else:
-                logging.error(f"The device is not identified , see the error: {result} ")
-                print("device not found")
+        # for i in range(3):
+        #     result=subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #     if result.returncode != 0:
+        #         logging.error(f"adb command for devices failed, please check the error: {result.stderr.decode('utf-8')}")
+        #         raise Exception(f'adb command failed failed: {result.stderr.decode("utf-8")}')
+        #     if self.mcuIp in result.stdout.decode("utf-8"):
+        #         logging.info(" the device is identified and adb can work")
+        #         device_started=True
+        #         break
+        #     else:
+        #         logging.error(f"The device is not identified , see the error: {result} ")
+                #  print("device not found")
         logging.info("Now setting the audio outdevices")
         if self.inputExcel != None:
           self.loadutterances(logging)
@@ -96,7 +104,7 @@ class Test_begin(object):
 
         if result.returncode != 0:
             print(f"[WARNING] ADB command failed: {error.strip()}")
-            return error  # or return a custom string if you want
+            return error  
         return output
 
      except Exception as e:
@@ -105,13 +113,19 @@ class Test_begin(object):
 
     def loadutterances(self,logger):
         df = pd.read_excel(self.inputExcel)
-        print(df)
-    
+        '''doing some maths here to calculate how much time of load we need to give based on how much of utterance we have'''
+        # self.load_time = (df.size) * 15  
+        print(f"this is the load time from my opt{self.load_time}")
+        
+        if self.load:
+            print("give load")
+            logging.info("Going to give some cpu stress")
+            adb_thread = threading.Thread(target= lambda : self.run_load_adb_command(time=self.load_time))
+            adb_thread.start()
+        
+        # print(df)
         for index, row in df.iterrows():
             utterance = row['Utterances']
-            # voice_type = row['Gender']
-            # lang_from_excel = row['Language']
-
             if utterance:
                 try:
                     # print(f"Generating TTS for: {utterance}")
@@ -120,7 +134,14 @@ class Test_begin(object):
                 except Exception as e:
                     print(e)
         # self.utils.warn(mesg="Test Completed ")
-    
+        if self.load:
+            try:
+                if hasattr(self, 'load_process') and self.load_process and self.load_process.poll() is None:
+                    self.load_process.terminate()
+                print("ADB process terminated early.")
+            except Exception as e:
+                print(f"Error terminating ADB process: {e}")
+            adb_thread.join()
     def tts(self,text):
         engine = pyttsx3.init()
         engine.setProperty("rate", 150)
@@ -130,16 +151,14 @@ class Test_begin(object):
         engine.runAndWait()
 
     def speak_utterance(self, text, lang="en"):
-        self.run_adb_command('shell input keyevent KEYCODE_HOME')
-        self.dlt.cleaner()
-        if self.load:
-            print("give load")
-            # self.run_adb_command('shell "/data/local/tmp/stressapptest-aarch64 -s 600 -M 1000 -m 2 -C 1 -W -n 127.0.0.1 --listen -i 1 --findfiles -f /data/local/tmp/file1 -f /data/local/tmp/file2"')
-        # Start log collection thread and also do a clean up
+        self.run_adb_command('shell input tap 500 600')
+        self.dlt.cleaner()   
         stop_event = threading.Event()
         log_thread = threading.Thread(target=self.dlt.start_dlt)
         log_thread.start()
+
         time.sleep(1)
+
         self.run_adb_command('shell cmd car_service inject-custom-input 1012;sleep 0.2; cmd car_service inject-custom-input 1013')
         time.sleep(1)
         print(f"🔊 Speaking: {text}")
@@ -151,108 +170,79 @@ class Test_begin(object):
         log_thread.join()
         self.dlt.stop_dlt()
         self.dlt.convert_dlt_log_text()
-
         self.dlt.check(uttearnce=text)
         # print("Gonna call the main thing here")
         time.sleep(1)
         logging.info(f"✅ Done with utterance '{text}'")
         print(f"[+] Done with utterance '{text}'")
-
-
-    def realtime_far_analyse(self,hitCount,stop_event):
-        print("real time far check")
-        log_file=f"{self.outDIr}/Target_log_WUW_FAR_Test.txt"
-        columns = ['WUW','Shown on HMI','Selected MIC','Correct MIC?','Highest ranked MIC',  
-                    'Ranking','Confidence','Standard Deviation','Conf.+StdDev','Avg(Conf.+StdDev)','GeoAvg(Conf, StdDev)',
-                    'Other detected MIC', 'Ranking2', 'Confidence2', 'Standard Deviation2','Conf.+StdDev2','Avg(Conf.+StdDev)2','GeoAvg(Conf, StdDev)2']
-        df = pd.DataFrame(columns=columns)
-        with open(log_file, "w", encoding='ISO-8859-1') as file:
-          print("opening logcat for device")
-        #   process = subprocess.Popen(["adb", "-s", self.mcuIp, "logcat"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, bufsize=1, encoding='ISO-8859-1')
-          process = subprocess.Popen(["adb" , "-s" ,"J7S8WCZTROEQ8L9D", "logcat"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, bufsize=1, encoding='ISO-8859-1')
-          temp_data = {}
-          while not stop_event.is_set():
-            line = process.stdout.readline()
-            file.writelines(f"{line}\n")
-            file.flush()
-            if "SpeechRecognizerEngineImpl" in line and "newState=BUSY" in line:
-            # if "GoogleRecognizer" in line and "listening" in line:
-                    print("speech reco is on boi")
-                    if temp_data:
-                        df.loc[len(df)] = [
-                            temp_data.get('WUW', ''),
-                            temp_data.get('Shown on HMI', False),
-                            #temp_data.get('Detected?', False),
-                            temp_data.get('Correct MIC?', False),
-                            temp_data.get('Highest ranked MIC', ''),
-                            temp_data.get('Ranking', ''),
-                            temp_data.get('Confidence', ''),
-                            temp_data.get('Standard Deviation', ''),
-                            temp_data.get('Conf.+StdDev', ''),
-                            temp_data.get('Avg(Conf.+StdDev)', ''),
-                            temp_data.get('GeoAvg(Conf, StdDev)', ''),
-                            temp_data.get('Other detected MIC', ''),
-                            temp_data.get('Ranking2', ''),
-                            temp_data.get('Confidence2', ''),
-                            temp_data.get('Standard Deviation2', ''),
-                            temp_data.get('Conf.+StdDev2', ''),
-                            temp_data.get('Avg(Conf.+StdDev)2', ''),
-                            temp_data.get('GeoAvg(Conf, StdDev)2', '')
-                        ]
-                        temp_data.clear()
-                    temp_data['WUW'] = "MINI WUW"
-                    temp_data['Shown on HMI'] = True
-                    logging.info("WUW detected!") 
-                    hitCount[0] += 1               
-            if "getHighestRankedResult() Highest" in line:
-                    temp_data['MIC'] = re.search("Highest: <Mic: (.*?),", line).group(1) if re.search("Highest: <Mic: (.*?),", line).group(1) else "No detection"
-                    temp_data['Ranking'] = re.search("ranking: (.*?)>", line).group(1) if re.search("ranking: (.*?)>", line).group(1) else "No detection"
-                    temp_data['Detected?'] = True
-                    if temp_data['MIC'] == self.mic:
-                        temp_data['Correct MIC?'] = True 
-                    temp_data['Highest ranked MIC'] = temp_data['MIC']
-                    logging.info(f"Mic: {temp_data['MIC']} detected, ranking is {temp_data['Ranking']}.")
-
-            if "logRankings() 1 / 1: <Mic" in line:
-                    match = re.search("Mic: (.*?), ranking: \{ Total: (.*?), Conf: (.*?), StdDev: (.*?), Conf \+ StdDev: (.*?), Avg \(conf \+ stdDev\): (.*?), Geo avg \(conf, stdDev\): (.*?) \}",line)
-                    temp_data['Other detected MIC'] = match.group(1) if match.group(1) else "No detection"
-                    temp_data['Ranking2'] = match.group(2) if match.group(2) else "No detection"
-                    temp_data['Confidence2'] = match.group(3) if match.group(3) else "No detection"
-                    temp_data['Standard Deviation2'] = match.group(4) if match.group(4) else "No detection"
-                    temp_data['Conf.+StdDev2'] = match.group(5) if match.group(5) else "No detection"
-                    temp_data['Avg(Conf.+StdDev)2'] = match.group(6) if match.group(6) else "No detection"
-                    temp_data['GeoAvg(Conf, StdDev)2'] = match.group(7) if match.group(7) else "No detection"
-                    logging.info(f"Other MIC: {temp_data['Other detected MIC']}, Ranking: {temp_data['Ranking2']}, Confidence: {temp_data['Confidence2']}, Standard Deviation: {temp_data['Standard Deviation2']}, Conf.+StdDev: {temp_data['Conf.+StdDev2']}, Avg(Conf.+StdDev): {temp_data['Avg(Conf.+StdDev)2']}, GeoAvg(Conf, StdDev): {temp_data['GeoAvg(Conf, StdDev)2']}.")
+        
+    def run_load_adb_command(self,time):
+        self.load_process = subprocess.Popen([
+            "adb", "-s", "169.254.80.235", "shell", "/data/local/tmp/stressapptest-aarch64",
+            "-s", str(time) , "-M", "600", "-m", "2", "-C", "1", "-W", "-n", "127.0.0.1",
+            "--listen", "-i", "1", "--findfiles", "-f", "/data/local/tmp/file1", "-f", "/data/local/tmp/file2"
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    def dlpfile_constructor(self,original_path,new_hostname):
+         """
+        Creates a new DLP file with updated hostname 
+        
+        Args:
+            original_path (str): Path to the original DLP file
+            new_hostname (str): New hostname to set (must be valid IP)
+        """
+         try:
+            if not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', new_hostname):
+                raise ValueError(f"Invalid IP address format: {new_hostname}")
+            
+            # Read the original file content
+            with open(original_path, 'r') as file:
+                content = file.read()
+            
+            updated_content = re.sub(
+                r'<hostname>(.*?)</hostname>|hostname>(.*?)<', 
+                f'<hostname>{new_hostname}</hostname>', 
+                content,
+                flags=re.DOTALL
+            )
+            
+            # Create new filename with sanitized IP
+            original_file = Path(original_path)
+            hostname_with_dash = new_hostname.replace('.', '-')
+            new_filename = f"{original_file.stem}_{hostname_with_dash}{original_file.suffix}"
+            
+            # Check if file already exists
+            # if os.path.exists(new_filename):
+            #     raise FileExistsError(f"Output file{new_filename} already exists")
+            
+            # Write the new file
+            with open(new_filename, 'w') as file:
+                file.write(updated_content)
                 
-            else:
-                if "SpeechRecognizerEngineImpl" in line and "newState=LISTENING" in line:
-                    logging.info("WUW detected!")
-                    hitCount[0] += 1
-        process.terminate()
-        print("gonna save the file")
-        df.to_excel(self.report_excel_file, index=False)
+            print(f"Successfully created: {new_filename}")
+            
+            
+            return new_filename
+            
+         except FileNotFoundError:
+            print(f"Error: File not found at {original_path}")
+            return None
+         except Exception as e:
+            print(f"Error: {str(e)}")
+            return None
 
-        # if temp_data:
-        #     print("temp data is true")
-        #     df.loc[len(df)] = [
-        #         temp_data.get('WUW', ''),
-        #         temp_data.get('Shown on HMI', False),
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="A simple script with command line arguments.")
+    parser.add_argument("--ip", required=True, type=str, help="Target device IP (ADB).")
+    parser.add_argument("--excel", type=str, help="Path to input Excel (optional).")
+    parser.add_argument("--dir", required=True, type=Path, help="Output/log folder.")
+    parser.add_argument("--dlp", type=str, help="DLT project file.")
+    parser.add_argument("--load", type=lambda x: str(x).lower() in ("yes", "1", "true", "y"), help="Give system load via ADB.")
+    parser.add_argument("--tech", type=str, default="BCA", help="Tech stack (e.g. BCA).")
+    args = parser.parse_args()
 
-        #         #temp_data.get('Detected?', False),
-        #         temp_data.get('Correct MIC?', False),
-        #         temp_data.get('Highest ranked MIC', ''),
-        #         temp_data.get('Ranking', ''),
-        #         temp_data.get('Confidence', ''),
-        #         temp_data.get('Standard Deviation', ''),
-        #         temp_data.get('Conf.+StdDev', ''),
-        #         temp_data.get('Avg(Conf.+StdDev)', ''),
-        #         temp_data.get('GeoAvg(Conf, StdDev)', ''),
-        #         temp_data.get('Other detected MIC', ''),
-        #         temp_data.get('Ranking2', ''),
-        #         temp_data.get('Confidence2', ''),
-        #         temp_data.get('Standard Deviation2', ''),
-        #         temp_data.get('Conf.+StdDev2', ''),
-        #         temp_data.get('Avg(Conf.+StdDev)2', ''),
-        #         temp_data.get('GeoAvg(Conf, StdDev)2', '')
-        #     ]
-          
+    
+    
+    TTSObj = Test_begin(args.ip,args.excel,args.dir,args.dlp,args.load,args.tech)
+    
+
+    
