@@ -1,7 +1,7 @@
 from openpyxl import Workbook, load_workbook
 import os
 from datetime import datetime
-
+from email_service import send_with_outlook
 FIELDS = [
     "timestamp", "wake_word", "utterance", "recognized_text", "intent",
     "is_final_asr","cpu_usage" ,"prompt_text",
@@ -40,6 +40,9 @@ class Update_Excel():
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.data = {key: "" for key in FIELDS}
         self.data["timestamp"] = timestamp
+    def send_mail():
+        print("sending mail through win32 client after tts")
+        send_with_outlook(EXCEL_FILE)
 if __name__ == "__main__":
     session = Update_Excel()
     #  Wake word detected

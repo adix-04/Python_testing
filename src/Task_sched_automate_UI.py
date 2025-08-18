@@ -464,7 +464,7 @@ class Worker(QObject):
     @pyqtSlot()
     def run(self):
         try:
-            #This is the blocking/heavy work; keep it out of the main thread
+            #heavy work; keep it out of the main thread
             self.core.test_init()
             self.finished.emit()
         except Exception as e:
@@ -475,6 +475,7 @@ class Main_utils_page(QWidget):
     def __init__(self):
         super().__init__()
         self.page = self.main_page()
+
         self.runnerlogDir = "Auto_Testrun_" + datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
         # runtime holders
@@ -806,7 +807,7 @@ class Main_utils_page(QWidget):
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.error.connect(self.thread.quit)
         self.worker.error.connect(self.worker.deleteLater)
-        
+
         self.thread.start()
 
     def update_timer(self):

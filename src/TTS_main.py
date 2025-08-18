@@ -142,6 +142,7 @@ class Test_begin(object):
             except Exception as e:
                 print(f"Error terminating ADB process: {e}")
             adb_thread.join()
+        self.excel.send_mail()
     def tts(self,text):
         engine = pyttsx3.init()
         engine.setProperty("rate", 150)
@@ -231,6 +232,7 @@ class Test_begin(object):
             return None
 
 if __name__ == "__main__":
+    # this how the schedule works --> see the bat file created at run time
     parser = argparse.ArgumentParser(description="A simple script with command line arguments.")
     parser.add_argument("--ip", required=True, type=str, help="Target device IP (ADB).")
     parser.add_argument("--excel", type=str, help="Path to input Excel (optional).")
@@ -240,7 +242,6 @@ if __name__ == "__main__":
     parser.add_argument("--tech", type=str, default="BCA", help="Tech stack (e.g. BCA).")
     args = parser.parse_args()
 
-    
     
     TTSObj = Test_begin(args.ip,args.excel,args.dir,args.dlp,args.load,args.tech)
     
