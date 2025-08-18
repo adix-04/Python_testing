@@ -1,51 +1,36 @@
-import subprocess
-import re
-import argparse
+import win32com.client as win32com
+import os
+import psutil
 
-def get_total_cpu_usage():
-    print('run')
-    try:
-        # Run adb top command
-        process = subprocess.run(
-            ["adb", "shell", "top", "-n", "1"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
-
-        if process.returncode != 0:
-            raise RuntimeError(f"ADB error: {process.stderr.strip()}")
-
-        # Find the line with %cpu (usually first few lines)
-        for line in process.stdout.splitlines():
-            if '%cpu' in line.lower():
-                print("Found CPU line:", line.strip())
-
-                # Extract total and idle CPU
-                total_match = re.search(r'(\d+)%cpu', line)
-                idle_match = re.search(r'(\d+)%idle', line)
-
-                if total_match and idle_match:
-                    total = int(total_match.group(1))
-                    idle = int(idle_match.group(1))
-                    usage = total - idle
-                    print(f"CPU Usage: {usage}%")
-                    return usage
-
-                raise ValueError("Failed to parse total or idle CPU usage.")
-
-        raise ValueError("No CPU line found in top output.")
-    
-    except Exception as e:
-        print(f"Error while fetching CPU usage: {e}")
-        return None
-    
-get_total_cpu_usage()   
+def send_with_outlook(file_path):
+    # Open Outlook
+    os.startfile('outlook')
+    outlook = win32com.Dispatch('outlook.application')    
+    # Create a new mail item
+    accounts = win32com.Dispatch("outlook.application").Session.Accounts
+    print(accounts[0])
+    mail = outlook.CreateItem(0)  # 0 = Mail item
+    mail.SendUsingAccount  =  accounts[0]
+    mail.To = "jithin.sreekala@acsiatech.com;adinnavakumar22@gmail.com;anurage.ss@acsiatech.com;adinkumar45@gmail.com"   # leave empty if you just want a draft
+    mail.Subject = "Test Report"
+    mail.Body = "Hi,\n\nPlease find the attached test report.\n\nRegards"
+    # Attach the file
+    if os.path.exists(file_path):
+        mail.Attachments.Add(file_path)
+    else:  
+        print("File not found:", file_path)
+    # Instead of sending, just display the draft
+    mail.display()   # opens Outlook draft window
+    mail.Send()
+    os.startfile('outlook')
+    for P in psutil.process_iter():
+        if "OUTLOOK.EXE" in P.name().upper():
+            P.kill()
+ 
+# Test run
 if __name__ == "__main__":
-   parser = argparse.ArgumentParser(description="run tts functions from with out UI")
-   parser.add_argument('--ip',type=str,required=True,help="ip address of the ECU")
+    test_file = r"C:\Users\Adin N S\Documents\Python_testing\Night_run_15_07_25.xlsx"  # <-- put any file path here
+    send_with_outlook(test_file)
 
-   args = parser.parse_args()
-
-
-   print(args.ip)
+# import os 
+# os.startfile('olk')
