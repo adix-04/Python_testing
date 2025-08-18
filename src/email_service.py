@@ -11,7 +11,7 @@ def send_with_outlook(file_path):
     print(accounts[0])
     mail = outlook.CreateItem(0)  # 0 = Mail item
     mail.SendUsingAccount  =  accounts[0]
-    mail.To = "jithin.sreekala@acsiatech.com;adinnavakumar22@gmail.com;anurage.ss@acsiatech.com;adinkumar45@gmail.com"   # leave empty if you just want a draft
+    mail.To = "jithin.sreekala@acsiatech.com;adinnavakumar22@gmail.com;anurage.ss@acsiatech.com;adinkumar45@gmail.com"   
     mail.Subject = "Test Report"
     mail.Body = "Hi,\n\nPlease find the attached test report.\n\nRegards"
     # Attach the file
@@ -19,7 +19,6 @@ def send_with_outlook(file_path):
         mail.Attachments.Add(file_path)
     else:  
         print("File not found:", file_path)
-    # Instead of sending, just display the draft
     mail.display()   # opens Outlook draft window
     mail.Send()
     os.startfile('outlook')
@@ -29,8 +28,6 @@ def send_with_outlook(file_path):
  
 # Test run
 if __name__ == "__main__":
-    test_file = r"C:\Users\Adin N S\Documents\Python_testing\Night_run_15_07_25.xlsx"  # <-- put any file path here
+    test_file = r"C:\Users\Adin N S\Documents\Python_testing\Night_run_15_07_25.xlsx"  #for testing
     send_with_outlook(test_file)
 
-# import os 
-# os.startfile('olk')
