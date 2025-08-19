@@ -7,8 +7,10 @@ FIELDS = [
     "is_final_asr","cpu_usage" ,"prompt_text",
      "confidence","retry_count", "error_code"
 ]
-
-EXCEL_FILE = f"session_log_{datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.xlsx"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # folder of this script (src/)
+FILES_DIR = os.path.join(BASE_DIR, "..", "files")      # ../files
+os.makedirs(FILES_DIR, exist_ok=True) 
+EXCEL_FILE = os.path.join(BASE_DIR,f"session_log_{datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.xlsx")
 
 class Update_Excel():
     _instance = None
