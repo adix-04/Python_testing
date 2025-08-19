@@ -10,8 +10,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QPushButton, QLabel,
-    QVBoxLayout, QHBoxLayout, QStackedWidget, QLineEdit, QTextEdit,
+    QApplication, QMessageBox, QWidget, QPushButton, QLabel,
+    QVBoxLayout, QHBoxLayout, QGraphicsOpacityEffect, QLineEdit, QGraphicsBlurEffect,
     QFrame, QScrollArea,QSizePolicy,QGridLayout,QFileDialog,QGroupBox,QComboBox
 )
 from PyQt5.QtGui import QIcon,QFont,QPixmap,QMovie
@@ -30,7 +30,13 @@ DEVICE_FILE = "devices.json"
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         self.tts = utils.tts_main()
-       
+        MainWindow.setStyleSheet("""
+            QMainWindow {
+                background-image: url("C:/Users/jithin.sreekala/OneDrive - Acsia Technologies Private Limited/Desktop/POC/Poc_from_gitHub/Python_testing/src/assets/bck2.jpg");
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+        """)
         self.isEditing = False
         self.isEditingDevName = ''
         self.my_style = """
@@ -64,26 +70,12 @@ class Ui_MainWindow(object):
  }
 
 """     
-        self.btn_sheet=''' 
-QPushButton {
-    color: rgb(255, 255, 255);
-    background-color:  #2B2B2B ;   
-    border: 0px solid;
-    text-align:left;  
-    font-family: 'Source Code Pro' ;
-    border-radius : 10px
-}
-QPushButton:hover {
-    background-color: #B3B3B3;
-    font-size:12px; 
-    border-radius : 0px;
-    margin : 2px;
-}
-'''     
+    
+        
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1100, 600)
         MainWindow.setMinimumSize(QtCore.QSize(1000, 450))
-        MainWindow.setStyleSheet("background-color: #2B2B2B;")
+        # MainWindow.setStyleSheet("background-image: url('C:/Users/jithin.sreekala/OneDrive - Acsia Technologies Private Limited/Desktop/POC/Poc_from_gitHub/Python_testing/src/assets/bck.jpg')")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         #self.centralwidget.setStyleSheet()
@@ -93,7 +85,7 @@ QPushButton:hover {
         self.verticalLayout.setObjectName("verticalLayout")
         self.Top_Bar = QtWidgets.QFrame(self.centralwidget)
         self.Top_Bar.setMaximumSize(QtCore.QSize(16777215, 30))
-        self.Top_Bar.setStyleSheet("background-color:#2B2B2B;")
+        self.Top_Bar.setStyleSheet("background:transparent;")
         self.Top_Bar.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.Top_Bar.setFrameShadow(QtWidgets.QFrame.Raised)
         self.Top_Bar.setObjectName("Top_Bar")
@@ -111,16 +103,15 @@ QPushButton:hover {
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
+        
         self.Btn_Toggle = QtWidgets.QLabel(self.frame_toggle)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.Btn_Toggle.sizePolicy().hasHeightForWidth())
         self.Btn_Toggle.setSizePolicy(sizePolicy)
-        # self.pixmap1 = QPixmap('src/assets/logo.png') 
-        # self.Btn_Toggle.setPixmap(self.pixmap1)
         self.Btn_Toggle.setScaledContents(True)
-        self.Btn_Toggle.setStyleSheet("background-color: #2B2B2B;")
+        self.Btn_Toggle.setStyleSheet("background : transparent;")
        
         self.Btn_Toggle.setObjectName("Btn_Toggle")
         self.verticalLayout_2.addWidget(self.Btn_Toggle)
@@ -129,12 +120,17 @@ QPushButton:hover {
         self.frame_top.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_top.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_top.setObjectName("frame_top")
+        self.frame_top.setStyleSheet("background : transparent")
+        opacity_effect = QGraphicsOpacityEffect()
+        opacity_effect.setOpacity(0.0)
+        self.frame_top.setGraphicsEffect(opacity_effect)
         self.horizontalLayout.addWidget(self.frame_top)
         self.verticalLayout.addWidget(self.Top_Bar)
         self.Content = QtWidgets.QFrame(self.centralwidget)
         self.Content.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.Content.setFrameShadow(QtWidgets.QFrame.Raised)
         self.Content.setObjectName("Content")
+        # self.Content.setStyleSheet("background : transparent")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.Content)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setSpacing(0)
@@ -143,7 +139,8 @@ QPushButton:hover {
         self.frame_left_menu.setMinimumSize(QtCore.QSize(150, 0))
         self.frame_left_menu.setMaximumSize(QtCore.QSize(150, 16777215))
         # self.frame_left_menu.setStyleSheet("background-color:    rgb(35, 35, 35);")
-        self.frame_left_menu.setStyleSheet("background-color: #2B2B2B;")
+        self.frame_left_menu.setStyleSheet("background : transparent;")
+        # self.frame_left_menu.setStyleSheet("background-color: #2B2B2B;")
         self.frame_left_menu.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_left_menu.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_left_menu.setObjectName("frame_left_menu")
@@ -154,44 +151,15 @@ QPushButton:hover {
         self.frame_top_menus.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.frame_top_menus.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_top_menus.setObjectName("frame_top_menus")
-        '''
-        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.frame_top_menus)
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_4.setSpacing(0)
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.btn_home_page = QtWidgets.QPushButton(self.frame_top_menus)
-        self.btn_home_page.setMinimumSize(QtCore.QSize(0, 40))
-        self.btn_home_page.setStyleSheet(self.btn_sheet)
-        self.btn_home_page.setObjectName("btn_home_page")
-        self.btn_home_page.setIcon(QIcon('src/assets/list.svg'))
+          # Adjust the radius for stronger or softer blur
+
+# Apply it to your widget
+        # self.frame_top_menus.setGraphicsEffect(blur_effect)
+        self.frame_top_menus.setStyleSheet("background : transparent")
         
-        self.btn_new_page = QtWidgets.QPushButton(self.frame_top_menus)
-        self.btn_new_page.setMinimumSize(QtCore.QSize(0, 40))
-        self.btn_new_page.setStyleSheet(self.btn_sheet)
-        self.btn_new_page.setObjectName("btn_new_page")
-        self.btn_new_page.setIcon(QIcon('src/assets/add.svg'))
-       
-        self.btn_sttings_page = QtWidgets.QPushButton(self.frame_top_menus)
-        self.btn_sttings_page.setMinimumSize(QtCore.QSize(0, 40))
-        self.btn_sttings_page.setStyleSheet(self.btn_sheet)
-        self.btn_sttings_page.setObjectName("Rack_sttings_page")
-        self.btn_sttings_page.setIcon(QIcon('src/assets/settings.svg'))
-
-        self.btn_general_page = QtWidgets.QPushButton(self.frame_top_menus)
-        self.btn_general_page.setMinimumSize(QtCore.QSize(0, 40))
-        self.btn_general_page.setStyleSheet(self.btn_sheet)
-        self.btn_general_page.setObjectName("btn_general_page")
-        self.btn_general_page.setIcon(QIcon('src/assets/speak.svg'))
-
-        self.btn_sched_page = QtWidgets.QPushButton(self.frame_top_menus)
-        self.btn_sched_page.setMinimumSize(QtCore.QSize(0,40))
-        self.btn_sched_page.setStyleSheet(self.btn_sheet)
-        self.btn_sched_page.setIcon(QIcon('src/assets/Timer.svg'))
-        for widget in [self.btn_home_page,self.btn_new_page,self.btn_general_page,self.btn_sched_page,self.btn_sttings_page]:
-            self.verticalLayout_4.addWidget(widget)
-        '''
         # Sidebar layout
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.frame_top_menus)
+        
         self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_4.setSpacing(4)  # Small spacing between buttons
         self.verticalLayout_4.setObjectName("verticalLayout_4")
@@ -199,15 +167,16 @@ QPushButton:hover {
         # Sidebar style (matches app theme)
         sidebar_btn_style = """
             QPushButton {
-                background-color: #2B2B2B;
-                color: #CFCFCF;
+                background : transparent;
+                color: #ffffff;
                 border: none;
                 padding: 8px;
                 text-align: left;
                 font-size: 12px;
+                font-weight: bold;
             }
             QPushButton:hover {
-                background-color: #3B3B3B;
+                background-color: #c0c0c0;
             }
             QPushButton:pressed {
                 background-color: #007ACC;
@@ -259,6 +228,7 @@ QPushButton:hover {
 
         # Add stretch so buttons stay at the top
         self.verticalLayout_4.addStretch()
+        
 
 
         self.verticalLayout_3.addWidget(self.frame_top_menus, 0, QtCore.Qt.AlignTop)
@@ -272,12 +242,15 @@ QPushButton:hover {
         
         self.stackedWidget = QtWidgets.QStackedWidget(self.frame_pages)
         self.stackedWidget.setObjectName("stackedWidget")
-        self.stackedWidget.setStyleSheet('background-color : #302D2D ;')
+        self.stackedWidget.setStyleSheet('background : transparent;')
         self.page1 = self.home_page()
         self.page2 = self.add_page()
         self.page3 = self.sched_page()
         self.page4 = self.use_page()
         self.page5 = self.rack_page()
+        self.t_page = self.add_page()
+        
+        self.stackedWidget.addWidget(self.t_page)
         self.stackedWidget.addWidget(self.page1)
         self.stackedWidget.addWidget(self.page2)
         self.stackedWidget.addWidget(self.page3)
@@ -300,8 +273,10 @@ QPushButton:hover {
         page = QWidget()
         h_box = QHBoxLayout()
         self.card = ButtonControl()
+        
         h_box.addWidget(self.card)
         page.setLayout(h_box)
+    
         return page
 
     def home_page(self):
@@ -338,17 +313,17 @@ QPushButton:hover {
         return page
 #config page
     def add_page(self):
-        page = QWidget()
-        layout = QVBoxLayout(page)
+        self.page = QWidget()
+        layout = QVBoxLayout(self.page)
         layout.setSpacing(20)
-        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setContentsMargins(30, 20, 30, 20)
 
         # Header label
         label = QLabel("Add or Create a Device Configuration")
         label.setAlignment(Qt.AlignCenter)
         label.setStyleSheet("""
             QLabel {
-                color: #CFCFCF;
+                color: #FFFFFF;
                 font-size: 16px;
                 font-weight: bold;
             }
@@ -359,7 +334,7 @@ QPushButton:hover {
         device_group = QGroupBox("Device Details")
         device_group.setStyleSheet("""
             QGroupBox {
-                color: #CFCFCF;
+                color: #FFFFFF;
                 font-size: 13px;
                 font-weight: bold;
                 border: 1px solid #555555;
@@ -462,7 +437,7 @@ QPushButton:hover {
         layout.addWidget(self.save_btn, alignment=Qt.AlignRight)
         layout.addStretch()
 
-        return page
+        return self.page
 
 
  #edit page will be loaded after this 
@@ -558,8 +533,6 @@ QPushButton:hover {
         self.input_name.clear()
         self.input_ip.clear()
         self.input_port.clear()
-        self.input_adb.clear()
-        self.input_dlt.clear()
 #settings page        
     def sched_page(self):
         page = Main_utils_page().page
@@ -573,11 +546,11 @@ QPushButton:hover {
         main_layout.setContentsMargins(20, 20, 20, 20)
 
         # === Header ===
-        label = QLabel("Test to Speech")
+        label = QLabel("Text to Speech")
         label.setAlignment(Qt.AlignCenter)
         label.setStyleSheet("""
             QLabel {
-                color: #CFCFCF;
+                color: #ffffff;
                 font-size: 18px;
                 font-weight: bold;
             }
@@ -593,7 +566,7 @@ QPushButton:hover {
         left_layout = QVBoxLayout()
         left_layout.setSpacing(15)
 
-        label_style = "QLabel { color: #CFCFCF; font-size: 13px; }"
+        label_style = "QLabel { color: #ffffff; font-size: 15px; }"
         input_style = """
             QLineEdit {
                 background-color: #3B3B3B;
@@ -603,7 +576,7 @@ QPushButton:hover {
                 padding: 6px;
             }
             QLineEdit:focus {
-                border: 1px solid #007ACC;
+                border: 2px solid #007ACC;
             }
         """
         button_style = """
@@ -626,6 +599,7 @@ QPushButton:hover {
         self.Input_words = QLineEdit()
         self.Input_words.setPlaceholderText("Type words to speak...")
         self.Input_words.setStyleSheet(input_style)
+        self.Input_words.setFixedHeight(40)
         self.btn_speak = QPushButton("Speak")
         self.btn_speak.setFixedWidth(120)
         self.btn_speak.setStyleSheet(button_style)
@@ -642,6 +616,7 @@ QPushButton:hover {
         self.Input_excel.setPlaceholderText("Select Excel file path...")
         self.Input_excel.setStyleSheet(input_style)
         self.Input_excel.mousePressEvent = lambda event, input=self.Input_excel: self.file(event, input)
+        self.Input_excel.setFixedHeight(40)
         self.btn_speak_excel = QPushButton("Start")
         self.btn_speak_excel.setFixedWidth(120)
         self.btn_speak_excel.setStyleSheet(button_style)
@@ -656,12 +631,12 @@ QPushButton:hover {
         right_layout = QVBoxLayout()
         right_layout.setSpacing(15)
 
-        self.movie = QMovie('/home/adin/Desktop/p3V1/Python_testing/src/dj.gif')
         self.gif_label = QLabel()
+        pixmap = QPixmap('src/assets/audio.png')
         self.gif_label.setFixedSize(240, 180)
-        self.gif_label.setMovie(self.movie)
+        self.gif_label.setPixmap(pixmap)
         self.gif_label.setScaledContents(True)
-        self.movie.start()
+        
 
         self.tts_selector = QComboBox()
         self.tts_selector.addItems(["pyttsx3", "gTTS"])
@@ -680,7 +655,7 @@ QPushButton:hover {
         """)
 
         right_layout.addWidget(self.gif_label, alignment=Qt.AlignCenter)
-        right_layout.addWidget(self.tts_selector)
+        # right_layout.addWidget(self.tts_selector)
         right_layout.addStretch()
 
         # Add sections to top layout
@@ -710,9 +685,11 @@ QPushButton:hover {
         dev_name = self.input_name.text().strip()
         dev_ip = self.input_ip.text().strip()
         dev_port = self.input_port.text().strip()
-        dev_dlt = self.input_dlt.text().strip()
-        dev_adb = self.input_adb.text().strip()
-        print(dev_name,dev_ip,dev_dlt,dev_adb,dev_port)
+        if dev_name.strip() == "" or dev_ip.strip() =="":
+            QMessageBox.warning(self.page,"Empty Fields","empty fields warning")
+            return
+       
+       
         if not os.path.exists(DEVICE_FILE) or os.stat(DEVICE_FILE).st_size == 0:
          with open(DEVICE_FILE, 'w') as f:
             f.write('[]')
@@ -721,8 +698,6 @@ QPushButton:hover {
                 "name": dev_name,
                 "ip": dev_ip,
                 "port": dev_port,
-                "dlt_path": dev_dlt,
-                "adb_path" : dev_adb
             }
         #device data holds each dict
         #devices hold the whole list
@@ -762,8 +737,8 @@ QPushButton:hover {
     
     def start_speak(self):
         text = self.Input_words.text()
-        if text == '':
-            self.tts.warn(mesg="Nothing to speak")
+        if text.strip() == '':
+            QMessageBox.critical(self.E_page, "Empty Input Error", "Empty input exception occurred")
             return
         else :
             # self.movie.start()
@@ -773,14 +748,14 @@ QPushButton:hover {
     def start_file(self):
         file_path = self.Input_excel.text()
         if file_path == '':
-            self.tts.warn(mesg="Give something to begin with")
+            QMessageBox.critical(self.E_page, "Empty file Error", "Could not find file")
             return
         else:
             if file_path.endswith('xlsx' or 'xls'):
                 print("excel file found")
                 self.tts.file_iter(file_path=file_path)
             else:
-                self.tts.warn(mesg="Give Correct *excel file")
+                 QMessageBox.critical(self.E_page, "File Error","Could not find file")
     
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -792,6 +767,7 @@ QPushButton:hover {
         self.btn_sched_page.setText(_translate('MainWindow','Test/Schedule'))
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle("fusion")
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)

@@ -21,7 +21,7 @@ def send_with_outlook(file_path):
         print("File not found:", file_path)
     mail.display()   # opens Outlook draft window
     mail.Send()
-    os.startfile('outlook')
+    
     for P in psutil.process_iter():
         if "OUTLOOK.EXE" in P.name().upper():
             P.kill()

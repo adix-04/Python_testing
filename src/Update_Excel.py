@@ -42,6 +42,7 @@ class Update_Excel():
         self.data["timestamp"] = timestamp
     def send_mail(self):
         print("sending mail through win32 client after tts")
+        print("Sending excel file",EXCEL_FILE)
         send_with_outlook(EXCEL_FILE)
 if __name__ == "__main__":
     session = Update_Excel()
@@ -57,3 +58,5 @@ if __name__ == "__main__":
     session.write()
     #  Start next session
     session.reset()
+
+    session.send_mail()

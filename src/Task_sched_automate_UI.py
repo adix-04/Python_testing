@@ -58,7 +58,7 @@
 #         connection_group.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
 #         conn_layout = QVBoxLayout(connection_group)
-#         conn_layout.setContentsMargins(15, 15, 15, 15)  # tighter margins
+#         conn_layout.setContentsMargins(8, 8, 8, 8)  # tighter margins
 #         conn_layout.setSpacing(8)                   # less vertical space
 
 #         self.ip_path_edit = QLineEdit()
@@ -436,7 +436,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import (
-    QLabel, QMainWindow, QWidget, QPushButton, QSizePolicy,
+    QLabel, QGraphicsBlurEffect, QWidget, QPushButton, QSizePolicy,
     QVBoxLayout, QHBoxLayout, QStackedWidget, QLineEdit, QGroupBox,
     QScrollArea, QRadioButton, QFileDialog, QMessageBox, QComboBox
 )
@@ -445,9 +445,6 @@ from PyQt5.QtCore import Qt, QTimer, QThread, QObject, pyqtSignal, pyqtSlot
 from datetime import datetime
 import subprocess
 import os
-
-# your styles import if you need it
-# from styles import *
 
 from TTS_main import Test_begin
 
@@ -495,34 +492,39 @@ class Main_utils_page(QWidget):
 
     def create_card(self):
         card = QWidget()
-        card.setStyleSheet("background-color: #1E1E1E; border-radius: 12px;")
-
+        blur_effect = QGraphicsBlurEffect()
+        blur_effect.setBlurRadius(10)
+       
+        # card.setStyleSheet("background-color: #1E1E1E; border-radius: 12px;") 2B2B2B
+        card.setStyleSheet("background : transparent")
         main_layout = QVBoxLayout(card)
         main_layout.setSpacing(16)
 
         # ----- Connection Details -----
         connection_group = QGroupBox("Connection Details")
+        connection_group.setFixedSize(720,50)
         connection_group.setStyleSheet("""
             QGroupBox {
-                background-color: #2B2B2B;
                 color: #CFCFCF;
                 border-radius: 8px;
                 margin-top: 4px;
                 font-weight: bold;
+                font-size : 12x;
             }
             QGroupBox::title {
                 subcontrol-origin: margin;
                 left: 10px;
-                padding: 0 3px 0 3px;
+                padding: 0 0px 0 3px;
             }
         """)
         connection_group.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
         conn_layout = QVBoxLayout(connection_group)
-        conn_layout.setContentsMargins(15, 15, 15, 15)
-        conn_layout.setSpacing(8)
+        conn_layout.setContentsMargins(8, 8, 8, 8)
+        conn_layout.setSpacing(5)
 
         self.ip_path_edit = QLineEdit()
+        self.ip_path_edit.setFixedSize(600,40)
         self.ip_path_edit.setPlaceholderText("IP Address")
         self.ip_path_edit.setText("169.254.80.")
         self.ip_path_edit.setStyleSheet("""
@@ -532,6 +534,7 @@ class Main_utils_page(QWidget):
                 border: 1px solid #555555;
                 border-radius: 4px;
                 padding: 3px;
+                font-size : 14px ;
             }
         """)
         conn_layout.addWidget(self.ip_path_edit)
@@ -540,13 +543,15 @@ class Main_utils_page(QWidget):
         file_group = QGroupBox("File Paths")
         file_group.setStyleSheet(connection_group.styleSheet())
         file_layout = QVBoxLayout(file_group)
+        file_group.setFixedSize(720,170)
 
         # Path to Excel
         self.exe_path_edit = QLineEdit()
+        self.exe_path_edit.setFixedSize(600,40)
         self.exe_path_edit.setPlaceholderText("Path to Excel")
         self.exe_path_edit.setStyleSheet(self.ip_path_edit.styleSheet())
         browse_btn_excel = QPushButton("Browse")
-        browse_btn_excel.setFixedSize(100, 30)
+        browse_btn_excel.setFixedSize(100, 40)
         browse_btn_excel.setStyleSheet("""
             QPushButton {
                 background-color: #4CAF50;
@@ -567,10 +572,11 @@ class Main_utils_page(QWidget):
 
         # Path to Log Folder
         self.log_path_edit = QLineEdit()
+        self.log_path_edit.setFixedSize(600,40)
         self.log_path_edit.setPlaceholderText("Path to Log Folder")
         self.log_path_edit.setStyleSheet(self.ip_path_edit.styleSheet())
         browse_btn_log = QPushButton("Browse")
-        browse_btn_log.setFixedSize(100, 30)
+        browse_btn_log.setFixedSize(100, 40)
         browse_btn_log.setStyleSheet(browse_btn_excel.styleSheet())
         browse_btn_log.clicked.connect(self.select_log_folder)
         log_hbox = QHBoxLayout()
@@ -580,10 +586,11 @@ class Main_utils_page(QWidget):
 
         # Project File
         self.fp_path_edit = QLineEdit()
+        self.fp_path_edit.setFixedSize(600,40)
         self.fp_path_edit.setPlaceholderText("Project File (optional)")
         self.fp_path_edit.setStyleSheet(self.ip_path_edit.styleSheet())
         browse_btn_fp = QPushButton("Browse")
-        browse_btn_fp.setFixedSize(100, 30)
+        browse_btn_fp.setFixedSize(100, 40)
         browse_btn_fp.setStyleSheet(browse_btn_excel.styleSheet())
         browse_btn_fp.clicked.connect(lambda: self.fp_path_edit.setText(
             QFileDialog.getOpenFileName(None, "Select DLP File", "", "DLP Files (*.dlp *.DLP)")[0]
@@ -596,11 +603,13 @@ class Main_utils_page(QWidget):
         # ----- Execution Settings -----
         exec_group = QGroupBox("Execution Settings")
         exec_group.setStyleSheet(connection_group.styleSheet())
+        exec_group.setFixedSize(720,190)
         exec_layout = QVBoxLayout(exec_group)
-
+        
         # Schedule Time
         self.time_input = QLineEdit()  # keep a handle for schedule
         self.time_input.setPlaceholderText("Schedule Time (HH:MM)")
+        self.time_input.setFixedSize(600,40)
         self.time_input.setStyleSheet(self.ip_path_edit.styleSheet())
 
         exec_layout.addWidget(self.time_input)
@@ -615,7 +624,8 @@ class Main_utils_page(QWidget):
             QLabel {
                 color: #CFCFCF;
                 background: transparent;
-                font-size: 12px;
+                font-size: 10px;
+                font-weight : bold;
             }
         """)
         radio_label.setFixedHeight(18)
@@ -666,13 +676,15 @@ class Main_utils_page(QWidget):
                 color: #CFCFCF;
                 background: transparent;
                 font-size: 12px;
+                font-weight : bold;
             }
         """)
-        stack_label.setFixedHeight(18)
+        # stack_label.setFixedHeight(18)
         exec_layout.addWidget(stack_label)
 
         # Dropdown
         self.tech_stack = QComboBox()
+        self.tech_stack.setFixedSize(600,40)
         self.tech_stack.addItem("BCA")
         self.tech_stack.addItem("Cerance")
         self.tech_stack.setStyleSheet("""
@@ -682,6 +694,7 @@ class Main_utils_page(QWidget):
                 border: 1px solid #555555;
                 border-radius: 4px;
                 padding: 4px;
+                
             }
             QComboBox::drop-down { border: none; }
             QComboBox QAbstractItemView {
@@ -743,6 +756,7 @@ class Main_utils_page(QWidget):
                 color: #CFCFCF;
                 background: transparent;
                 font-size: 12px;
+                font-weight : bold;
             }
         """)
         label_layout.addWidget(self.status_label)

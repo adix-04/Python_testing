@@ -20,12 +20,12 @@ class DeviceCard(QWidget):
         # === Dark themed style ===
         self.setStyleSheet("""
             QWidget {
-                border: 1px solid #444;
-                border-radius: 12px;
-                background-color: #2b2b2b;
+                border: 1px ;
+                border-radius: 5px;
+                background: transparent;
             }
             QLabel {
-                color: white;
+                color: black;
             }
             QPushButton {
                 padding: 6px 12px;
@@ -33,53 +33,28 @@ class DeviceCard(QWidget):
                 font-weight: bold;
             }
             QPushButton#primary {
-                background-color: #4CAF50;
+                background-color: #007ACC;
                 color: white;
             }
-            QPushButton#primary:hover { background-color: #45A049; }
+            QPushButton#primary:hover { background-color: #005A99; }
             QPushButton#primary:pressed { background-color: #2E7D32; }
 
             QPushButton#secondary {
-                background-color: #555;
+                background-color: #007ACC;
                 color: white;
             }
-            QPushButton#secondary:hover { background-color: #666; }
-            QPushButton#secondary:pressed { background-color: #444; }
+            QPushButton#secondary:hover { background-color: #005A99; }
+            QPushButton#secondary:pressed { background-color: #005A99; }
         """)
 
-        self.setFixedSize(240, 320)
+        # self.setFixedSize(240, 320)
 
-        # === Helper to make round pixmap ===
-        def make_round_pixmap(pixmap):
-            size = min(pixmap.width(), pixmap.height())
-
-            # Center crop manually
-            x = (pixmap.width() - size) // 2
-            y = (pixmap.height() - size) // 2
-            cropped = pixmap.copy(x, y, size, size)
-            cropped = cropped.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-
-            rounded = QPixmap(size, size)
-            rounded.fill(Qt.transparent)
-
-            path = QPainterPath()
-            path.addEllipse(0, 0, size, size)
-
-            painter = QPainter(rounded)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setClipPath(path)
-            painter.drawPixmap(0, 0, cropped)
-            painter.end()
-
-            return rounded
-
-        # === Image ===
+       
         image = QLabel(self)
         pixmap = QPixmap('src/assets/download.png')
-        round_pixmap = make_round_pixmap(pixmap)
-        image.setPixmap(round_pixmap)
-        image.setFixedSize(120, 120)
-        image.setAlignment(Qt.AlignCenter)
+        image.setPixmap(pixmap)
+        image.setFixedSize(250, 120)
+       
 
         # === Device Title ===
         title = QLabel(device["name"])
@@ -88,7 +63,7 @@ class DeviceCard(QWidget):
 
         # === Device Info ===
         info = QLabel(device["ip"])
-        info.setStyleSheet("color: #bbb; font-size: 12px;")
+        info.setStyleSheet("color: #000000; font-size: 12px; font-weight : bold")
         info.setAlignment(Qt.AlignCenter)
 
         # === Buttons ===
@@ -116,7 +91,6 @@ class DeviceCard(QWidget):
         layout.addSpacing(12)
         layout.addLayout(btns)
         layout.addStretch()
-
         self.setLayout(layout)
 
     def emit_config(self):
