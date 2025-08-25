@@ -7,8 +7,10 @@ FIELDS = [
     "is_final_asr","cpu_usage" ,"prompt_text",
      "confidence","retry_count", "error_code"
 ]
-
-EXCEL_FILE = f"session_log_{datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.xlsx"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # folder of this script (src/)
+FILES_DIR = os.path.join(BASE_DIR, "..", "files")      # ../files
+os.makedirs(FILES_DIR, exist_ok=True) 
+EXCEL_FILE = os.path.join(FILES_DIR,f"session_log_{datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}.xlsx")
 
 class Update_Excel():
     _instance = None
@@ -40,8 +42,9 @@ class Update_Excel():
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.data = {key: "" for key in FIELDS}
         self.data["timestamp"] = timestamp
-    def send_mail():
+    def send_mail(self):
         print("sending mail through win32 client after tts")
+        print("Sending excel file",EXCEL_FILE)
         send_with_outlook(EXCEL_FILE)
 if __name__ == "__main__":
     session = Update_Excel()
@@ -57,3 +60,5 @@ if __name__ == "__main__":
     session.write()
     #  Start next session
     session.reset()
+
+    session.send_mail()
