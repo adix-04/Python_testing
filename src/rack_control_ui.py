@@ -1,11 +1,12 @@
 import sys
 from PyQt5.QtWidgets import (
     QApplication,
-    QMainWindow,
+    QGridLayout,
     QWidget,
     QVBoxLayout,
     QPushButton,
-    QLabel  
+    QLabel,
+    QHBoxLayout 
 )
 from PyQt5.QtCore import Qt
 import serial
@@ -30,77 +31,144 @@ class ButtonControl(QWidget):
         self.connect()
         self.init_ui()
     def connect(self):
+        # Close existing connection if open
+        if hasattr(self, "ser") and self.ser.is_open:
+            print('self.ser.close()')
+
         try:
-            self.ser = serial.Serial(port='COM3', baudrate=115200, bytesize=8, parity='N', stopbits=1, timeout=1) 
-            self.st_msg = "Rack Connected" 
-            print('connected')
-            # self.init_ui()
+            self.ser = serial.Serial(
+                port='COM3',
+                baudrate=115200,
+                bytesize=8,
+                parity='N',
+                stopbits=1,
+                timeout=1
+            )
+            self.st_msg = "Rack Connected"
+            print("connected")
+            if hasattr(self, "rack_status"):
+                self.rack_status.setText(self.st_msg)
+                self.rack_status.setStyleSheet("font-size: 22px; font-weight: bold; color: lime;")
+
         except serial.SerialException:
-            print('disconnected')
             self.st_msg = "Rack disconnected"
-            # self.init_ui()
+            print(" serial.SerialException disconnected")
+            if hasattr(self, "rack_status"):
+                self.rack_status.setText(self.st_msg)
+                self.rack_status.setStyleSheet("font-size: 22px; font-weight: bold; color: red;")
+
+        except Exception:
+            print( ' Exception disconnected')
+            self.st_msg = "Rack Disconnected"
+            if hasattr(self, "rack_status"):
+                self.rack_status.setText(self.st_msg)
+                self.rack_status.setStyleSheet("font-size: 22px; font-weight: bold; color: red;")
+
             
     def init_ui(self):
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignCenter)
-        layout.setSpacing(10)
-        # Title
+        layout.setSpacing(20)
+
+        # === Title ===
         title = QLabel("Device Control Panel")
         title.setAlignment(Qt.AlignCenter)
-        self.rack_status = QLabel(self.st_msg)
-        self.rack_status.setStyleSheet("font-size: 24px; font-weight: bold;color:red;")
-        self.rack_status.setAlignment(Qt.AlignCenter)
-        self.warning = QLabel("*dont use or press the buttons unless you have a HOST PC connnection through serial otherwise it'll crash")
-        self.warning.setStyleSheet("font-weight: bold;color:white;")
-        self.warning.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet("font-size: 24px; font-weight: bold;color:white;")
+        title.setStyleSheet("font-size: 26px; font-weight: bold; color: white;")
         layout.addWidget(title)
-        layout.addWidget(self.warning)
+
+        # === Rack Status ===
+        self.rack_status = QLabel(self.st_msg)
+        self.rack_status.setAlignment(Qt.AlignCenter)
+        self.rack_status.setStyleSheet("font-size: 22px; font-weight: bold; color: red;")
         layout.addWidget(self.rack_status)
-        
-        # Button names
+
+        # === Button Styles ===
+        btn_style_on = """
+            QPushButton {
+                background-color: #4CAF50;
+                color: white;
+                font-size: 16px;
+                font-weight: bold;
+                padding: 8px 16px;
+                border-radius: 6px;
+                min-width: 100px;
+                min-height: 40px;
+            }
+            QPushButton:hover { background-color: #45A049; }
+            QPushButton:pressed { background-color: #2E7D32; }
+        """
+        btn_style_off = """
+            QPushButton {
+                background-color: #F44336;
+                color: white;
+                font-size: 16px;
+                font-weight: bold;
+                padding: 8px 16px;
+                border-radius: 6px;
+                min-width: 100px;
+                min-height: 40px;
+            }
+            QPushButton:hover { background-color: #E53935; }
+            QPushButton:pressed { background-color: #B71C1C; }
+        """
+
+        # === Grid Layout for Controls ===
+        grid = QGridLayout()
+        grid.setSpacing(15)
+
         button_names = ['Mute', 'OBD', 'CL30', 'CL30F', 'CL30B']
-        # Create buttons
-        self.buttons = []
-        for i, name in enumerate(button_names):
-            btn = QPushButton(f"{name} ")
-            btn.setFixedSize(200, 50)
-            btn.setCheckable(True)
-            btn.setStyleSheet(
-                """
-                QPushButton {
-                    background-color: #f0f0f0;
-                    border: 2px solid #333;
-                    border-radius: 10px;
-                    font-size: 16px;
-                }
-                QPushButton:checked {
-                    background-color: #66bb6a;
-                    color: white;
-                }
-                """
-            )
-            btn.clicked.connect(lambda _, idx=i: self.toggle_button(idx))
-            layout.addWidget(btn, alignment=Qt.AlignCenter)
-            self.buttons.append(btn)
-        ref_btn = QPushButton('Refresh')
-        ref_btn.setFixedSize(250, 30)
-        ref_btn.setStyleSheet(
-            """
-                QPushButton {
-                    background-color: #f0f0f0;
-                    border: 2px solid #333;
-                    border-radius: 10px;
-                    font-size: 10px;
-                }
-                 QPushButton:pressed {
-                    background-color: #66bb6a;
-                    color: white;
-                } """
-                )
+        for row, name in enumerate(button_names):
+            label = QLabel(name)
+            label.setStyleSheet("color: white; font-size: 14px; font-weight: bold;")
+
+            btn_on = QPushButton("ON")
+            btn_on.setStyleSheet(btn_style_on)
+            btn_on.clicked.connect(lambda _, idx=row: self.send_command(idx, True))
+            grid.addWidget(label, row, 1, alignment=Qt.AlignRight)
+
+            grid.addWidget(btn_on, row, 0)
+
+            btn_off = QPushButton("OFF")
+            btn_off.setStyleSheet(btn_style_off)
+            btn_off.clicked.connect(lambda _, idx=row: self.send_command(idx, False))
+            grid.addWidget(btn_off, row, 2)
+
+        # === Wrap grid in a centered container ===
+        grid_container = QWidget()
+        grid_container.setLayout(grid)
+        grid_layout = QHBoxLayout()
+        grid_layout.addStretch()
+        grid_layout.addWidget(grid_container)
+        grid_layout.addStretch()
+        layout.addLayout(grid_layout)
+
+        # === Refresh Button Centered ===
+        ref_btn = QPushButton("🔄 Refresh")
+        ref_btn.setFixedHeight(40)
+        ref_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #007ACC;
+                color: white;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: bold;
+                padding: 6px 12px;
+                min-width: 50px;
+            }
+            QPushButton:hover { background-color: #005A99; }
+            QPushButton:pressed { background-color: #004C80; }
+        """)
         ref_btn.clicked.connect(self.connect)
-        layout.addWidget(ref_btn,alignment=Qt.AlignCenter)
+        layout.addWidget(ref_btn, alignment=Qt.AlignCenter)
+
         self.setLayout(layout)
+
+
+    def send_command(self, button_idx, turn_on):
+        """Send ON or OFF command directly ."""
+        cmd = self.button_commands[button_idx][0] if turn_on else self.button_commands[button_idx][1]
+        self.ser.write(cmd.encode() + b'\n')
+
 
     def toggle_button(self, button_idx):
         is_on = self.button_states[button_idx]

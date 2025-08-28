@@ -28,10 +28,11 @@ class Test_begin(object):
         self.numIters = 5
         self.outDIr = directory
         self.load = load
+        self.load_time = 0
         #self.outDIr = self.outDIr + f"/Test_run_on_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
         self.command_wait_deviceStart="wait-for-device"
         self.report_excel_file = "output_from_test_run.xlsx"
-        self.report_excel_file = self.outDIr + self.report_excel_file
+        self.report_excel_file =  self.report_excel_file
         self.dlp = dlp_file
         self.excel = Update_Excel()
         self.cache = f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache'
@@ -43,7 +44,7 @@ class Test_begin(object):
         self.utils = utils.tts_main()
 
         logging.basicConfig(
-                filename=f"{self.outDIr}/overall_log.txt",  
+                filename=f"{self.outDIr}/overall_log{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt",  
                 filemode="w",  # if file exist, clear it then open and write
                 level=logging.DEBUG,
                 format="%(asctime)s:%(levelname)s:%(message)s",
@@ -51,9 +52,11 @@ class Test_begin(object):
             )
         logging.Logger
 
-
+        df = pd.read_excel(self.inputExcel)
+        '''doing some maths here to calculate how much time of load we need to give based on how much of utterance we have'''
+        self.load_time = (df.size) * 15  
         self.main()
-        self.test_init()
+       
     
     def main(self):
         print(self.inputExcel)
@@ -111,12 +114,13 @@ class Test_begin(object):
     def loadutterances(self,logger):
         df = pd.read_excel(self.inputExcel)
         '''doing some maths here to calculate how much time of load we need to give based on how much of utterance we have'''
-        load_time = (df.size) * 14  
+        # self.load_time = (df.size) * 15  
+        print(f"this is the load time from my opt{self.load_time}")
         
         if self.load:
             print("give load")
             logging.info("Going to give some cpu stress")
-            adb_thread = threading.Thread(target= lambda : self.run_load_adb_command(time=load_time))
+            adb_thread = threading.Thread(target= lambda : self.run_load_adb_command(time=self.load_time))
             adb_thread.start()
         
         # print(df)
@@ -138,6 +142,7 @@ class Test_begin(object):
             except Exception as e:
                 print(f"Error terminating ADB process: {e}")
             adb_thread.join()
+        self.excel.send_mail()
     def tts(self,text):
         engine = pyttsx3.init()
         engine.setProperty("rate", 150)
@@ -227,11 +232,19 @@ class Test_begin(object):
             return None
 
 if __name__ == "__main__":
+    # this how the schedule works --> see the bat file created at run time
     parser = argparse.ArgumentParser(description="A simple script with command line arguments.")
-    parser.add_argument("name", type=str, help="Your name")
-    parser.add_argument("--age", type=int, default=30, help="Your age (optional)")
-
+    parser.add_argument("--ip", required=True, type=str, help="Target device IP (ADB).")
+    parser.add_argument("--excel", type=str, help="Path to input Excel (optional).")
+    parser.add_argument("--dir", required=True, type=Path, help="Output/log folder.")
+    parser.add_argument("--dlp", type=str, help="DLT project file.")
+    parser.add_argument("--load", type=lambda x: str(x).lower() in ("yes", "1", "true", "y"), help="Give system load via ADB.")
+    parser.add_argument("--tech", type=str, default="BCA", help="Tech stack (e.g. BCA).")
     args = parser.parse_args()
 
-    print(f"Hello, {args.name}!")
-    print(f"You are {args.age} years old.")
+    
+    TTSObj = Test_begin(args.ip,args.excel,args.dir,args.dlp,args.load,args.tech)
+    TTSObj.test_init()
+    
+
+    

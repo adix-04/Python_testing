@@ -5,107 +5,97 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QPainter,QFont,QPixmap,QPainterPath
 from PyQt5.QtCore import Qt
-import json
 from PyQt5.QtCore import pyqtSignal
-import Test_runner_GUI
+
 
 
 class DeviceCard(QWidget):
     config_signal = pyqtSignal(dict)
     use_signal = pyqtSignal(dict)
+
     def __init__(self, device):
         super().__init__()
         self.device = device
-        self.sig = pyqtSignal()
 
+        # === Dark themed style ===
         self.setStyleSheet("""
             QWidget {
-                border: 1px solid #ccc;
-                border-radius: 10px;
-                background-color: #fefefe;
+                border: 1px ;
+                border-radius: 5px;
+                background: transparent;
             }
             QLabel {
-                color: #333;
-                border-radius:100px;
+                color: ffffff;
             }
             QPushButton {
-                padding: 5px 10px;
-                border-radius: 5px;
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-weight: bold;
             }
             QPushButton#primary {
-                background-color: #4CAF50;
+                background-color: #007ACC;
                 color: white;
             }
+            QPushButton#primary:hover { background-color: #005A99; }
+            QPushButton#primary:pressed { background-color: #2E7D32; }
+
             QPushButton#secondary {
-                background-color: #e0e0e0;
-                color: black;
+                background-color: #007ACC;
+                color: white;
             }
+            QPushButton#secondary:hover { background-color: #005A99; }
+            QPushButton#secondary:pressed { background-color: #005A99; }
         """)
-        self.setFixedSize(240, 320)
-        def make_round_pixmap(pixmap):
-            size = min(pixmap.width(), pixmap.height())
 
-            # Center crop manually
-            x = (pixmap.width() - size) // 2
-            y = (pixmap.height() - size) // 2
-            cropped = pixmap.copy(x, y, size, size)
-            cropped = cropped.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # self.setFixedSize(240, 320)
 
-            rounded = QPixmap(size, size)
-            rounded.fill(Qt.transparent)
-
-            path = QPainterPath()
-            path.addEllipse(0, 0, size, size)
-
-            painter = QPainter(rounded)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setClipPath(path)
-            painter.drawPixmap(0, 0, cropped)
-            painter.end()
-
-            return rounded
-
-# Apply to QLabel
+       
         image = QLabel(self)
         pixmap = QPixmap('src/assets/download.png')
-        pixmap1 = QPixmap(r'c:\Users\Adin N S\Downloads\256px-MINI_logo.svg.png')
-        round_pixmap = make_round_pixmap(pixmap)
-        image.setPixmap(round_pixmap)
-        image.setScaledContents(True)
-        # Device Title
-        # image = QLabel(self)
-        # pixmap = QPixmap('src/assets/download.jpg')
-        # image.setPixmap(pixmap)
-        # image.setScaledContents(True)
+        image.setPixmap(pixmap)
+        image.setFixedSize(250, 120)
+       
+
+        # === Device Title ===
         title = QLabel(device["name"])
-        title.setFont(QFont("Arial", 12, QFont.Bold))
+        title.setFont(QFont("Arial", 14, QFont.Bold))
+        title.setStyleSheet("color: #ffffff; font-size: 14px; font-weight : bold")
         title.setAlignment(Qt.AlignCenter)
 
-        # Device Info
+        # === Device Info ===
         info = QLabel(device["ip"])
+        info.setStyleSheet("color: #ffffff; font-size: 12px; font-weight : bold")
         info.setAlignment(Qt.AlignCenter)
-        # Buttons
+
+        # === Buttons ===
         btn_use = QPushButton("Use")
         btn_use.setObjectName("primary")
         btn_use.clicked.connect(self.emit_use)
+
         btn_config = QPushButton("Configure")
         btn_config.setObjectName("secondary")
         btn_config.clicked.connect(self.emit_config)
-    
+
         btns = QHBoxLayout()
+        btns.addStretch()
         btns.addWidget(btn_use)
         btns.addWidget(btn_config)
+        btns.addStretch()
+
+        # === Layout ===
         layout = QVBoxLayout()
         layout.addStretch()
-        layout.addWidget(image)
+        layout.addWidget(image, alignment=Qt.AlignCenter)
+        layout.addSpacing(8)
         layout.addWidget(title)
         layout.addWidget(info)
+        layout.addSpacing(12)
         layout.addLayout(btns)
         layout.addStretch()
         self.setLayout(layout)
+
     def emit_config(self):
-        # print("emitting config signal")
         self.config_signal.emit(self.device)
+
     def emit_use(self):
-        # print("emitting use signal")
         self.use_signal.emit(self.device)
