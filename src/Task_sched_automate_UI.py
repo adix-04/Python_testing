@@ -20,6 +20,7 @@ class Main_utils_page(QWidget):
         self.sig_use = pyqtSignal()
         self.page = self.main_page()
         self.runnerlogDir = "Auto_Testrun_"+ datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        
        
     def main_page(self):
         page = self.create_card()
