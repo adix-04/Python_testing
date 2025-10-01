@@ -25,23 +25,18 @@ class Test_begin(object):
         self.inputExcel = input_excel
         self.outputExcel = f"Test_run_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
         self.Lang = 'en'
-        self.numIters = 5
         self.outDIr = directory
         self.load = load
         self.load_time = 0
-        #self.outDIr = self.outDIr + f"/Test_run_on_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
         self.command_wait_deviceStart="wait-for-device"
-        self.report_excel_file = "output_from_test_run.xlsx"
-        self.report_excel_file =  self.report_excel_file
         self.dlp = dlp_file
         self.excel = Update_Excel()
         self.cache = f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache'
-        self.audioDir = 'audio'
         self.load_process = None
 
         self.newDlp = self.dlpfile_constructor('artifacts/file_DLT.dlp',self.mcuIp)
         self.dlt = Connet_DLT_class(self.cache,self.newDlp,self.outDIr)
-        self.utils = utils.tts_main()
+       
 
         logging.basicConfig(
                 filename=f"{self.outDIr}/overall_log{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt",  
@@ -55,18 +50,8 @@ class Test_begin(object):
         df = pd.read_excel(self.inputExcel)
         '''doing some maths here to calculate how much time of load we need to give based on how much of utterance we have'''
         self.load_time = (df.size) * 15  
-        self.main()
        
     
-    def main(self):
-        print(self.inputExcel)
-        print(self.mcuIp)
-        print(self.outputExcel)
-        print(self.Lang)
-        print(self.outDIr)
-        print(self.numIters)
-        print(self.load)
-
     def test_init(self):
         command = 'adb devices'
         logging.info("Starting the WUW test run...")
@@ -75,18 +60,6 @@ class Test_begin(object):
         adb_result=self.run_adb_command(self.command_wait_deviceStart)
         print("after adb connect call")
         logging.info(adb_result)
-        # for i in range(3):
-        #     result=subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #     if result.returncode != 0:
-        #         logging.error(f"adb command for devices failed, please check the error: {result.stderr.decode('utf-8')}")
-        #         raise Exception(f'adb command failed failed: {result.stderr.decode("utf-8")}')
-        #     if self.mcuIp in result.stdout.decode("utf-8"):
-        #         logging.info(" the device is identified and adb can work")
-        #         device_started=True
-        #         break
-        #     else:
-        #         logging.error(f"The device is not identified , see the error: {result} ")
-                #  print("device not found")
         logging.info("Now setting the audio outdevices")
         if self.inputExcel != None:
           self.loadutterances(logging)
@@ -96,7 +69,6 @@ class Test_begin(object):
         adb_command = "adb " + command
      else:
         adb_command = "adb -s " + self.mcuIp + " " + command
-
      try:
         result = subprocess.run(adb_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output = result.stdout.decode('utf-8')
@@ -106,34 +78,27 @@ class Test_begin(object):
             print(f"[WARNING] ADB command failed: {error.strip()}")
             return error  
         return output
-
      except Exception as e:
         print(f"[ERROR] Exception occurred while running adb: {e}")
         return str(e)
-
     def loadutterances(self,logger):
         df = pd.read_excel(self.inputExcel)
-        '''doing some maths here to calculate how much time of load we need to give based on how much of utterance we have'''
-        # self.load_time = (df.size) * 15  
         print(f"this is the load time from my opt{self.load_time}")
-        
         if self.load:
             print("give load")
             logging.info("Going to give some cpu stress")
             adb_thread = threading.Thread(target= lambda : self.run_load_adb_command(time=self.load_time))
             adb_thread.start()
-        
-        # print(df)
+       
         for index, row in df.iterrows():
             utterance = row['Utterances']
             if utterance:
                 try:
-                    # print(f"Generating TTS for: {utterance}")
                     self.speak_utterance(text=utterance)
                     print(f"Played utterance {utterance}")
                 except Exception as e:
                     print(e)
-        # self.utils.warn(mesg="Test Completed ")
+
         if self.load:
             try:
                 if hasattr(self, 'load_process') and self.load_process and self.load_process.poll() is None:
@@ -142,7 +107,9 @@ class Test_begin(object):
             except Exception as e:
                 print(f"Error terminating ADB process: {e}")
             adb_thread.join()
+
         self.excel.send_mail()
+
     def tts(self,text):
         engine = pyttsx3.init()
         engine.setProperty("rate", 150)
@@ -154,12 +121,11 @@ class Test_begin(object):
     def speak_utterance(self, text, lang="en"):
         self.run_adb_command('shell input tap 500 600')
         self.dlt.cleaner()   
-        stop_event = threading.Event()
+       
         log_thread = threading.Thread(target=self.dlt.start_dlt)
         log_thread.start()
 
         time.sleep(1)
-
         self.run_adb_command('shell cmd car_service inject-custom-input 1012;sleep 0.2; cmd car_service inject-custom-input 1013')
         time.sleep(1)
         print(f"🔊 Speaking: {text}")
@@ -167,9 +133,11 @@ class Test_begin(object):
         logging.info(f"Played utterance: {text}")
         time.sleep(10)
 
-        stop_event.set()
+       
         log_thread.join()
+
         self.dlt.stop_dlt()
+        
         self.dlt.convert_dlt_log_text()
         self.dlt.check(uttearnce=text)
         # print("Gonna call the main thing here")

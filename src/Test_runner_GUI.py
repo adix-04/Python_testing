@@ -331,6 +331,7 @@ class Ui_MainWindow(object):
                 font-size: 13px;
                 font-weight: bold;
                 border: 1px solid #555555;
+                background-color: #1E1E1E;
                 border-radius: 6px;
                 margin-top: 10px;
             }
@@ -679,7 +680,7 @@ class Ui_MainWindow(object):
         dev_ip = self.input_ip.text().strip()
         dev_port = self.input_port.text().strip()
         if dev_name.strip() == "" or dev_ip.strip() =="":
-            QMessageBox.warning(self.page,"Empty Fields","empty fields warning")
+            QMessageBox.warning(self, "Invalid Time", "Please enter time as HH:MM")
             return
        
        

@@ -48,16 +48,14 @@ class Connet_DLT_class():
         temp_file = os.listdir(self.file_path)
         print(temp_file[0])
         try:
-# {datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}
          self.file_name=f'{self.outDIR}/traceLog.txt'
          process = subprocess.run(["dlt_viewer","-c",f'C:/Users/{getpass.getuser()}/AppData/Local/dlt_viewer/cache/{temp_file[0]}',self.file_name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-        
-         
         except Exception as e:
              print(e)
        
     def get_cpu(self):
          Get_data_from_DLT.Get_data.monitor_cpu_mem()
+         
     def check(self,uttearnce):
          Get_data_from_DLT.Get_data(self.file_name,utterance=uttearnce)
 
